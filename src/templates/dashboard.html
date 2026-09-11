@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geotechnical Risk Analytics - Painel Operacional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #151e32;
+      --bg-card-hover: #1c2742;
+      --border-color: #1f2d47;
+      --border-highlight: #334b73;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --status-safe: #10b981;
+      --status-warning: #f59e0b;
+      --status-danger: #ef4444;
+      --status-critical: #dc2626;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      background-color: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-mono);
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      background: rgba(31, 45, 71, 0.6);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--status-safe);
+      box-shadow: 0 0 8px var(--status-safe);
+    }
+
+    .header-links {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-nav:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    main {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Preset Cidades */
+    .city-presets {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      background: var(--bg-secondary);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .city-presets-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.5rem;
+    }
+
+    .city-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .city-chip:hover, .city-chip.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1100px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Painel de Controles */
+    .control-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group-inline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .label-val {
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    input[type="number"], input[type="text"], select {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: var(--font-mono);
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bg-primary);
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
+    }
+
+    .btn-action:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-action-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-action-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Area Principal de Resultados */
+    .results-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .kpi-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-card-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin: 0.35rem 0;
+      color: #fff;
+    }
+
+    .kpi-card-status {
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-safe { color: var(--status-safe); }
+    .status-warning { color: var(--status-warning); }
+    .status-danger { color: var(--status-danger); }
+    .status-critical { color: var(--status-critical); }
+
+    /* Recomendacoes e Alertas */
+    .alerts-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .rec-item {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.6rem 0.85rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+
+    /* Mapa Container */
+    .map-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .map-iframe-container {
+      width: 100%;
+      height: 520px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #000;
+    }
+
+    .map-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Console / Telemetria */
+    .telemetry-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .telemetry-item strong {
+      color: var(--accent-cyan);
+    }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: 1.25rem 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">GRA</div>
+      <div class="brand-text">
+        <h1>GEOTECHNICAL RISK ANALYTICS</h1>
+        <p>Monitoramento Operacional & Previsao de Estabilidade de Encostas</p>
+      </div>
+    </div>
+
+    <div class="header-badges">
+      <div class="badge"><span class="badge-dot"></span> API REST :8000 ONLINE</div>
+      <div class="badge"><span class="badge-dot"></span> OPEN-METEO ECMWF CONECTADO</div>
+      <div class="badge"><span class="badge-dot"></span> MOTOR FISICO INFINITO ATIVO</div>
+    </div>
+
+    <div class="header-links">
+      <a href="/docs" target="_blank" class="btn-nav">Swagger OpenAPI</a>
+      <a href="/api/v1/spatial/map-html" target="_blank" class="btn-nav">Mapa GIS Full</a>
+      <a href="https://github.com/Renanbritto/geotechnical-risk-analytics" target="_blank" class="btn-nav">GitHub Repositório</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Selecao de Cidades de Referencia -->
+    <div class="city-presets">
+      <span class="city-presets-label">Cenarios Criticos:</span>
+      <button class="city-chip active" onclick="loadCity('petropolis')">Petrópolis - RJ</button>
+      <button class="city-chip" onclick="loadCity('juiz-de-fora')">Juiz de Fora - MG</button>
+      <button class="city-chip" onclick="loadCity('nova-friburgo')">Nova Friburgo - RJ</button>
+      <button class="city-chip" onclick="loadCity('teresopolis')">Teresópolis - RJ</button>
+      <button class="city-chip" onclick="loadCity('angra')">Angra dos Reis - RJ</button>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Painel Esquerdo: Parametros e Controles -->
+      <aside class="control-panel">
+        <div class="section-title">Parametros da Encosta</div>
+
+        <div class="form-group-inline">
+          <div class="form-group">
+            <label>Latitude</label>
+            <input type="number" id="inputLat" step="0.0001" value="-22.5050" />
+          </div>
+          <div class="form-group">
+            <label>Longitude</label>
+            <input type="number" id="inputLon" step="0.0001" value="-43.1789" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Inclinacao da Encosta (Slope) <span class="label-val" id="valSlope">42°</span></label>
+          <input type="range" id="inputSlope" min="10" max="75" value="42" oninput="updateSlopeVal(this.value)" />
+        </div>
+
+        <div class="form-group">
+          <label>Espessura do Solo (m) <span class="label-val" id="valSoil">3.5 m</span></label>
+          <input type="range" id="inputSoil" min="0.5" max="10.0" step="0.5" value="3.5" oninput="updateSoilVal(this.value)" />
+        </div>
+
+        <div class="form-group">
+          <label>Litologia Subjacente</label>
+          <select id="inputLithology">
+            <option value="Colluvial Deposits" selected>Depositos Coluvionares (Alto Risco)</option>
+            <option value="Residual Soil Gneiss">Solo Residual de Gnaisse</option>
+            <option value="Residual Soil Granite">Solo Residual de Granito</option>
+            <option value="Fractured Gneiss Rock">Rocha Gnaissica Fraturada</option>
+            <option value="Sedimentary Clay">Solo Sedimentar Argiloso</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Uso e Ocupacao do Solo</label>
+          <select id="inputLandCover">
+            <option value="Dense Urban Occupation" selected>Ocupacao Urbana Densa</option>
+            <option value="Exposed Soil / Deforested">Solo Exposto / Desmatado</option>
+            <option value="Pasture / Grassland">Pastagem / Gramineas</option>
+            <option value="Secondary Forest">Mata Secundaria</option>
+            <option value="Dense Native Forest">Floresta Nativa Densa</option>
+          </select>
+        </div>
+
+        <div class="section-title">Parametros Pluviometricos</div>
+
+        <div class="form-group">
+          <label>Chuva Acumulada 72h (mm) <span class="label-val" id="valRain72">195 mm</span></label>
+          <input type="range" id="inputRain72" min="0" max="400" value="195" oninput="updateRainVal(this.value)" />
+        </div>
+
+        <button class="btn-action" onclick="runLiveEvaluation()">
+          Consultar Meteorologia em Tempo Real (Open-Meteo)
+        </button>
+
+        <button class="btn-action-secondary" onclick="runManualEvaluation()">
+          Calcular Estabilidade Local (Parametros Manuais)
+        </button>
+      </aside>
+
+      <!-- Painel Direito: Resultados & Visualizacao -->
+      <section class="results-area">
+        <!-- KPI Cards -->
+        <div class="kpi-cards">
+          <div class="kpi-card">
+            <div class="kpi-card-header">Fator de Seguranca (FS)</div>
+            <div class="kpi-card-value" id="kpiFS">0.82</div>
+            <div class="kpi-card-status status-critical" id="statusFS">INSTAVEL / RUPTURA IMINENTE</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">Risco Combinado</div>
+            <div class="kpi-card-value status-critical" id="kpiRisk">CRITICO</div>
+            <div class="kpi-card-status" id="statusRiskDesc">Suscetibilidade Geologica Elevada</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">Probabilidade Falha (ML)</div>
+            <div class="kpi-card-value" id="kpiML">89.4%</div>
+            <div class="kpi-card-status" id="statusAHP">Score AHP: 82.5 / 100</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">Alerta Pluviometrico</div>
+            <div class="kpi-card-value status-danger" id="kpiRainAlert">ALERTA MAXIMO</div>
+            <div class="kpi-card-status" id="statusRainObs">Acumulado 72h: 195 mm</div>
+          </div>
+        </div>
+
+        <!-- Telemetria Observada -->
+        <div class="telemetry-bar" id="telemetryBar">
+          <div class="telemetry-item">Estacao: <strong id="telStation">Petropolis (Centro)</strong></div>
+          <div class="telemetry-item">Chuva 24h: <strong id="telRain24">85 mm</strong></div>
+          <div class="telemetry-item">Chuva Prevista 24h: <strong id="telRainForecast">48 mm</strong></div>
+          <div class="telemetry-item">Umidade Solo (0-7cm): <strong id="telMoisture">0.42 m3/m3</strong></div>
+          <div class="telemetry-item">Temperatura: <strong id="telTemp">19.5 °C</strong></div>
+        </div>
+
+        <!-- Alertas e Recomendacoes Defesa Civil -->
+        <div class="alerts-card">
+          <div class="section-title">Diretrizes Operacionais & Recomendacoes Tecnicas</div>
+          <div id="recommendationsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div class="rec-item">Evacuacao imediata de residencias no raio de alcance da crista e pe da encosta.</div>
+            <div class="rec-item">Acionamento continuo do sistema de sirenes comunitarias da Defesa Civil.</div>
+            <div class="rec-item">Monitoramento instrumental por piezometros e marcos superficiais a cada 1 hora.</div>
+            <div class="rec-item">Interdicao de vias de acesso na base da encosta contra fluxo de detritos.</div>
+          </div>
+        </div>
+
+        <!-- Mapa Leaflet Integrado -->
+        <div class="map-section">
+          <div class="map-header">
+            <div class="section-title">Mapeamento Cartografico Espacial (Folium / Leaflet)</div>
+            <a href="/api/v1/spatial/map-html" target="_blank" class="btn-nav">Abrir Mapa em Tela Cheia</a>
+          </div>
+          <div class="map-iframe-container">
+            <iframe id="mapFrame" src="/api/v1/spatial/map-html"></iframe>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>Geotechnical Risk Analytics &copy; 2026 - Desenvolvido para Modelagem Preditiva de Desastres Naturais e Defesa Civil.</p>
+    <p>Algoritmos: Modelo Fisico de Encosta Infinita (Taylor/Skempton) | AHP (Saaty 1980) | Random Forest | Open-Meteo ECMWF ERA5-Land</p>
+  </footer>
+
+  <script>
+    const CITIES = {
+      'petropolis': {
+        name: 'Petrópolis - RJ',
+        lat: -22.5050,
+        lon: -43.1789,
+        slope: 42,
+        soil: 3.5,
+        rain72: 245,
+        lithology: 'Colluvial Deposits',
+        landCover: 'Dense Urban Occupation'
+      },
+      'juiz-de-fora': {
+        name: 'Juiz de Fora - MG',
+        lat: -21.7642,
+        lon: -43.3496,
+        slope: 38,
+        soil: 4.2,
+        rain72: 185,
+        lithology: 'Residual Soil Gneiss',
+        landCover: 'Dense Urban Occupation'
+      },
+      'nova-friburgo': {
+        name: 'Nova Friburgo - RJ',
+        lat: -22.2819,
+        lon: -42.5311,
+        slope: 45,
+        soil: 3.0,
+        rain72: 220,
+        lithology: 'Colluvial Deposits',
+        landCover: 'Exposed Soil / Deforested'
+      },
+      'teresopolis': {
+        name: 'Teresópolis - RJ',
+        lat: -22.4123,
+        lon: -42.9664,
+        slope: 40,
+        soil: 3.8,
+        rain72: 195,
+        lithology: 'Fractured Gneiss Rock',
+        landCover: 'Pasture / Grassland'
+      },
+      'angra': {
+        name: 'Angra dos Reis - RJ',
+        lat: -23.0067,
+        lon: -44.3181,
+        slope: 46,
+        soil: 2.8,
+        rain72: 280,
+        lithology: 'Colluvial Deposits',
+        landCover: 'Dense Urban Occupation'
+      }
+    };
+
+    function updateSlopeVal(val) {
+      document.getElementById('valSlope').textContent = val + '°';
+    }
+
+    function updateSoilVal(val) {
+      document.getElementById('valSoil').textContent = val + ' m';
+    }
+
+    function updateRainVal(val) {
+      document.getElementById('valRain72').textContent = val + ' mm';
+    }
+
+    function loadCity(key) {
+      document.querySelectorAll('.city-chip').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const c = CITIES[key];
+      if (!c) return;
+
+      document.getElementById('inputLat').value = c.lat;
+      document.getElementById('inputLon').value = c.lon;
+      document.getElementById('inputSlope').value = c.slope;
+      document.getElementById('inputSoil').value = c.soil;
+      document.getElementById('inputRain72').value = c.rain72;
+      document.getElementById('inputLithology').value = c.lithology;
+      document.getElementById('inputLandCover').value = c.landCover;
+
+      updateSlopeVal(c.slope);
+      updateSoilVal(c.soil);
+      updateRainVal(c.rain72);
+
+      // Dispara avaliacao em tempo real da cidade
+      runLiveEvaluation();
+    }
+
+    async function runLiveEvaluation() {
+      const lat = parseFloat(document.getElementById('inputLat').value);
+      const lon = parseFloat(document.getElementById('inputLon').value);
+      const slope = parseFloat(document.getElementById('inputSlope').value);
+      const soil = parseFloat(document.getElementById('inputSoil').value);
+      const lith = document.getElementById('inputLithology').value;
+      const land = document.getElementById('inputLandCover').value;
+
+      document.getElementById('statusFS').textContent = 'Consultando Open-Meteo & Avaliando...';
+
+      try {
+        const url = `/api/v1/risk/evaluate-live?latitude=${lat}&longitude=${lon}&slope_angle_deg=${slope}&soil_depth_m=${soil}&lithology=${encodeURIComponent(lith)}&land_cover=${encodeURIComponent(land)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Falha na requisicao: ' + res.statusText);
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        console.error(err);
+        // Fallback para avaliacao local
+        runManualEvaluation();
+      }
+    }
+
+    async function runManualEvaluation() {
+      const lat = parseFloat(document.getElementById('inputLat').value);
+      const lon = parseFloat(document.getElementById('inputLon').value);
+      const slope = parseFloat(document.getElementById('inputSlope').value);
+      const soil = parseFloat(document.getElementById('inputSoil').value);
+      const rain72 = parseFloat(document.getElementById('inputRain72').value);
+      const lith = document.getElementById('inputLithology').value;
+      const land = document.getElementById('inputLandCover').value;
+
+      const payload = {
+        latitude: lat,
+        longitude: lon,
+        slope_angle_deg: slope,
+        elevation_m: 800,
+        aspect_deg: 180,
+        twi: 6.5,
+        accumulated_rain_24h_mm: rain72 * 0.45,
+        accumulated_rain_72h_mm: rain72,
+        lithology: lith,
+        land_cover: land,
+        soil_depth_m: soil
+      };
+
+      try {
+        const res = await fetch('/api/v1/risk/evaluate-point', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Falha na requisicao');
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        alert('Erro ao processar avaliacao: ' + err.message);
+      }
+    }
+
+    function renderResults(data) {
+      const fs = data.factor_of_safety;
+      const fsEl = document.getElementById('kpiFS');
+      const fsStatusEl = document.getElementById('statusFS');
+      fsEl.textContent = fs.toFixed(2);
+
+      if (fs < 1.0) {
+        fsEl.className = 'kpi-card-value status-critical';
+        fsStatusEl.className = 'kpi-card-status status-critical';
+        fsStatusEl.textContent = 'INSTAVEL / RUPTURA IMINENTE';
+      } else if (fs <= 1.5) {
+        fsEl.className = 'kpi-card-value status-warning';
+        fsStatusEl.className = 'kpi-card-status status-warning';
+        fsStatusEl.textContent = 'LIMIAR DE ATENCAO (FS <= 1.5)';
+      } else {
+        fsEl.className = 'kpi-card-value status-safe';
+        fsStatusEl.className = 'kpi-card-status status-safe';
+        fsStatusEl.textContent = 'ESTAVEL (FS > 1.5)';
+      }
+
+      // Risco Combinado
+      const riskEl = document.getElementById('kpiRisk');
+      const risk = data.combined_risk_level;
+      riskEl.textContent = risk.toUpperCase();
+      if (risk === 'Critical') {
+        riskEl.className = 'kpi-card-value status-critical';
+      } else if (risk === 'High') {
+        riskEl.className = 'kpi-card-value status-danger';
+      } else if (risk === 'Medium') {
+        riskEl.className = 'kpi-card-value status-warning';
+      } else {
+        riskEl.className = 'kpi-card-value status-safe';
+      }
+
+      // ML e AHP
+      const mlProb = (data.ml_failure_probability * 100).toFixed(1);
+      document.getElementById('kpiML').textContent = mlProb + '%';
+      document.getElementById('statusAHP').textContent = 'Score AHP: ' + data.ahp_susceptibility_score.toFixed(1) + ' / 100';
+
+      // Alerta Pluviometrico
+      const alertEl = document.getElementById('kpiRainAlert');
+      alertEl.textContent = (data.rainfall_alert_level || 'Atencao').toUpperCase();
+
+      // Telemetria se disponivel
+      if (data.live_weather) {
+        document.getElementById('telRain24').textContent = data.live_weather.accumulated_rain_24h_mm.toFixed(1) + ' mm';
+        document.getElementById('telRainForecast').textContent = data.live_weather.forecast_rain_next_24h_mm.toFixed(1) + ' mm';
+        document.getElementById('telMoisture').textContent = data.live_weather.soil_moisture_0_to_7cm_m3m3.toFixed(2) + ' m3/m3';
+        document.getElementById('telTemp').textContent = data.live_weather.current_temperature_c.toFixed(1) + ' °C';
+        document.getElementById('statusRainObs').textContent = 'Acumulado 72h: ' + data.live_weather.accumulated_rain_72h_mm.toFixed(1) + ' mm';
+      }
+
+      // Recomendacoes
+      const recList = document.getElementById('recommendationsList');
+      recList.innerHTML = '';
+      if (data.recommendations && data.recommendations.length > 0) {
+        data.recommendations.forEach(r => {
+          const div = document.createElement('div');
+          div.className = 'rec-item';
+          div.textContent = r;
+          recList.appendChild(div);
+        });
+      }
+    }
+
+    // Inicializa com Petropolis
+    window.addEventListener('DOMContentLoaded', () => {
+      runLiveEvaluation();
+    });
+  </script>
+</body>
+</html>
