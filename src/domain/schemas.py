@@ -3,6 +3,7 @@
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
 from src.domain.models import RiskLevel, RainfallAlertLevel, LithologyType, LandCoverType
+from src.services.weather_service import LiveWeatherMetrics
 
 
 class SlopePointEvaluationRequest(BaseModel):
@@ -34,6 +35,23 @@ class SlopePointEvaluationResponse(BaseModel):
     combined_risk_level: RiskLevel
     rainfall_alert_level: RainfallAlertLevel
     recommendations: List[str]
+
+
+class LiveSlopeEvaluationResponse(BaseModel):
+    """Real-time slope evaluation combined with live meteorological feed."""
+    latitude: float
+    longitude: float
+    slope_angle_deg: float
+    factor_of_safety: float
+    stability_status: str
+    geotechnical_risk_level: RiskLevel
+    ahp_susceptibility_score: float
+    ml_failure_probability: float
+    combined_risk_level: RiskLevel
+    rainfall_alert_level: RainfallAlertLevel
+    recommendations: List[str]
+    live_weather: LiveWeatherMetrics
+    predictive_warning: Optional[str] = None
 
 
 class BatchEvaluationRequest(BaseModel):

@@ -8,7 +8,9 @@ from src.config.settings import settings
 from src.data.terrain_generator import GeotechnicalDataGenerator
 from src.models.classifier import GeotechnicalRiskClassifier
 from src.visualization.map_renderer import GeotechnicalMapRenderer
-from src.domain.models import RiskLevel
+from src.services.weather_service import WeatherService
+from src.domain.schemas import SlopePointEvaluationRequest
+from src.domain.models import RiskLevel, LithologyType, LandCoverType
 
 
 def run_pipeline():
@@ -75,6 +77,54 @@ def run_pipeline():
     print("================================================================================")
 
 
+def evaluate_live(lat: float, lon: float, slope_deg: float = 34.0):
+    """Query live weather API and run geotechnical evaluation in real time."""
+    print("================================================================================")
+    print(" AVALIACAO GEOTECNICA EM TEMPO REAL (INTEGRACAO METEOROLOGICA AO VIVO)")
+    print("================================================================================")
+    print(f"Consultando coordenadas: Latitude {lat:.5f}, Longitude {lon:.5f}...")
+
+    weather_svc = WeatherService()
+    classifier = GeotechnicalRiskClassifier()
+
+    weather = weather_svc.fetch_live_weather(lat, lon)
+    print(f"[OK] Dados meteorologicos obtidos via: {weather.data_source}")
+    print(f"     Chuva Observada 24h: {weather.accumulated_rain_24h_mm:.1f} mm")
+    print(f"     Chuva Observada 72h: {weather.accumulated_rain_72h_mm:.1f} mm")
+    print(f"     Chuva Prevista 24h:  {weather.forecast_rain_next_24h_mm:.1f} mm")
+    print(f"     Umidade do Solo:     {weather.soil_moisture_volumetric_m3_m3 * 100:.1f}% vol")
+    print(f"     Temperatura:         {weather.temperature_c:.1f} oC | UR: {weather.relative_humidity_pct:.0f}%\n")
+
+    req = SlopePointEvaluationRequest(
+        latitude=lat,
+        longitude=lon,
+        slope_angle_deg=slope_deg,
+        elevation_m=720.0,
+        aspect_deg=180.0,
+        twi=6.5,
+        accumulated_rain_24h_mm=weather.accumulated_rain_24h_mm,
+        accumulated_rain_72h_mm=weather.accumulated_rain_72h_mm,
+        lithology=LithologyType.COLLUVIAL_DEPOSITS,
+        land_cover=LandCoverType.URBAN_OCCUPATION
+    )
+
+    res = classifier.evaluate_point(req)
+
+    print("--------------------------------------------------------------------------------")
+    print(f" RESULTADO DA ANALISE GEOTECNICA (DECLIVIDADE: {slope_deg:.1f} GRAUS)")
+    print("--------------------------------------------------------------------------------")
+    print(f" Fator de Seguranca (FS):     {res.factor_of_safety:.2f} ({res.stability_status})")
+    print(f" Nivel de Risco Combinado:    {res.combined_risk_level.value}")
+    print(f" Indice de Suscetibilidade:   {res.ahp_susceptibility_score:.3f}")
+    print(f" Probabilidade Falha (IA):    {res.ml_failure_probability * 100:.1f}%")
+    print(f" Nivel de Alerta Hidrologico: {res.rainfall_alert_level.value}")
+    print("--------------------------------------------------------------------------------")
+    print(" RECOMENDACOES DA DEFESA CIVIL / ENGENHARIA:")
+    for r in res.recommendations:
+        print(f" - {r}")
+    print("================================================================================")
+
+
 def serve_api(host: str = "0.0.0.0", port: int = 8000, reload: bool = False):
     """Start uvicorn server for the FastAPI application."""
     print(f"Iniciando API Geotechnical Risk Analytics em http://{host}:{port}")
@@ -95,6 +145,10 @@ def main():
         description="Geotechnical Risk Analytics - Motor de Analise de Estabilidade e Suscetibilidade de Encostas"
     )
     parser.add_argument("--run-pipeline", action="store_true", help="Executar pipeline completo e gerar mapa")
+    parser.add_argument("--eval-live", action="store_true", help="Avaliar risco em tempo real consultando API meteorologica")
+    parser.add_argument("--lat", type=float, default=-22.4200, help="Latitude para avaliacao em tempo real")
+    parser.add_argument("--lon", type=float, default=-42.9700, help="Longitude para avaliacao em tempo real")
+    parser.add_argument("--slope", type=float, default=34.0, help="Inclinacao da encosta em graus")
     parser.add_argument("--serve-api", action="store_true", help="Iniciar servidor FastAPI")
     parser.add_argument("--run-tests", action="store_true", help="Executar suite de testes unitarios")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host para a API REST")
@@ -103,14 +157,15 @@ def main():
 
     args = parser.parse_args()
 
-    if args.run_pipeline:
+    if args.eval_live:
+        evaluate_live(lat=args.lat, lon=args.lon, slope_deg=args.slope)
+    elif args.run_pipeline:
         run_pipeline()
     elif args.serve_api:
         serve_api(host=args.host, port=args.port, reload=args.reload)
     elif args.run_tests:
         run_tests()
     else:
-        # Default behavior if no flag passed
         run_pipeline()
 
 

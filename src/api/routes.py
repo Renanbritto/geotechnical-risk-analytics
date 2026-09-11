@@ -1,19 +1,21 @@
 """FastAPI endpoint routers for geotechnical risk evaluation."""
 
 from fastapi import APIRouter, HTTPException, Query, Response
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from src.domain.schemas import (
     SlopePointEvaluationRequest,
     SlopePointEvaluationResponse,
+    LiveSlopeEvaluationResponse,
     BatchEvaluationRequest,
     BatchEvaluationResponse,
     AHPConsistencyResponse,
     HealthResponse
 )
-from src.domain.models import RiskLevel
+from src.domain.models import RiskLevel, LithologyType, LandCoverType
 from src.models.classifier import GeotechnicalRiskClassifier
 from src.data.terrain_generator import GeotechnicalDataGenerator
 from src.visualization.map_renderer import GeotechnicalMapRenderer
+from src.services.weather_service import WeatherService, LiveWeatherMetrics
 from src.config.settings import settings
 
 router = APIRouter()
@@ -22,6 +24,7 @@ router = APIRouter()
 risk_engine = GeotechnicalRiskClassifier()
 data_generator = GeotechnicalDataGenerator()
 map_renderer = GeotechnicalMapRenderer()
+weather_service = WeatherService()
 
 
 @router.get("/health", response_model=HealthResponse, tags=["Monitoramento"])
@@ -32,6 +35,73 @@ def health_check():
         app_name=settings.app_name,
         version=settings.app_version,
         uptime_status="online"
+    )
+
+
+@router.get("/api/v1/weather/live", response_model=LiveWeatherMetrics, tags=["Meteorologia em Tempo Real"])
+def get_live_weather(
+    latitude: float = Query(default=-22.4200, ge=-90.0, le=90.0),
+    longitude: float = Query(default=-42.9700, ge=-180.0, le=180.0)
+):
+    """
+    Fetch real-time observed rainfall (24h/72h), soil moisture, and forecast from Open-Meteo.
+    """
+    return weather_service.fetch_live_weather(latitude, longitude)
+
+
+@router.get("/api/v1/risk/evaluate-live", response_model=LiveSlopeEvaluationResponse, tags=["Avaliacao em Tempo Real"])
+def evaluate_slope_live(
+    latitude: float = Query(default=-22.4200, ge=-90.0, le=90.0, description="Latitude da encosta"),
+    longitude: float = Query(default=-42.9700, ge=-180.0, le=180.0, description="Longitude da encosta"),
+    slope_angle_deg: float = Query(default=34.0, ge=1.0, le=80.0, description="Inclinacao em graus"),
+    soil_depth_m: float = Query(default=2.5, ge=0.5, le=15.0, description="Espessura do solo em metros"),
+    lithology: LithologyType = Query(default=LithologyType.COLLUVIAL_DEPOSITS),
+    land_cover: LandCoverType = Query(default=LandCoverType.URBAN_OCCUPATION)
+):
+    """
+    Query real-time meteorological conditions and evaluate geotechnical stability instantly.
+    Integrates actual precipitation and soil saturation from ECMWF ERA5-Land.
+    """
+    live_weather = weather_service.fetch_live_weather(latitude, longitude)
+
+    eval_req = SlopePointEvaluationRequest(
+        latitude=latitude,
+        longitude=longitude,
+        slope_angle_deg=slope_angle_deg,
+        elevation_m=750.0,
+        aspect_deg=180.0,
+        twi=6.8,
+        accumulated_rain_24h_mm=live_weather.accumulated_rain_24h_mm,
+        accumulated_rain_72h_mm=live_weather.accumulated_rain_72h_mm,
+        lithology=lithology,
+        land_cover=land_cover,
+        soil_depth_m=soil_depth_m
+    )
+
+    base_eval = risk_engine.evaluate_point(eval_req)
+
+    # Predictive warning based on forecast precipitation
+    predictive_warning = None
+    if live_weather.forecast_rain_next_24h_mm >= 50.0:
+        predictive_warning = (
+            f"Alerta Preventivo: Previsao de {live_weather.forecast_rain_next_24h_mm:.1f} mm de chuva nas proximas 24h. "
+            "Risco iminente de reducao do Fator de Seguranca para niveis criticos."
+        )
+
+    return LiveSlopeEvaluationResponse(
+        latitude=base_eval.latitude,
+        longitude=base_eval.longitude,
+        slope_angle_deg=slope_angle_deg,
+        factor_of_safety=base_eval.factor_of_safety,
+        stability_status=base_eval.stability_status,
+        geotechnical_risk_level=base_eval.geotechnical_risk_level,
+        ahp_susceptibility_score=base_eval.ahp_susceptibility_score,
+        ml_failure_probability=base_eval.ml_failure_probability,
+        combined_risk_level=base_eval.combined_risk_level,
+        rainfall_alert_level=base_eval.rainfall_alert_level,
+        recommendations=base_eval.recommendations,
+        live_weather=live_weather,
+        predictive_warning=predictive_warning
     )
 
 
