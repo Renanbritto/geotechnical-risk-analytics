@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renan Nocelli | Clima, Chuva e Risco Geotécnico - Zona da Mata Mineira</title>
   <link rel="icon" type="image/png" href="/static/logo.png" />
-  <title>Renan Nocelli | Geotechnical Risk Analytics - Chuva e Vento na Zona da Mata</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -87,8 +87,8 @@
       border-top: 1px solid rgba(255, 255, 255, 0.28);
       box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
       border-radius: var(--radius-pill);
-      padding: 0.35rem 0.95rem;
-      font-size: 0.76rem;
+      padding: 0.4rem 1rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-muted);
       display: inline-flex;
@@ -114,7 +114,7 @@
       color: #fff;
     }
 
-    /* Header e Navegacao */
+    /* Header */
     header {
       background: rgba(2, 6, 23, 0.85);
       backdrop-filter: blur(24px) saturate(180%);
@@ -153,21 +153,6 @@
     .brand-avatar-img:hover {
       transform: scale(1.08);
       box-shadow: 0 0 28px rgba(56, 189, 248, 0.6);
-    }
-
-    .brand-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #0ea5e9, #2563eb, #1e40af);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .brand-info h1 {
@@ -235,7 +220,7 @@
       gap: 1.75rem;
     }
 
-    /* Barra de Selecao de Cidades */
+    /* Seletor de Cidades da Zona da Mata */
     .zdm-selector-card {
       padding: 1.15rem 1.6rem;
       display: flex;
@@ -246,7 +231,7 @@
     }
 
     .zdm-title-box h3 {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #fff;
       display: flex;
@@ -266,8 +251,278 @@
       flex-wrap: wrap;
     }
 
-    /* HERO: VISUALIZADOR DE CHUVA E VENTO */
-    .hero-viewer-card {
+    /* HERO WEATHER CARD: O QUE O USUARIO QUER VER PRIMEIRO */
+    .hero-weather-card {
+      padding: 2rem 2.2rem;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(56, 189, 248, 0.05));
+    }
+
+    @media (max-width: 950px) {
+      .hero-weather-card {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+      }
+    }
+
+    .weather-main-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .weather-city-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--primary-cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .weather-city-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .weather-temp-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2rem;
+      margin-top: 0.25rem;
+    }
+
+    .weather-big-temp {
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .weather-big-temp span {
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--primary-cyan);
+      vertical-align: top;
+    }
+
+    .weather-temp-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .weather-condition-badge {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .weather-apparent-temp {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .weather-minmax-row {
+      display: flex;
+      gap: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .weather-minmax-row strong {
+      color: #fff;
+    }
+
+    /* Coluna Direita do Hero: 3 Mini-Indicadores Imediatos */
+    .weather-metrics-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .weather-metrics-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mini-metric-card {
+      background: rgba(2, 6, 23, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      transition: all 0.25s ease;
+    }
+
+    .mini-metric-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(2, 6, 23, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .mini-metric-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .mini-metric-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .mini-metric-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .mini-metric-card.span-full {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(2, 6, 23, 0.8));
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    /* PREVISAO HORA A HORA (HOURLY FORECAST) */
+    .hourly-section {
+      padding: 1.5rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .section-header-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .hourly-scroll-container {
+      display: flex;
+      gap: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.65rem;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(56, 189, 248, 0.4) transparent;
+    }
+
+    .hourly-scroll-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .hourly-scroll-container::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-pill);
+    }
+
+    .hourly-card {
+      min-width: 105px;
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 0.95rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: center;
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .hourly-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(56, 189, 248, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .hourly-card.is-now {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(37, 99, 235, 0.25));
+      border-color: var(--primary-cyan);
+    }
+
+    .hourly-time {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .hourly-card.is-now .hourly-time {
+      color: var(--primary-cyan);
+    }
+
+    .hourly-icon-box {
+      font-size: 1.4rem;
+      margin: 0.1rem 0;
+    }
+
+    .hourly-temp {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .hourly-rain-pill {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .hourly-rain-pill.high-rain {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .hourly-wind {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* VISUALIZADOR DE MAPAS E RADAR */
+    .viewer-section {
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -283,20 +538,6 @@
       flex-wrap: wrap;
       gap: 1rem;
       background: rgba(15, 23, 42, 0.5);
-    }
-
-    .viewer-title-group h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .viewer-title-group p {
-      font-size: 0.78rem;
-      color: var(--text-muted);
     }
 
     .viewer-tabs {
@@ -335,10 +576,9 @@
       box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
     }
 
-    /* Iframe do Mapa */
     .map-frame-box {
       width: 100%;
-      height: 620px;
+      height: 560px;
       position: relative;
       background: #020617;
     }
@@ -349,56 +589,136 @@
       border: none;
     }
 
-    /* Faixa de Telemetria Dinamica */
-    .telemetry-ribbon {
-      background: rgba(2, 6, 23, 0.95);
-      border-top: 1px solid var(--border-subtle);
-      padding: 1.1rem 1.8rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .ribbon-item {
+    /* PAINEL DA DEFESA CIVIL & SEGURANCA POPULAR */
+    .civil-defense-section {
+      padding: 1.6rem 2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      gap: 1.25rem;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.9));
     }
 
-    .ribbon-label {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-    }
-
-    .ribbon-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .ribbon-sub {
-      font-size: 0.72rem;
-      color: var(--primary-cyan);
-      font-weight: 500;
-    }
-
-    /* Grid Inferior: Controles & Indicadores */
-    .content-grid {
+    .cd-grid {
       display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 1.75rem;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
     }
 
-    @media (max-width: 1200px) {
-      .content-grid {
+    @media (max-width: 850px) {
+      .cd-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Painel de Parametros */
+    .cd-tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .cd-tip-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--primary-cyan);
+      padding: 0.75rem 1rem;
+      border-radius: 0 14px 14px 0;
+      font-size: 0.84rem;
+      color: var(--text-main);
+    }
+
+    .cd-call-card {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(2, 6, 23, 0.8));
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 18px;
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .cd-call-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .cd-call-card p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .btn-emergency {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.75rem 1.6rem;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+      transition: all 0.25s ease;
+      font-family: var(--font-comfortaa);
+    }
+
+    .btn-emergency:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.6);
+    }
+
+    /* MODO AVANCADO / ENGENHARIA RETRATIL */
+    .advanced-toggle-box {
+      display: flex;
+      justify-content: center;
+      margin: 0.5rem 0;
+    }
+
+    .btn-toggle-advanced {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      padding: 0.65rem 1.5rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.25s ease;
+      font-family: var(--font-comfortaa);
+    }
+
+    .btn-toggle-advanced:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .advanced-panel {
+      display: none;
+      grid-template-columns: 400px 1fr;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .advanced-panel.is-open {
+      display: grid;
+    }
+
+    @media (max-width: 1100px) {
+      .advanced-panel.is-open {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .panel-box {
       padding: 1.5rem;
       display: flex;
@@ -504,40 +824,9 @@
       box-shadow: 0 10px 28px rgba(14, 165, 233, 0.45);
     }
 
-    .btn-glass {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-main);
-      padding: 0.75rem 1.25rem;
-      border-radius: 14px;
-      font-weight: 600;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-family: var(--font-comfortaa);
-    }
-
-    .btn-glass:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--primary-cyan);
-      color: var(--primary-cyan);
-    }
-
-    /* Coluna de Dados & Cartoes */
-    .data-column {
-      display: flex;
-      flex-direction: column;
-      gap: 1.75rem;
-    }
-
     .kpi-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.25rem;
     }
 
@@ -568,12 +857,7 @@
       font-weight: 600;
     }
 
-    .status-safe { color: var(--status-safe); }
-    .status-warning { color: var(--status-warning); }
-    .status-danger { color: var(--status-danger); }
-    .status-critical { color: var(--status-critical); }
-
-    /* Tabela da Zona da Mata */
+    /* TABELA REGIONAL DA ZONA DA MATA */
     .table-card {
       padding: 1.5rem;
       display: flex;
@@ -613,25 +897,6 @@
       background: rgba(255, 255, 255, 0.04);
     }
 
-    /* Recomendacoes */
-    .recommendations-box {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    .rec-item {
-      background: rgba(2, 6, 23, 0.6);
-      border-left: 4px solid var(--primary-cyan);
-      padding: 0.75rem 1rem;
-      border-radius: 0 12px 12px 0;
-      font-size: 0.82rem;
-      color: var(--text-main);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
     footer {
       background: rgba(2, 6, 23, 0.95);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -655,7 +920,7 @@
 </head>
 <body>
 
-  <!-- Header na Identidade Visual do Portfolio Renan Nocelli -->
+  <!-- HEADER -->
   <header>
     <a href="https://renan-nocelli.vercel.app" target="_blank" class="brand-container">
       <img src="/static/logo.png" alt="Renan Nocelli Logo" class="brand-avatar-img" />
@@ -664,7 +929,7 @@
           Renan Nocelli
           <span class="brand-badge">GEOTECHNICAL RISK ANALYTICS</span>
         </h1>
-        <p>Zona da Mata Mineira - Monitoramento de Chuva, Vento & Encostas</p>
+        <p>Zona da Mata Mineira - Monitoramento de Clima, Chuva & Encostas</p>
       </div>
     </a>
 
@@ -690,11 +955,11 @@
   </header>
 
   <main>
-    <!-- Seletor dos Municipios da Zona da Mata Mineira -->
+    <!-- SELETOR DOS MUNICIPIOS DA ZONA DA MATA MINEIRA -->
     <section class="liquid-glass zdm-selector-card">
       <div class="zdm-title-box">
         <h3>Polos da Zona da Mata Mineira</h3>
-        <p>Centralize a leitura meteorológica em tempo real no município desejado</p>
+        <p>Selecione a cidade para ver a temperatura atual, previsão de chuva hora a hora e radar</p>
       </div>
 
       <div class="zdm-chips-group">
@@ -710,71 +975,135 @@
       </div>
     </section>
 
-    <!-- HERO VIEWER: A PRINCIPAL VISUALIZACAO DE CHUVA E VENTO -->
-    <section class="liquid-glass hero-viewer-card">
-      <div class="viewer-header">
-        <div class="viewer-title-group">
-          <h2 id="viewerTitle">Radar de Chuva e Precipitação em Tempo Real</h2>
-          <p id="viewerSubtitle">Zona da Mata Mineira - Centro Regional: Juiz de Fora (Lat: -21.764, Lon: -43.350)</p>
-        </div>
+    <!-- HERO WEATHER CARD: CLIMA AGORA (TEMPERATURA EM DESTAQUE) -->
+    <section class="liquid-glass hero-weather-card">
+      <div class="weather-main-col">
+        <div class="weather-city-badge" id="heroCityBadge">Zona da Mata Mineira</div>
+        <div class="weather-city-name" id="heroCityName">Juiz de Fora - MG</div>
 
-        <div class="viewer-tabs">
-          <button class="viewer-tab active" id="tabRain" onclick="switchLayer('rain')">
-            Chuva em Tempo Real (Radar ECMWF)
-          </button>
-          <button class="viewer-tab" id="tabWind" onclick="switchLayer('wind')">
-            Vento & Rajadas (Vetores de Partículas)
-          </button>
-          <button class="viewer-tab" id="tabGeo" onclick="switchLayer('geo')">
-            Mapa Geotécnico de Risco (Leaflet)
-          </button>
+        <div class="weather-temp-row">
+          <div class="weather-big-temp" id="heroTemp">27<span>°C</span></div>
+          <div class="weather-temp-details">
+            <div class="weather-condition-badge" id="heroCondition">Parcialmente Nublado</div>
+            <div class="weather-apparent-temp" id="heroApparent">Sensação térmica de 29°C</div>
+            <div class="weather-minmax-row">
+              <span>Máx: <strong id="heroMax">30°C</strong></span>
+              <span>•</span>
+              <span>Mín: <strong id="heroMin">18°C</strong></span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Iframe do Mapa Central -->
-      <div class="map-frame-box">
-        <iframe id="heroMapIframe" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=rain&product=ecmwf&level=surface&lat=-21.764&lon=-43.350"></iframe>
-      </div>
-
-      <!-- Faixa de Telemetria Dinamica -->
-      <div class="telemetry-ribbon">
-        <div class="ribbon-item">
-          <span class="ribbon-label">Município Monitorado</span>
-          <span class="ribbon-value" id="telCity">Juiz de Fora - MG</span>
-          <span class="ribbon-sub" id="telRole">Polo Regional da Zona da Mata</span>
+      <!-- 3 MINI-INDICADORES ESSENCIAIS -->
+      <div class="weather-metrics-col">
+        <div class="mini-metric-card">
+          <span class="mini-metric-label">Chuva Agora</span>
+          <span class="mini-metric-val" id="heroRainNow">0.0 mm/h</span>
+          <span class="mini-metric-sub">Acumulado 24h: <strong id="heroRain24">16.3 mm</strong></span>
         </div>
 
-        <div class="ribbon-item">
-          <span class="ribbon-label">Vento & Rajadas Máximas</span>
-          <span class="ribbon-value"><span id="telWindSpeed">13.4</span> km/h</span>
-          <span class="ribbon-sub">Rajada: <strong id="telGusts">40.0 km/h</strong> | Dir: <strong id="telDir">11° N</strong></span>
+        <div class="mini-metric-card">
+          <span class="mini-metric-label">Vento & Rajadas</span>
+          <span class="mini-metric-val" id="heroWind">13.4 km/h</span>
+          <span class="mini-metric-sub">Rajadas até: <strong id="heroGusts">40.0 km/h</strong></span>
         </div>
 
-        <div class="ribbon-item">
-          <span class="ribbon-label">Chuva Observada</span>
-          <span class="ribbon-value" id="telRain24">16.3 mm</span>
-          <span class="ribbon-sub">Acumulado 72h: <strong id="telRain72">29.2 mm</strong> | Taxa: <strong id="telRainRate">0.0 mm/h</strong></span>
-        </div>
-
-        <div class="ribbon-item">
-          <span class="ribbon-label">Umidade Solo & Ambiente</span>
-          <span class="ribbon-value" id="telMoisture">0.48 m³/m³</span>
-          <span class="ribbon-sub">Temp: <strong id="telTemp">27.0 °C</strong> | UR: <strong id="telHum">64%</strong></span>
-        </div>
-
-        <div class="ribbon-item">
-          <span class="ribbon-label">Fator de Segurança (FS)</span>
-          <span class="ribbon-value status-safe" id="telFS">1.82</span>
-          <span class="ribbon-sub" id="telStatusFS">ESTÁVEL (FS > 1.5)</span>
+        <div class="mini-metric-card span-full" id="heroSafetyCard">
+          <span class="mini-metric-label">Condição de Risco de Encosta</span>
+          <span class="mini-metric-val" id="heroRiskStatus" style="color: var(--status-safe); font-size: 1.15rem;">
+            Encostas Estáveis (Sem Risco Iminente)
+          </span>
+          <span class="mini-metric-sub" id="heroRiskSub">
+            Solo em nível seguro de umidade. Sem previsão de tempestades críticas no momento.
+          </span>
         </div>
       </div>
     </section>
 
-    <!-- Grid Inferior: Parametros e Detalhamento da Zona da Mata -->
-    <div class="content-grid">
-      <!-- Painel Esquerdo: Parametros da Encosta -->
+    <!-- PREVISAO DE CHUVA HORA A HORA (HOURLY TIMELINE) -->
+    <section class="liquid-glass hourly-section">
+      <div class="section-header-box">
+        <div>
+          <h3 class="section-title">Previsão Horária de Chuva e Temperatura</h3>
+          <p class="section-subtitle">Horário por horário nas próximas 24 horas (Open-Meteo / ECMWF)</p>
+        </div>
+        <span class="liquid-pill" style="pointer-events: none; font-size: 0.72rem;">
+          Deslize para ver horários posteriores
+        </span>
+      </div>
+
+      <!-- Carrossel de Cards Hora a Hora -->
+      <div class="hourly-scroll-container" id="hourlyContainer">
+        <!-- Renderizado dinamicamente pelo JavaScript -->
+        <div style="padding: 1rem; color: var(--text-dim); font-size: 0.8rem;">Carregando previsão horária...</div>
+      </div>
+    </section>
+
+    <!-- VISUALIZADOR INTERATIVO DE MAPAS (RADAR / VENTO / GEOTECNICO) -->
+    <section class="liquid-glass viewer-section">
+      <div class="viewer-header">
+        <div>
+          <h3 class="section-title" id="viewerTitle">Radar de Chuva e Precipitação em Tempo Real</h3>
+          <p class="section-subtitle" id="viewerSubtitle">Zona da Mata Mineira - Centro: Juiz de Fora (Lat: -21.764, Lon: -43.350)</p>
+        </div>
+
+        <div class="viewer-tabs">
+          <button class="viewer-tab active" id="tabRain" onclick="switchLayer('rain')">
+            Radar de Chuva (ECMWF)
+          </button>
+          <button class="viewer-tab" id="tabWind" onclick="switchLayer('wind')">
+            Vento & Vetores
+          </button>
+          <button class="viewer-tab" id="tabGeo" onclick="switchLayer('geo')">
+            Mapa de Encostas (Leaflet)
+          </button>
+        </div>
+      </div>
+
+      <div class="map-frame-box">
+        <iframe id="heroMapIframe" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=rain&product=ecmwf&level=surface&lat=-21.764&lon=-43.350"></iframe>
+      </div>
+    </section>
+
+    <!-- ORIENTACOES DA DEFESA CIVIL & SEGURANCA COMUNITARIA -->
+    <section class="liquid-glass civil-defense-section">
+      <div class="section-header-box">
+        <div>
+          <h3 class="section-title">Orientações de Segurança da Defesa Civil</h3>
+          <p class="section-subtitle">Recomendações práticas e imediatas para moradores de áreas de encosta</p>
+        </div>
+      </div>
+
+      <div class="cd-grid">
+        <div class="cd-tips-list" id="recommendationsList">
+          <div class="cd-tip-item">Observe o solo: se surgirem fendas ou trincas no chão ou nas paredes de casa, saia imediatamente.</div>
+          <div class="cd-tip-item">Árvores, cercas ou postes inclinados indicam movimentação lenta da encosta. Acione a Defesa Civil.</div>
+          <div class="cd-tip-item">Água minando da encosta com aspecto barrento é sinal de saturação crítica do terreno.</div>
+          <div class="cd-tip-item">Nunca jogue lixo ou entulho nas encostas, pois isso bloqueia o escoamento natural das águas de chuva.</div>
+        </div>
+
+        <div class="cd-call-card">
+          <h4>Emergência ou Sinais de Risco?</h4>
+          <p>Em caso de deslizamento, rachaduras súbitas ou inundações em sua rua, ligue gratuitamente:</p>
+          <a href="tel:199" class="btn-emergency">Disque 199 (Defesa Civil)</a>
+          <p style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">Corpo de Bombeiros Militar: 193</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTAO PARA ABRIR O MODO AVANCADO DE ENGENHARIA -->
+    <div class="advanced-toggle-box">
+      <button class="btn-toggle-advanced" onclick="toggleAdvancedMode()">
+        <span id="advancedBtnIcon">+</span>
+        <span id="advancedBtnText">Abrir Ferramentas Técnicas / Simulador de Encostas (Modo Especialista)</span>
+      </button>
+    </div>
+
+    <!-- MODO AVANCADO (RETRATIL PARA QUEM QUER DETALHES DE ENGENHARIA) -->
+    <div class="advanced-panel" id="advancedPanel">
       <aside class="liquid-glass panel-box">
-        <div class="panel-heading">Parâmetros da Encosta Local</div>
+        <div class="panel-heading">Parâmetros Físicos da Encosta</div>
 
         <div class="form-row-2">
           <div class="form-row">
@@ -798,7 +1127,7 @@
         </div>
 
         <div class="form-row">
-          <label>Litologia Típica</label>
+          <label>Litologia Subjacente</label>
           <select id="inputLithology">
             <option value="Colluvial Deposits" selected>Depósitos Coluvionares (Alto Risco)</option>
             <option value="Residual Soil Gneiss">Solo Residual de Gnaisse (Complexo Juiz de Fora)</option>
@@ -811,96 +1140,87 @@
         <div class="form-row">
           <label>Uso e Ocupação do Solo</label>
           <select id="inputLandCover">
-            <option value="Dense Urban Occupation" selected>Ocupação Urbana Densa (Encostas habitadas)</option>
+            <option value="Dense Urban Occupation" selected>Ocupação Urbana Densa (Habitações)</option>
             <option value="Exposed Soil / Deforested">Solo Exposto / Cortes e Aterros</option>
             <option value="Pasture / Grassland">Pastagem / Gramíneas</option>
-            <option value="Secondary Forest">Mata Secundária em Regeneração</option>
+            <option value="Secondary Forest">Mata Secundária</option>
             <option value="Dense Native Forest">Mata Atlântica Densa</option>
           </select>
         </div>
 
-        <button class="btn-gradient" onclick="fetchLiveCityData()">
-          Atualizar Telemetria em Tempo Real (Open-Meteo)
-        </button>
-
-        <button class="btn-glass" onclick="runGeotechnicalEvaluation()">
-          Recalcular Estabilidade Local
+        <button class="btn-gradient" onclick="runGeotechnicalEvaluation()">
+          Calcular Fator de Segurança Local
         </button>
       </aside>
 
-      <!-- Coluna Direita: Cards, Tabela Regional e Recomendacoes -->
-      <div class="data-column">
-        <!-- KPI Cards -->
+      <div class="data-column" style="display: flex; flex-direction: column; gap: 1.5rem;">
         <div class="kpi-cards-grid">
           <div class="liquid-glass kpi-card">
             <div class="kpi-label">Fator de Segurança (FS)</div>
-            <div class="kpi-number status-safe" id="kpiFS">1.82</div>
-            <div class="kpi-desc status-safe" id="kpiFSDesc">Estável sob condição seca</div>
+            <div class="kpi-number" id="kpiFS" style="color: var(--status-safe);">1.82</div>
+            <div class="kpi-desc" id="kpiFSDesc" style="color: var(--status-safe);">Estável sob condição seca</div>
           </div>
 
           <div class="liquid-glass kpi-card">
-            <div class="kpi-label">Risco Combinado</div>
-            <div class="kpi-number status-safe" id="kpiRisk">BAIXO</div>
-            <div class="kpi-desc" id="kpiRiskDesc">Sem alertas hidrológicos ativos</div>
+            <div class="kpi-label">Risco Integrado</div>
+            <div class="kpi-number" id="kpiRisk" style="color: var(--status-safe);">BAIXO</div>
+            <div class="kpi-desc" id="kpiRiskDesc">Sem alertas hidrológicos</div>
           </div>
 
           <div class="liquid-glass kpi-card">
-            <div class="kpi-label">Probabilidade Ruptura (ML)</div>
+            <div class="kpi-label">Probabilidade de Ruptura (ML)</div>
             <div class="kpi-number" id="kpiML">12.3%</div>
             <div class="kpi-desc" id="kpiAHP">Score AHP: 28.4 / 100</div>
           </div>
 
           <div class="liquid-glass kpi-card">
-            <div class="kpi-label">Vento & Rajada Máxima</div>
-            <div class="kpi-number" id="kpiWind">40 km/h</div>
-            <div class="kpi-desc" id="kpiWindDir">Direção: 11° N</div>
+            <div class="kpi-label">Umidade Volumétrica Solo</div>
+            <div class="kpi-number" id="kpiMoisture">0.48 m³/m³</div>
+            <div class="kpi-desc">Camadas de 0 a 28 cm</div>
           </div>
         </div>
-
-        <!-- Tabela Regional da Zona da Mata -->
-        <section class="liquid-glass table-card">
-          <div class="panel-heading">Monitoramento Meteorológico Regional da Zona da Mata Mineira</div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Município</th>
-                  <th>Característica Regional</th>
-                  <th>Vento (km/h)</th>
-                  <th>Rajada (km/h)</th>
-                  <th>Chuva 24h</th>
-                  <th>Chuva 72h</th>
-                  <th>Temperatura</th>
-                  <th>Umidade Solo</th>
-                </tr>
-              </thead>
-              <tbody id="regionalTableBody">
-                <tr><td colspan="8" style="text-align: center; color: var(--text-dim);">Carregando telemetria da Zona da Mata...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- Recomendacoes Operacionais -->
-        <section class="liquid-glass recommendations-box">
-          <div class="panel-heading">Diretrizes da Defesa Civil & Protocolo Operacional</div>
-          <div id="recommendationsList" style="display: flex; flex-direction: column; gap: 0.65rem;">
-            <div class="rec-item">Situação hidrometeorológica em nível de observação na região de Juiz de Fora.</div>
-            <div class="rec-item">Manter monitoramento contínuo das rajadas de vento sobre encostas com arvoredo inclinado.</div>
-            <div class="rec-item">Verificação preventiva de calhas, canaletas pluviais e muros de contenção.</div>
-          </div>
-        </section>
       </div>
     </div>
+
+    <!-- TABELA REGIONAL DA ZONA DA MATA -->
+    <section class="liquid-glass table-card">
+      <div class="section-header-box">
+        <div>
+          <h3 class="section-title">Situação em Tempo Real na Zona da Mata Mineira</h3>
+          <p class="section-subtitle">Temperaturas atuais, ventos e chuvas acumuladas nas cidades da região (clique em qualquer cidade para abrir)</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Município</th>
+              <th>Característica</th>
+              <th>Temperatura</th>
+              <th>Vento</th>
+              <th>Rajadas</th>
+              <th>Chuva 24h</th>
+              <th>Chuva 72h</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="regionalTableBody">
+            <tr><td colspan="8" style="text-align: center; color: var(--text-dim);">Carregando telemetria da Zona da Mata...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
+  <!-- RODAPE -->
   <footer>
     <p>
       Desenvolvido por <a href="https://renan-nocelli.vercel.app" target="_blank">Renan Nocelli</a> &copy; 2026. 
       Plataforma Especializada de Monitoramento de Chuva, Vento e Risco Geotécnico na Zona da Mata Mineira.
     </p>
     <p style="margin-top: 0.35rem; color: var(--text-muted); font-size: 0.72rem;">
-      Fontes de Dados: Open-Meteo ECMWF ERA5-Land | Windy Interactive Streamlines | Modelo de Encosta Infinita Taylor-Skempton | Metodologia Saaty AHP
+      Fontes de Dados: Open-Meteo ECMWF ERA5-Land / GFS | Windy Interactive Streamlines | Modelo de Encosta Infinita Taylor-Skempton | Metodologia Saaty AHP
     </p>
   </footer>
 
@@ -1000,6 +1320,24 @@
 
     let currentLayer = 'rain';
     let currentCityKey = 'juiz-de-fora';
+    let isAdvancedOpen = false;
+
+    function toggleAdvancedMode() {
+      isAdvancedOpen = !isAdvancedOpen;
+      const panel = document.getElementById('advancedPanel');
+      const icon = document.getElementById('advancedBtnIcon');
+      const text = document.getElementById('advancedBtnText');
+
+      if (isAdvancedOpen) {
+        panel.classList.add('is-open');
+        icon.textContent = '−';
+        text.textContent = 'Ocultar Ferramentas Técnicas / Modo Especialista';
+      } else {
+        panel.classList.remove('is-open');
+        icon.textContent = '+';
+        text.textContent = 'Abrir Ferramentas Técnicas / Simulador de Encostas (Modo Especialista)';
+      }
+    }
 
     function updateSlopeVal(val) {
       document.getElementById('valSlope').textContent = val + '°';
@@ -1057,8 +1395,8 @@
       updateSlopeVal(c.slope);
       updateSoilVal(c.soil);
 
-      document.getElementById('telCity').textContent = c.name;
-      document.getElementById('telRole').textContent = c.role;
+      document.getElementById('heroCityName').textContent = c.name;
+      document.getElementById('heroCityBadge').textContent = c.role;
 
       updateIframe();
       fetchLiveCityData();
@@ -1112,7 +1450,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Falha na avaliacao pontual');
+        if (!res.ok) throw new Error('Falha na avaliacao');
         const data = await res.json();
         renderResults(data);
       } catch (err) {
@@ -1120,66 +1458,96 @@
       }
     }
 
+    function getWeatherEmoji(desc) {
+      const d = desc.toLowerCase();
+      if (d.includes('limpo') || d.includes('sol')) return '☀️';
+      if (d.includes('parcialmente')) return '⛅';
+      if (d.includes('nublado')) return '☁️';
+      if (d.includes('chuvisco') || d.includes('garoa')) return '🌦️';
+      if (d.includes('chuva')) return '🌧️';
+      if (d.includes('tempestade') || d.includes('trovoada')) return '⛈️';
+      return '🌤️';
+    }
+
     function renderResults(data) {
-      const fs = data.factor_of_safety;
-      const fsEl = document.getElementById('kpiFS');
-      const telFSEl = document.getElementById('telFS');
-      const telStatusFSEl = document.getElementById('telStatusFS');
-      const fsDescEl = document.getElementById('kpiFSDesc');
+      // 1. Clima e Temperatura em Destaque
+      if (data.live_weather) {
+        const w = data.live_weather;
+        document.getElementById('heroTemp').innerHTML = `${Math.round(w.temperature_c)}<span>°C</span>`;
+        document.getElementById('heroCondition').textContent = w.weather_condition_text;
+        document.getElementById('heroApparent').textContent = `Sensação térmica de ${Math.round(w.apparent_temperature_c)}°C`;
+        document.getElementById('heroMax').textContent = `${Math.round(w.temp_max_24h_c)}°C`;
+        document.getElementById('heroMin').textContent = `${Math.round(w.temp_min_24h_c)}°C`;
 
-      fsEl.textContent = fs.toFixed(2);
-      telFSEl.textContent = fs.toFixed(2);
+        document.getElementById('heroRainNow').textContent = `${w.current_rain_rate_mmh.toFixed(1)} mm/h`;
+        document.getElementById('heroRain24').textContent = `${w.accumulated_rain_24h_mm.toFixed(1)} mm`;
 
-      if (fs < 1.0) {
-        fsEl.className = 'kpi-number status-critical';
-        telFSEl.className = 'ribbon-value status-critical';
-        telStatusFSEl.textContent = 'INSTÁVEL / RUPTURA IMINENTE';
-        fsDescEl.textContent = 'Forças instabilizantes superam resistência';
-        fsDescEl.className = 'kpi-desc status-critical';
-      } else if (fs <= 1.5) {
-        fsEl.className = 'kpi-number status-warning';
-        telFSEl.className = 'ribbon-value status-warning';
-        telStatusFSEl.textContent = 'LIMIAR DE ATENÇÃO (FS <= 1.5)';
-        fsDescEl.textContent = 'Monitoramento intensivo requerido';
-        fsDescEl.className = 'kpi-desc status-warning';
-      } else {
-        fsEl.className = 'kpi-number status-safe';
-        telFSEl.className = 'ribbon-value status-safe';
-        telStatusFSEl.textContent = 'ESTÁVEL (FS > 1.5)';
-        fsDescEl.textContent = 'Encosta em equilíbrio hidrogeotécnico';
-        fsDescEl.className = 'kpi-desc status-safe';
+        document.getElementById('heroWind').textContent = `${w.wind_speed_10m_kmh.toFixed(1)} km/h`;
+        document.getElementById('heroGusts').textContent = `${w.wind_gusts_10m_kmh.toFixed(1)} km/h (${w.wind_cardinal_direction})`;
+
+        // Renderizar Carrossel Hora a Hora
+        renderHourlyForecast(w.hourly_forecast);
       }
 
-      // Risco Combinado
+      // 2. Indicador de Risco Popular
+      const fs = data.factor_of_safety;
+      const riskStatusEl = document.getElementById('heroRiskStatus');
+      const riskSubEl = document.getElementById('heroRiskSub');
+      const safetyCard = document.getElementById('heroSafetyCard');
+
+      if (fs < 1.0) {
+        riskStatusEl.textContent = 'Alerta de Risco: Encosta Instável (Atenção Máxima)';
+        riskStatusEl.style.color = 'var(--status-critical)';
+        riskSubEl.textContent = 'As forças de deslizamento superam a resistência do solo. Evacue áreas de risco.';
+        safetyCard.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(2, 6, 23, 0.9))';
+        safetyCard.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+      } else if (fs <= 1.5) {
+        riskStatusEl.textContent = 'Nível de Atenção: Monitoramento de Encosta Recomendado';
+        riskStatusEl.style.color = 'var(--status-warning)';
+        riskSubEl.textContent = 'Solo úmido com redução da margem de segurança. Fique atento a trincas e minas d água.';
+        safetyCard.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(2, 6, 23, 0.9))';
+        safetyCard.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      } else {
+        riskStatusEl.textContent = 'Encostas Estáveis (Sem Risco de Deslizamento)';
+        riskStatusEl.style.color = 'var(--status-safe)';
+        riskSubEl.textContent = 'Solo com boa margem de equilíbrio. Sem indícios de instabilidade ou chuvas torrenciais.';
+        safetyCard.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(2, 6, 23, 0.9))';
+        safetyCard.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      }
+
+      // 3. Modo Avancado (KPIs de Engenharia)
+      const fsEl = document.getElementById('kpiFS');
+      const fsDescEl = document.getElementById('kpiFSDesc');
+      fsEl.textContent = fs.toFixed(2);
+
+      if (fs < 1.0) {
+        fsEl.style.color = 'var(--status-critical)';
+        fsDescEl.textContent = 'Ruptura física iminente (FS < 1.0)';
+        fsDescEl.style.color = 'var(--status-critical)';
+      } else if (fs <= 1.5) {
+        fsEl.style.color = 'var(--status-warning)';
+        fsDescEl.textContent = 'Limiar de atenção (FS <= 1.5)';
+        fsDescEl.style.color = 'var(--status-warning)';
+      } else {
+        fsEl.style.color = 'var(--status-safe)';
+        fsDescEl.textContent = 'Estável sob condição atual (FS > 1.5)';
+        fsDescEl.style.color = 'var(--status-safe)';
+      }
+
       const riskEl = document.getElementById('kpiRisk');
       const risk = data.combined_risk_level;
       riskEl.textContent = risk.toUpperCase();
-      if (risk === 'Critical') riskEl.className = 'kpi-number status-critical';
-      else if (risk === 'High') riskEl.className = 'kpi-number status-danger';
-      else if (risk === 'Medium') riskEl.className = 'kpi-number status-warning';
-      else riskEl.className = 'kpi-number status-safe';
+      if (risk === 'Critical') riskEl.style.color = 'var(--status-critical)';
+      else if (risk === 'High') riskEl.style.color = 'var(--status-danger)';
+      else if (risk === 'Medium') riskEl.style.color = 'var(--status-warning)';
+      else riskEl.style.color = 'var(--status-safe)';
 
-      // ML e AHP
       const mlProb = (data.ml_failure_probability * 100).toFixed(1);
       document.getElementById('kpiML').textContent = mlProb + '%';
       document.getElementById('kpiAHP').textContent = 'Score AHP: ' + data.ahp_susceptibility_score.toFixed(1) + ' / 100';
 
-      // Telemetria meteorologica
       if (data.live_weather) {
-        const w = data.live_weather;
-        document.getElementById('telWindSpeed').textContent = w.wind_speed_10m_kmh.toFixed(1);
-        document.getElementById('telGusts').textContent = w.wind_gusts_10m_kmh.toFixed(1) + ' km/h';
-        document.getElementById('telDir').textContent = w.wind_direction_10m_deg.toFixed(0) + '° ' + w.wind_cardinal_direction;
-        document.getElementById('kpiWind').textContent = w.wind_gusts_10m_kmh.toFixed(0) + ' km/h';
-        document.getElementById('kpiWindDir').textContent = 'Vento: ' + w.wind_speed_10m_kmh.toFixed(1) + ' km/h (' + w.wind_cardinal_direction + ')';
-
-        document.getElementById('telRain24').textContent = w.accumulated_rain_24h_mm.toFixed(1) + ' mm';
-        document.getElementById('telRain72').textContent = w.accumulated_rain_72h_mm.toFixed(1) + ' mm';
-        document.getElementById('telRainRate').textContent = w.current_rain_rate_mmh.toFixed(1) + ' mm/h';
-
-        document.getElementById('telMoisture').textContent = w.soil_moisture_volumetric_m3_m3.toFixed(2) + ' m³/m³';
-        document.getElementById('telTemp').textContent = w.temperature_c.toFixed(1) + ' °C';
-        document.getElementById('telHum').textContent = w.relative_humidity_pct.toFixed(0) + '%';
+        document.getElementById('kpiMoisture').textContent = data.live_weather.soil_moisture_volumetric_m3_m3.toFixed(2) + ' m³/m³';
       }
 
       // Recomendacoes da Defesa Civil
@@ -1188,20 +1556,42 @@
       if (data.recommendations && data.recommendations.length > 0) {
         data.recommendations.forEach(r => {
           const div = document.createElement('div');
-          div.className = 'rec-item';
+          div.className = 'cd-tip-item';
           div.textContent = r;
           recList.appendChild(div);
         });
       }
+    }
 
-      if (data.predictive_warning) {
-        const warnDiv = document.createElement('div');
-        warnDiv.className = 'rec-item';
-        warnDiv.style.borderLeftColor = 'var(--status-critical)';
-        warnDiv.style.fontWeight = '700';
-        warnDiv.textContent = data.predictive_warning;
-        recList.prepend(warnDiv);
+    function renderHourlyForecast(hourlyList) {
+      const container = document.getElementById('hourlyContainer');
+      if (!hourlyList || hourlyList.length === 0) {
+        container.innerHTML = '<div style="padding: 1rem; color: var(--text-dim);">Previsão horária indisponível no momento.</div>';
+        return;
       }
+
+      container.innerHTML = '';
+
+      hourlyList.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = index === 0 ? 'hourly-card is-now' : 'hourly-card';
+
+        const labelTime = index === 0 ? 'Agora' : item.time;
+        const emoji = getWeatherEmoji(item.weather_description);
+        const hasRain = item.precipitation_mm > 0.1 || item.precipitation_probability_pct >= 40;
+
+        card.innerHTML = `
+          <div class="hourly-time">${labelTime}</div>
+          <div class="hourly-icon-box" title="${item.weather_description}">${emoji}</div>
+          <div class="hourly-temp">${Math.round(item.temperature_c)}°</div>
+          <div class="hourly-rain-pill ${item.precipitation_probability_pct >= 60 ? 'high-rain' : ''}">
+            <span>${item.precipitation_probability_pct}% chuva</span>
+            <span>${item.precipitation_mm.toFixed(1)} mm</span>
+          </div>
+          <div class="hourly-wind">${Math.round(item.wind_speed_kmh)} km/h</div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     async function loadRegionalWeatherTable() {
@@ -1216,17 +1606,21 @@
           const w = item.weather;
           const tr = document.createElement('tr');
           tr.style.cursor = 'pointer';
+          tr.title = 'Clique para visualizar este município';
           tr.onclick = () => selectCity(item.id);
+
+          const tempDisplay = w.temperature_c ? `${Math.round(w.temperature_c)}°C` : '—';
+          const conditionText = w.weather_condition_text || 'Estável';
 
           tr.innerHTML = `
             <td><strong>${item.name}</strong></td>
             <td style="color: var(--text-muted); font-size: 0.76rem;">${item.role}</td>
+            <td style="font-weight: 700; color: #fff;">${tempDisplay} <span style="font-size: 0.72rem; color: var(--primary-cyan); font-weight: 400;">(${conditionText})</span></td>
             <td>${w.wind_speed_10m_kmh.toFixed(1)} km/h</td>
             <td style="color: ${w.wind_gusts_10m_kmh > 40 ? 'var(--status-warning)' : 'var(--text-main)'}; font-weight: 700;">${w.wind_gusts_10m_kmh.toFixed(1)} km/h</td>
             <td>${w.accumulated_rain_24h_mm.toFixed(1)} mm</td>
             <td style="color: ${w.accumulated_rain_72h_mm > 70 ? 'var(--status-danger)' : 'var(--text-main)'}; font-weight: 600;">${w.accumulated_rain_72h_mm.toFixed(1)} mm</td>
-            <td>${w.temperature_c.toFixed(1)} °C</td>
-            <td>${w.soil_moisture_volumetric_m3_m3.toFixed(2)} m³/m³</td>
+            <td><span class="liquid-pill" style="padding: 0.2rem 0.6rem; font-size: 0.7rem; background: rgba(16, 185, 129, 0.15); color: var(--status-safe); border-color: rgba(16, 185, 129, 0.3);">Normal</span></td>
           `;
           tbody.appendChild(tr);
         });
