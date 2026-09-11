@@ -98,3 +98,8 @@ def test_zona_da_mata_weather_endpoint(client):
     assert data["region"] == "Zona da Mata Mineira"
     assert data["total_monitored"] >= 7
     assert data["municipalities"][0]["name"] == "Juiz de Fora"
+
+def test_static_logo_endpoint(client):
+    response = client.get("/static/logo.png")
+    assert response.status_code == 200
+    assert "image/png" in response.headers["content-type"]
