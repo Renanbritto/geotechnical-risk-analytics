@@ -90,3 +90,11 @@ def test_dashboard_ui_endpoint(client):
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "GEOTECHNICAL RISK ANALYTICS" in response.text
+
+def test_zona_da_mata_weather_endpoint(client):
+    response = client.get("/api/v1/weather/zona-da-mata")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["region"] == "Zona da Mata Mineira"
+    assert data["total_monitored"] >= 7
+    assert data["municipalities"][0]["name"] == "Juiz de Fora"
