@@ -590,9 +590,9 @@
     }
 
     .meteogram-table {
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
       border-collapse: collapse;
-      table-layout: fixed;
       font-size: 0.76rem;
       user-select: none;
     }
@@ -632,8 +632,9 @@
     }
 
     .meteogram-cell {
-      min-width: 58px;
-      width: 58px;
+      min-width: 48px;
+      width: 48px;
+      max-width: 48px;
       text-align: center;
       padding: 0.45rem 0.2rem;
       border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -642,6 +643,7 @@
       transition: background 0.15s ease;
       font-family: var(--font-comfortaa);
       white-space: nowrap;
+      box-sizing: border-box;
     }
 
     .meteogram-cell:hover {
@@ -655,13 +657,15 @@
     }
 
     .day-header-cell {
-      background: rgba(30, 41, 59, 0.85);
-      color: #fff;
+      text-align: center;
+      background: rgba(14, 165, 233, 0.12);
+      color: #38bdf8;
       font-weight: 700;
-      padding: 0.55rem 0.5rem;
-      font-size: 0.78rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 0.25rem;
       border-right: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.78rem;
+      text-transform: capitalize;
     }
 
     /* Celulas coloridas de Vento e Rajadas como no Windy */
@@ -1155,22 +1159,22 @@
         <div class="form-row">
           <label>Litologia Subjacente</label>
           <select id="inputLithology">
-            <option value="Colluvial Deposits" selected>Dep&oacute;sitos Coluvionares (Alto Risco)</option>
-            <option value="Residual Soil Gneiss">Solo Residual de Gnaisse (Complexo Juiz de Fora)</option>
-            <option value="Residual Soil Granite">Solo Residual de Granito</option>
-            <option value="Fractured Gneiss Rock">Rocha Gn&aacute;issica Fraturada</option>
-            <option value="Sedimentary Clay">Solo Sedimentar Argiloso</option>
+            <option value="Depositos Coluvionares" selected>Dep&oacute;sitos Coluvionares (Alto Risco)</option>
+            <option value="Gnaisse/Granito">Gnaisse / Granito (Complexo Juiz de Fora)</option>
+            <option value="Xisto/Filito">Xisto / Filito</option>
+            <option value="Arenito">Arenito</option>
+            <option value="Basalto">Basalto</option>
           </select>
         </div>
 
         <div class="form-row">
           <label>Uso e Ocupa&ccedil;&atilde;o do Solo</label>
           <select id="inputLandCover">
-            <option value="Dense Urban Occupation" selected>Ocupa&ccedil;&atilde;o Urbana Densa (Habita&ccedil;&otilde;es)</option>
-            <option value="Exposed Soil / Deforested">Solo Exposto / Cortes e Aterros</option>
-            <option value="Pasture / Grassland">Pastagem / Gram&iacute;neas</option>
-            <option value="Secondary Forest">Mata Secund&aacute;ria</option>
-            <option value="Dense Native Forest">Mata Atl&acirc;ntica Densa</option>
+            <option value="Ocupacao Urbana / Encosta Antropizada" selected>Ocupa&ccedil;&atilde;o Urbana / Encosta Antropizada</option>
+            <option value="Solo Exposto / Corte de Talude">Solo Exposto / Corte de Talude</option>
+            <option value="Pastagem / Graminea">Pastagem / Gram&iacute;nea</option>
+            <option value="Vegetacao Secundaria / Capoeira">Vegeta&ccedil;&atilde;o Secund&aacute;ria / Capoeira</option>
+            <option value="Floresta Densa / Mata Atlantica">Floresta Densa / Mata Atl&acirc;ntica</option>
           </select>
         </div>
 
@@ -1438,14 +1442,46 @@
       const lith = document.getElementById('inputLithology').value;
       const land = document.getElementById('inputLandCover').value;
 
+      // 1. Busca meteorologia em tempo real e linha do tempo de 96 horas
       try {
-        const url = `/api/v1/risk/evaluate-live?latitude=${lat}&longitude=${lon}&slope_angle_deg=${slope}&soil_depth_m=${soil}&lithology=${encodeURIComponent(lith)}&land_cover=${encodeURIComponent(land)}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Falha na requisicao: ' + res.statusText);
-        const data = await res.json();
-        renderResults(data);
-      } catch (err) {
-        console.error(err);
+        const weatherUrl = `/api/v1/weather/live?latitude=${lat}&longitude=${lon}`;
+        const wRes = await fetch(weatherUrl);
+        if (wRes.ok) {
+          const wData = await wRes.json();
+          globalHourlyForecast = wData.hourly_forecast || [];
+
+          updateHeroWeather(
+            wData.temperature_c,
+            wData.apparent_temperature_c,
+            wData.weather_condition_text,
+            wData.current_rain_rate_mmh,
+            wData.accumulated_rain_24h_mm,
+            wData.wind_speed_10m_kmh,
+            wData.wind_gusts_10m_kmh,
+            wData.wind_cardinal_direction
+          );
+
+          document.getElementById('heroMax').textContent = Math.round(wData.temp_max_24h_c) + '\u00b0C';
+          document.getElementById('heroMin').textContent = Math.round(wData.temp_min_24h_c) + '\u00b0C';
+
+          buildWindyMeteogram(globalHourlyForecast);
+        }
+      } catch (wErr) {
+        console.warn('Erro ao carregar meteorologia live:', wErr);
+      }
+
+      // 2. Avalia risco geotecnico integrado
+      try {
+        const riskUrl = `/api/v1/risk/evaluate-live?latitude=${lat}&longitude=${lon}&slope_angle_deg=${slope}&soil_depth_m=${soil}&lithology=${encodeURIComponent(lith)}&land_cover=${encodeURIComponent(land)}`;
+        const rRes = await fetch(riskUrl);
+        if (rRes.ok) {
+          const rData = await rRes.json();
+          renderResults(rData);
+        } else {
+          runGeotechnicalEvaluation();
+        }
+      } catch (rErr) {
+        console.error('Erro ao avaliar encosta:', rErr);
         runGeotechnicalEvaluation();
       }
     }
@@ -1601,16 +1637,25 @@
     /* =========================================================================
        CONSTRUCAO DO METEOGRAMA MULTI-DIAS ESTILO WINDY
        ========================================================================= */
+    let meteogramDisplayList = [];
+
     function buildWindyMeteogram(hourlyList) {
       if (!hourlyList || hourlyList.length === 0) return;
 
+      // Filtra de 3 em 3 horas (0, 3, 6, 9, 12, 15, 18, 21), exatamente como no Windy
+      meteogramDisplayList = hourlyList.filter(item => item.hour_num % 3 === 0);
+      if (meteogramDisplayList.length === 0) {
+        meteogramDisplayList = hourlyList;
+      }
+
       const scrubber = document.getElementById('timeScrubber');
-      scrubber.max = hourlyList.length - 1;
+      scrubber.min = 0;
+      scrubber.max = meteogramDisplayList.length - 1;
       scrubber.value = 0;
 
       // Agrupa colunas por dia
       const dayGroups = {};
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         if (!dayGroups[item.day_label]) {
           dayGroups[item.day_label] = [];
         }
@@ -1627,10 +1672,10 @@
       }
       html += '</tr>';
 
-      // Linha 2: Horas (ex: 0, 3, 6, 9...)
+      // Linha 2: Horas (ex: 0, 3, 6, 9, 12, 15, 18, 21)
       html += '<tr><th class="label-col">Horas</th>';
-      hourlyList.forEach((item, idx) => {
-        html += `<th class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong>${item.time}</strong></th>`;
+      meteogramDisplayList.forEach((item, idx) => {
+        html += `<th class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong>${item.hour_num}</strong></th>`;
       });
       html += '</tr></thead>';
 
@@ -1638,31 +1683,31 @@
 
       // Linha 3: Icone do Clima
       html += '<tr><td class="label-col">Tempo</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         const icon = getWeatherIcon(item.weather_description);
-        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" title="${item.weather_description}"><span style="font-size: 1.25rem;">${icon}</span></td>`;
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" title="${item.weather_description}"><span style="font-size: 1.15rem;">${icon}</span></td>`;
       });
       html += '</tr>';
 
       // Linha 4: Temperatura (C)
       html += '<tr><td class="label-col">Temperatura</td>';
-      hourlyList.forEach((item, idx) => {
-        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong style="font-size: 0.9rem; color: #fff;">${Math.round(item.temperature_c)}\u00b0</strong></td>`;
+      meteogramDisplayList.forEach((item, idx) => {
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong style="font-size: 0.88rem; color: #fff;">${Math.round(item.temperature_c)}\u00b0</strong></td>`;
       });
       html += '</tr>';
 
       // Linha 5: Parece (Sensacao Termica)
       html += '<tr><td class="label-col">Parece (\u00b0C)</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" style="color: var(--text-muted);">${Math.round(item.apparent_temperature_c)}\u00b0</td>`;
       });
       html += '</tr>';
 
       // Linha 6: Chuva (mm) com barrinhas verticais
       html += '<tr><td class="label-col">Chuva (mm)</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         const mm = item.precipitation_mm;
-        const barHeight = Math.min(30, Math.max(3, Math.round(mm * 8)));
+        const barHeight = Math.min(26, Math.max(3, Math.round(mm * 8)));
         if (mm > 0.0) {
           html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
             <div class="rain-bar-container">
@@ -1678,7 +1723,7 @@
 
       // Linha 7: Vento (km/h)
       html += '<tr><td class="label-col">Vento (km/h)</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         const spd = Math.round(item.wind_speed_kmh);
         const bg = getWindColor(spd);
         html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
@@ -1689,7 +1734,7 @@
 
       // Linha 8: Rajadas de Vento (km/h)
       html += '<tr><td class="label-col">Rajadas (km/h)</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         const gst = Math.round(item.wind_gusts_kmh);
         const bg = getGustColor(gst);
         html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
@@ -1700,9 +1745,8 @@
 
       // Linha 9: Direcao do Vento (com setinhas rotacionadas)
       html += '<tr><td class="label-col">Dir. do vento</td>';
-      hourlyList.forEach((item, idx) => {
+      meteogramDisplayList.forEach((item, idx) => {
         const deg = Math.round(item.wind_direction_deg);
-        // Seta aponta para onde o vento sopra (180deg invertido para fluxo)
         html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" title="${deg}\u00b0 ${item.wind_cardinal}">
           <span class="wind-arrow" style="transform: rotate(${deg}deg);">&darr;</span>
         </td>`;
@@ -1714,10 +1758,9 @@
       document.getElementById('meteogramTable').innerHTML = html;
 
       // Seleciona a primeira coluna (Agora)
-      highlightMeteogramColumn(0);
+      selectMeteogramColumn(0);
     }
 
-    /* Evento ao arrastar o Scrubber */
     function onScrubberSlide(value) {
       const idx = parseInt(value, 10);
       selectMeteogramColumn(idx);
@@ -1725,12 +1768,12 @@
 
     /* Seleciona coluna na grade e atualiza o Hero */
     function selectMeteogramColumn(idx) {
-      if (!globalHourlyForecast || idx >= globalHourlyForecast.length) return;
+      if (!meteogramDisplayList || idx >= meteogramDisplayList.length) return;
 
       currentSelectedIndex = idx;
       document.getElementById('timeScrubber').value = idx;
 
-      const item = globalHourlyForecast[idx];
+      const item = meteogramDisplayList[idx];
 
       // Atualiza o Badge de horario
       const labelText = idx === 0 ? `Agora (${item.time})` : `${item.day_label} \u00e0s ${item.time}`;
@@ -1752,7 +1795,6 @@
       scrollMeteogramIntoView(idx);
     }
 
-    /* Destaque visual da coluna selecionada */
     function highlightMeteogramColumn(idx) {
       document.querySelectorAll('.meteogram-cell.selected-col').forEach(el => el.classList.remove('selected-col'));
       document.querySelectorAll(`.col-${idx}`).forEach(el => el.classList.add('selected-col'));
