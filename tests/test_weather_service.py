@@ -66,3 +66,36 @@ def test_api_evaluate_live_endpoint(client):
     assert "live_weather" in data
     assert "recommendations" in data
     assert data["live_weather"]["latitude"] == -22.42
+
+def test_weather_service_hourly_forecast_and_temperature():
+    service = WeatherService()
+    mock_payload = {
+        "current": {
+            "temperature_2m": 26.5,
+            "apparent_temperature": 28.2,
+            "weather_code": 2,
+            "precipitation": 0.0,
+            "wind_speed_10m": 12.0
+        },
+        "hourly": {
+            "time": [f"2026-09-11T{h % 24:02d}:00" for h in range(96)],
+            "temperature_2m": [22.0 + (h % 8) for h in range(96)],
+            "apparent_temperature": [23.0 + (h % 8) for h in range(96)],
+            "precipitation": [0.5 if h % 4 == 0 else 0.0 for h in range(96)],
+            "precipitation_probability": [40 if h % 4 == 0 else 10 for h in range(96)],
+            "weather_code": [80 if h % 4 == 0 else 1 for h in range(96)],
+            "wind_speed_10m": [15.0 for h in range(96)],
+            "wind_direction_10m": [90.0 for h in range(96)],
+            "wind_gusts_10m": [30.0 for h in range(96)],
+            "soil_moisture_0_to_7cm": [0.35] * 96,
+            "soil_moisture_7_to_28cm": [0.40] * 96,
+            "relative_humidity_2m": [75.0] * 96
+        }
+    }
+    metrics = service._parse_open_meteo_payload(latitude=-21.76, longitude=-43.35, payload=mock_payload)
+    assert metrics.temperature_c == 26.5
+    assert metrics.apparent_temperature_c == 28.2
+    assert metrics.weather_condition_text == "Parcialmente Nublado"
+    assert len(metrics.hourly_forecast) == 24
+    assert metrics.hourly_forecast[0].time is not None
+    assert metrics.hourly_forecast[0].weather_description is not None
