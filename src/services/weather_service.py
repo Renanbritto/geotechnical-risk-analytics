@@ -28,12 +28,12 @@ def wmo_code_to_description(code: int) -> str:
         51: "Chuvisco Fraco",
         53: "Chuvisco Moderado",
         55: "Chuvisco Denso",
-        56: "Garoa Congelante Fraca",
+        56: "Garoa Congelante",
         57: "Garoa Congelante Densa",
         61: "Chuva Fraca",
         63: "Chuva Moderada",
         65: "Chuva Forte",
-        66: "Chuva Congelante Fraca",
+        66: "Chuva Congelante",
         67: "Chuva Congelante Forte",
         71: "Queda de Neve Fraca",
         73: "Queda de Neve Moderada",
@@ -41,18 +41,31 @@ def wmo_code_to_description(code: int) -> str:
         80: "Pancadas de Chuva Leves",
         81: "Pancadas de Chuva Moderadas",
         82: "Pancadas de Chuva Torrenciais",
-        85: "Pancadas de Neve Fracas",
+        85: "Pancadas de Neve",
         86: "Pancadas de Neve Fortes",
         95: "Tempestade com Trovoadas",
-        96: "Tempestade com Granizo Leve",
+        96: "Tempestade com Granizo",
         99: "Tempestade Severa com Granizo"
     }
     return wmo_map.get(code, "Tempo Estável")
 
 
+DAY_NAMES_PT = {
+    0: "Segunda-feira",
+    1: "Terça-feira",
+    2: "Quarta-feira",
+    3: "Quinta-feira",
+    4: "Sexta-feira",
+    5: "Sábado",
+    6: "Domingo"
+}
+
+
 class HourlyForecastItem(BaseModel):
-    """Forecast metrics for a specific upcoming hour."""
+    """Detailed forecast metrics for a specific upcoming hour in the meteogram timeline."""
     time: str = Field(..., description="Hour label (e.g. 15:00)")
+    hour_num: int = Field(default=0, description="Hour of day (0-23)")
+    day_label: str = Field(default="Hoje", description="Friendly day label (e.g. Sexta 11)")
     datetime_iso: str = Field(..., description="Full ISO timestamp")
     temperature_c: float = Field(..., description="Ambient temperature in Celsius")
     apparent_temperature_c: float = Field(default=22.0, description="Apparent thermal sensation in Celsius")
@@ -61,6 +74,9 @@ class HourlyForecastItem(BaseModel):
     weather_code: int = Field(default=0, description="WMO weather code")
     weather_description: str = Field(default="Tempo Estável", description="Friendly weather description in Portuguese")
     wind_speed_kmh: float = Field(default=10.0, description="Wind speed at 10m in km/h")
+    wind_gusts_kmh: float = Field(default=20.0, description="Wind gusts at 10m in km/h")
+    wind_direction_deg: float = Field(default=180.0, description="Wind direction in degrees")
+    wind_cardinal: str = Field(default="S", description="Wind cardinal direction")
 
 
 class LiveWeatherMetrics(BaseModel):
@@ -83,7 +99,7 @@ class LiveWeatherMetrics(BaseModel):
     wind_gusts_10m_kmh: float = Field(default=28.0, description="Current wind gusts at 10m height (km/h)")
     wind_direction_10m_deg: float = Field(default=135.0, description="Wind direction in meteorological degrees")
     wind_cardinal_direction: str = Field(default="SE", description="Wind cardinal compass direction")
-    hourly_forecast: List[HourlyForecastItem] = Field(default_factory=list, description="Hour-by-hour forecast for the next 24 hours")
+    hourly_forecast: List[HourlyForecastItem] = Field(default_factory=list, description="Hour-by-hour forecast array for the multi-day timeline")
     data_source: str = Field(default="Open-Meteo API (ECMWF ERA5-Land / GFS)")
     fetched_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     is_live_data: bool = True
@@ -91,7 +107,7 @@ class LiveWeatherMetrics(BaseModel):
 
 class WeatherService:
     """
-    Ingests live meteorological and forecast data from Open-Meteo API (ECMWF, GFS).
+    Ingests live meteorological and multi-day forecast data from Open-Meteo API (ECMWF, GFS).
     Provides friendly metrics for the general public and physical parameters for slope stability.
     """
 
@@ -104,7 +120,7 @@ class WeatherService:
     def fetch_live_weather(self, latitude: float, longitude: float) -> LiveWeatherMetrics:
         """
         Synchronously fetch real-time and antecedent precipitation, wind dynamics, temperature,
-        apparent temperature, and hour-by-hour forecast.
+        apparent temperature, and 5-day hourly forecast.
         """
         params = {
             "latitude": latitude,
@@ -112,7 +128,7 @@ class WeatherService:
             "current": "temperature_2m,apparent_temperature,weather_code,precipitation,rain,relative_humidity_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
             "hourly": "temperature_2m,apparent_temperature,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm",
             "past_days": 3,
-            "forecast_days": 2,
+            "forecast_days": 5,
             "timezone": "America/Sao_Paulo"
         }
 
@@ -213,21 +229,38 @@ class WeatherService:
 
         cardinal_dir = degrees_to_cardinal(float(curr_dir))
 
-        # 8. Hour-by-hour forecast items for next 24 hours
+        # 8. Hour-by-hour forecast items for the multi-day meteogram (up to 72 or 120 hours ahead)
         hourly_items = []
-        for i in range(current_idx, min(len(precip), current_idx + 24)):
+        max_lookahead = min(len(precip), current_idx + 96)  # 4 days ahead of current hour
+        for i in range(current_idx, max_lookahead):
             t_str = times[i] if (times and i < len(times)) else f"H+{i - current_idx}"
             # Extract time e.g. "2026-09-11T16:00" -> "16:00"
             short_time = t_str.split("T")[-1] if "T" in t_str else t_str
+            hour_num = int(short_time.split(":")[0]) if ":" in short_time else 0
+
+            # Calculate day label
+            day_label = "Hoje"
+            if "T" in t_str:
+                try:
+                    dt = datetime.fromisoformat(t_str)
+                    weekday = DAY_NAMES_PT.get(dt.weekday(), "")
+                    day_label = f"{weekday} {dt.day:02d}"
+                except Exception:
+                    day_label = t_str.split("T")[0]
+
             t_val = float(temps[i]) if (temps and i < len(temps) and temps[i] is not None) else float(curr_temp)
             app_t_val = float(apparent_temps[i]) if (apparent_temps and i < len(apparent_temps) and apparent_temps[i] is not None) else t_val
             p_val = float(precip[i]) if (precip and i < len(precip) and precip[i] is not None) else 0.0
             p_prob = int(precip_probs[i]) if (precip_probs and i < len(precip_probs) and precip_probs[i] is not None) else 0
             w_code = int(weather_codes[i]) if (weather_codes and i < len(weather_codes) and weather_codes[i] is not None) else 1
             w_spd = float(wind_speeds[i]) if (wind_speeds and i < len(wind_speeds) and wind_speeds[i] is not None) else float(curr_wind)
+            w_gst = float(wind_gusts[i]) if (wind_gusts and i < len(wind_gusts) and wind_gusts[i] is not None) else float(curr_gust)
+            w_d = float(wind_dirs[i]) if (wind_dirs and i < len(wind_dirs) and wind_dirs[i] is not None) else float(curr_dir)
 
             hourly_items.append(HourlyForecastItem(
                 time=short_time,
+                hour_num=hour_num,
+                day_label=day_label,
                 datetime_iso=t_str,
                 temperature_c=round(t_val, 1),
                 apparent_temperature_c=round(app_t_val, 1),
@@ -235,7 +268,10 @@ class WeatherService:
                 precipitation_probability_pct=p_prob,
                 weather_code=w_code,
                 weather_description=wmo_code_to_description(w_code),
-                wind_speed_kmh=round(w_spd, 1)
+                wind_speed_kmh=round(w_spd, 1),
+                wind_gusts_kmh=round(w_gst, 1),
+                wind_direction_deg=round(w_d, 1),
+                wind_cardinal=degrees_to_cardinal(w_d)
             ))
 
         return LiveWeatherMetrics(
@@ -264,20 +300,26 @@ class WeatherService:
 
     def _generate_fallback(self, latitude: float, longitude: float, reason: str) -> LiveWeatherMetrics:
         """Fallback simulation for offline test environments or network interruptions."""
-        # Simulated 24 hours of hourly items
         fallback_hourly = []
-        for h in range(24):
-            hour_str = f"{h:02d}:00"
+        for h in range(48):
+            hour_str = f"{h % 24:02d}:00"
+            day_idx = h // 24
+            day_name = "Sexta-feira 11" if day_idx == 0 else "Sábado 12"
             fallback_hourly.append(HourlyForecastItem(
                 time=hour_str,
+                hour_num=h % 24,
+                day_label=day_name,
                 datetime_iso=f"2026-09-11T{hour_str}:00",
-                temperature_c=round(21.0 + 3.0 * (1 if 10 <= h <= 17 else -1), 1),
-                apparent_temperature_c=round(22.0 + 3.0 * (1 if 10 <= h <= 17 else -1), 1),
-                precipitation_mm=round(0.8 if h in [15, 16, 17] else 0.0, 1),
-                precipitation_probability_pct=65 if h in [15, 16, 17] else 15,
-                weather_code=80 if h in [15, 16, 17] else 1,
-                weather_description="Pancadas de Chuva Leves" if h in [15, 16, 17] else "Predomínio de Sol",
-                wind_speed_kmh=16.0
+                temperature_c=round(21.0 + 4.0 * (1 if 10 <= (h % 24) <= 17 else -1), 1),
+                apparent_temperature_c=round(22.0 + 4.0 * (1 if 10 <= (h % 24) <= 17 else -1), 1),
+                precipitation_mm=round(1.2 if (h % 24) in [15, 16, 17] else 0.0, 1),
+                precipitation_probability_pct=75 if (h % 24) in [15, 16, 17] else 10,
+                weather_code=80 if (h % 24) in [15, 16, 17] else 1,
+                weather_description="Pancadas de Chuva" if (h % 24) in [15, 16, 17] else "Predomínio de Sol",
+                wind_speed_kmh=14.0,
+                wind_gusts_kmh=28.0,
+                wind_direction_deg=135.0,
+                wind_cardinal="SE"
             ))
 
         return LiveWeatherMetrics(

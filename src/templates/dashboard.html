@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Renan Nocelli | Clima, Chuva e Risco Geotécnico - Zona da Mata Mineira</title>
+  <title>Renan Nocelli | Clima, Chuva e Risco Geot&eacute;cnico - Zona da Mata Mineira</title>
   <link rel="icon" type="image/png" href="/static/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +55,6 @@
       overflow-x: hidden;
     }
 
-    /* Estilo Liquid Glass */
     .liquid-glass {
       background: var(--bg-card);
       backdrop-filter: blur(20px) saturate(180%);
@@ -212,7 +211,7 @@
     main {
       flex: 1;
       padding: 1.75rem 2.2rem;
-      max-width: 1680px;
+      max-width: 1720px;
       margin: 0 auto;
       width: 100%;
       display: flex;
@@ -251,9 +250,9 @@
       flex-wrap: wrap;
     }
 
-    /* HERO WEATHER CARD: O QUE O USUARIO QUER VER PRIMEIRO */
+    /* HERO WEATHER CARD: CLIMA AGORA */
     .hero-weather-card {
-      padding: 2rem 2.2rem;
+      padding: 1.8rem 2.2rem;
       display: grid;
       grid-template-columns: 1.3fr 1fr;
       gap: 2rem;
@@ -271,7 +270,7 @@
     .weather-main-col {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.35rem;
     }
 
     .weather-city-badge {
@@ -296,7 +295,7 @@
       display: flex;
       align-items: baseline;
       gap: 1.2rem;
-      margin-top: 0.25rem;
+      margin-top: 0.15rem;
     }
 
     .weather-big-temp {
@@ -344,7 +343,6 @@
       color: #fff;
     }
 
-    /* Coluna Direita do Hero: 3 Mini-Indicadores Imediatos */
     .weather-metrics-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -399,128 +397,6 @@
       border-color: rgba(16, 185, 129, 0.3);
     }
 
-    /* PREVISAO HORA A HORA (HOURLY FORECAST) */
-    .hourly-section {
-      padding: 1.5rem 1.8rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .section-header-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .section-subtitle {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-    }
-
-    .hourly-scroll-container {
-      display: flex;
-      gap: 0.85rem;
-      overflow-x: auto;
-      padding-bottom: 0.65rem;
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(56, 189, 248, 0.4) transparent;
-    }
-
-    .hourly-scroll-container::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .hourly-scroll-container::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.3);
-      border-radius: var(--radius-pill);
-    }
-
-    .hourly-card {
-      min-width: 105px;
-      background: rgba(2, 6, 23, 0.65);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 0.95rem 0.85rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      text-align: center;
-      transition: all 0.25s ease;
-      flex-shrink: 0;
-    }
-
-    .hourly-card:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(56, 189, 248, 0.5);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
-    }
-
-    .hourly-card.is-now {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(37, 99, 235, 0.25));
-      border-color: var(--primary-cyan);
-    }
-
-    .hourly-time {
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .hourly-card.is-now .hourly-time {
-      color: var(--primary-cyan);
-    }
-
-    .hourly-icon-box {
-      font-size: 1.4rem;
-      margin: 0.1rem 0;
-    }
-
-    .hourly-temp {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .hourly-rain-pill {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 0.2rem 0.5rem;
-      border-radius: var(--radius-pill);
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--primary-cyan);
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-    }
-
-    .hourly-rain-pill.high-rain {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-    }
-
-    .hourly-wind {
-      font-size: 0.68rem;
-      color: var(--text-dim);
-      font-weight: 500;
-    }
-
     /* VISUALIZADOR DE MAPAS E RADAR */
     .viewer-section {
       overflow: hidden;
@@ -538,6 +414,20 @@
       flex-wrap: wrap;
       gap: 1rem;
       background: rgba(15, 23, 42, 0.5);
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-muted);
     }
 
     .viewer-tabs {
@@ -578,7 +468,7 @@
 
     .map-frame-box {
       width: 100%;
-      height: 560px;
+      height: 520px;
       position: relative;
       background: #020617;
     }
@@ -589,89 +479,242 @@
       border: none;
     }
 
-    /* PAINEL DA DEFESA CIVIL & SEGURANCA POPULAR */
-    .civil-defense-section {
-      padding: 1.6rem 2rem;
+    /* ==========================================================================
+       BARRA DE TIMELINE & METEOGRAMA ESTILO WINDY (100% INTERATIVA E ARRASTAVEL)
+       ========================================================================== */
+    .windy-meteogram-section {
+      padding: 1.4rem 1.8rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.9));
+      gap: 1rem;
+      position: relative;
+      background: rgba(13, 20, 36, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
-    .cd-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 850px) {
-      .cd-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .cd-tips-list {
+    .timeline-top-controls {
       display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .cd-tip-item {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      border-left: 4px solid var(--primary-cyan);
-      padding: 0.75rem 1rem;
-      border-radius: 0 14px 14px 0;
-      font-size: 0.84rem;
-      color: var(--text-main);
-    }
-
-    .cd-call-card {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(2, 6, 23, 0.8));
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      border-radius: 18px;
-      padding: 1.25rem 1.4rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      text-align: center;
-      gap: 0.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    .cd-call-card h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .cd-call-card p {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .btn-emergency {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff;
-      font-size: 1.05rem;
-      font-weight: 700;
-      padding: 0.75rem 1.6rem;
+    .timeline-badge-selected {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.86rem;
+      padding: 0.4rem 1.1rem;
       border-radius: var(--radius-pill);
-      text-decoration: none;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-      transition: all 0.25s ease;
+      gap: 0.45rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .timeline-instruction {
+      font-size: 0.76rem;
+      color: var(--primary-cyan);
+      font-weight: 600;
+    }
+
+    /* Slider de Arraste da Linha do Tempo */
+    .timeline-slider-wrapper {
+      position: relative;
+      width: 100%;
+      margin: 0.5rem 0 0.25rem 0;
+    }
+
+    .timeline-scrubber {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(to right, #0ea5e9, #3b82f6, #6366f1);
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .timeline-scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #f59e0b;
+      cursor: grab;
+      border: 3px solid #fff;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
+      transition: transform 0.15s ease;
+    }
+
+    .timeline-scrubber::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.25);
+    }
+
+    .timeline-scrubber::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #f59e0b;
+      cursor: grab;
+      border: 3px solid #fff;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
+    }
+
+    /* Tabela / Grid do Meteograma com Rolagem Horizontal */
+    .meteogram-scroll-box {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.85);
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-cyan) transparent;
+      position: relative;
+    }
+
+    .meteogram-scroll-box::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .meteogram-scroll-box::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.4);
+      border-radius: 9999px;
+    }
+
+    .meteogram-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.76rem;
+      user-select: none;
+    }
+
+    .meteogram-table th.label-col {
+      width: 120px;
+      min-width: 120px;
+      position: sticky;
+      left: 0;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.6rem 0.75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-align: left;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .meteogram-table td.label-col {
+      width: 120px;
+      min-width: 120px;
+      position: sticky;
+      left: 0;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.55rem 0.75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-align: left;
+      font-size: 0.72rem;
+    }
+
+    .meteogram-cell {
+      min-width: 58px;
+      width: 58px;
+      text-align: center;
+      padding: 0.45rem 0.2rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: background 0.15s ease;
       font-family: var(--font-comfortaa);
+      white-space: nowrap;
     }
 
-    .btn-emergency:hover {
-      transform: scale(1.04);
-      box-shadow: 0 0 28px rgba(239, 68, 68, 0.6);
+    .meteogram-cell:hover {
+      background: rgba(56, 189, 248, 0.12);
     }
 
-    /* MODO AVANCADO / ENGENHARIA RETRATIL */
+    .meteogram-cell.selected-col {
+      background: rgba(56, 189, 248, 0.22);
+      border-left: 2px dashed #f59e0b;
+      border-right: 2px dashed #f59e0b;
+    }
+
+    .day-header-cell {
+      background: rgba(30, 41, 59, 0.85);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.55rem 0.5rem;
+      font-size: 0.78rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Celulas coloridas de Vento e Rajadas como no Windy */
+    .wind-speed-badge {
+      display: inline-block;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.74rem;
+      color: #fff;
+    }
+
+    .wind-gust-badge {
+      display: inline-block;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.74rem;
+      color: #000;
+    }
+
+    .rain-bar-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 38px;
+      gap: 2px;
+    }
+
+    .rain-bar-fill {
+      width: 14px;
+      background: #38bdf8;
+      border-radius: 3px 3px 0 0;
+      min-height: 2px;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    }
+
+    .rain-val-text {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .wind-arrow {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      transition: transform 0.2s ease;
+    }
+
+    /* MODO AVANCADO RETRATIL */
     .advanced-toggle-box {
       display: flex;
       justify-content: center;
@@ -857,7 +900,7 @@
       font-weight: 600;
     }
 
-    /* TABELA REGIONAL DA ZONA DA MATA */
+    /* TABELA REGIONAL */
     .table-card {
       padding: 1.5rem;
       display: flex;
@@ -929,7 +972,7 @@
           Renan Nocelli
           <span class="brand-badge">GEOTECHNICAL RISK ANALYTICS</span>
         </h1>
-        <p>Zona da Mata Mineira - Monitoramento de Clima, Chuva & Encostas</p>
+        <p>Zona da Mata Mineira - Monitoramento de Clima, Chuva &amp; Encostas</p>
       </div>
     </a>
 
@@ -943,7 +986,7 @@
         Open-Meteo Live Online
       </div>
       <a href="https://renan-nocelli.vercel.app" target="_blank" class="liquid-pill">
-        Portfólio Oficial
+        Portf&oacute;lio Oficial
       </a>
       <a href="/docs" target="_blank" class="liquid-pill">
         Swagger OpenAPI
@@ -959,18 +1002,18 @@
     <section class="liquid-glass zdm-selector-card">
       <div class="zdm-title-box">
         <h3>Polos da Zona da Mata Mineira</h3>
-        <p>Selecione a cidade para ver a temperatura atual, previsão de chuva hora a hora e radar</p>
+        <p>Selecione a cidade para centralizar o radar e navegar na linha do tempo meteorol&oacute;gica</p>
       </div>
 
       <div class="zdm-chips-group">
         <button class="liquid-pill active" onclick="selectCity('juiz-de-fora')">Juiz de Fora</button>
-        <button class="liquid-pill" onclick="selectCity('uba')">Ubá</button>
-        <button class="liquid-pill" onclick="selectCity('vicosa')">Viçosa</button>
-        <button class="liquid-pill" onclick="selectCity('muriae')">Muriaé</button>
+        <button class="liquid-pill" onclick="selectCity('uba')">Ub&aacute;</button>
+        <button class="liquid-pill" onclick="selectCity('vicosa')">Vi&ccedil;osa</button>
+        <button class="liquid-pill" onclick="selectCity('muriae')">Muria&eacute;</button>
         <button class="liquid-pill" onclick="selectCity('cataguases')">Cataguases</button>
         <button class="liquid-pill" onclick="selectCity('santos-dumont')">Santos Dumont</button>
         <button class="liquid-pill" onclick="selectCity('leopoldina')">Leopoldina</button>
-        <button class="liquid-pill" onclick="selectCity('sao-joao-nepomuceno')">S. João Nepomuceno</button>
+        <button class="liquid-pill" onclick="selectCity('sao-joao-nepomuceno')">S. Jo&atilde;o Nepomuceno</button>
         <button class="liquid-pill" onclick="selectCity('lima-duarte')">Lima Duarte / Ibitipoca</button>
       </div>
     </section>
@@ -982,14 +1025,14 @@
         <div class="weather-city-name" id="heroCityName">Juiz de Fora - MG</div>
 
         <div class="weather-temp-row">
-          <div class="weather-big-temp" id="heroTemp">27<span>°C</span></div>
+          <div class="weather-big-temp" id="heroTemp">27<span>&deg;C</span></div>
           <div class="weather-temp-details">
             <div class="weather-condition-badge" id="heroCondition">Parcialmente Nublado</div>
-            <div class="weather-apparent-temp" id="heroApparent">Sensação térmica de 29°C</div>
+            <div class="weather-apparent-temp" id="heroApparent">Sensa&ccedil;&atilde;o t&eacute;rmica de 29&deg;C</div>
             <div class="weather-minmax-row">
-              <span>Máx: <strong id="heroMax">30°C</strong></span>
-              <span>•</span>
-              <span>Mín: <strong id="heroMin">18°C</strong></span>
+              <span>M&aacute;x: <strong id="heroMax">30&deg;C</strong></span>
+              <span>&bull;</span>
+              <span>M&iacute;n: <strong id="heroMin">18&deg;C</strong></span>
             </div>
           </div>
         </div>
@@ -998,45 +1041,26 @@
       <!-- 3 MINI-INDICADORES ESSENCIAIS -->
       <div class="weather-metrics-col">
         <div class="mini-metric-card">
-          <span class="mini-metric-label">Chuva Agora</span>
+          <span class="mini-metric-label">Chuva no Hor&aacute;rio</span>
           <span class="mini-metric-val" id="heroRainNow">0.0 mm/h</span>
           <span class="mini-metric-sub">Acumulado 24h: <strong id="heroRain24">16.3 mm</strong></span>
         </div>
 
         <div class="mini-metric-card">
-          <span class="mini-metric-label">Vento & Rajadas</span>
+          <span class="mini-metric-label">Vento &amp; Rajadas</span>
           <span class="mini-metric-val" id="heroWind">13.4 km/h</span>
-          <span class="mini-metric-sub">Rajadas até: <strong id="heroGusts">40.0 km/h</strong></span>
+          <span class="mini-metric-sub">Rajadas at&eacute;: <strong id="heroGusts">40.0 km/h</strong></span>
         </div>
 
         <div class="mini-metric-card span-full" id="heroSafetyCard">
-          <span class="mini-metric-label">Condição de Risco de Encosta</span>
+          <span class="mini-metric-label">Condi&ccedil;&atilde;o de Seguran&ccedil;a da Encosta</span>
           <span class="mini-metric-val" id="heroRiskStatus" style="color: var(--status-safe); font-size: 1.15rem;">
-            Encostas Estáveis (Sem Risco Iminente)
+            Encostas Est&aacute;veis (Sem Risco Iminente)
           </span>
           <span class="mini-metric-sub" id="heroRiskSub">
-            Solo em nível seguro de umidade. Sem previsão de tempestades críticas no momento.
+            Solo com boa margem de seguran&ccedil;a. Sem previs&atilde;o de chuvas cr&iacute;ticas no hor&aacute;rio selecionado.
           </span>
         </div>
-      </div>
-    </section>
-
-    <!-- PREVISAO DE CHUVA HORA A HORA (HOURLY TIMELINE) -->
-    <section class="liquid-glass hourly-section">
-      <div class="section-header-box">
-        <div>
-          <h3 class="section-title">Previsão Horária de Chuva e Temperatura</h3>
-          <p class="section-subtitle">Horário por horário nas próximas 24 horas (Open-Meteo / ECMWF)</p>
-        </div>
-        <span class="liquid-pill" style="pointer-events: none; font-size: 0.72rem;">
-          Deslize para ver horários posteriores
-        </span>
-      </div>
-
-      <!-- Carrossel de Cards Hora a Hora -->
-      <div class="hourly-scroll-container" id="hourlyContainer">
-        <!-- Renderizado dinamicamente pelo JavaScript -->
-        <div style="padding: 1rem; color: var(--text-dim); font-size: 0.8rem;">Carregando previsão horária...</div>
       </div>
     </section>
 
@@ -1044,7 +1068,7 @@
     <section class="liquid-glass viewer-section">
       <div class="viewer-header">
         <div>
-          <h3 class="section-title" id="viewerTitle">Radar de Chuva e Precipitação em Tempo Real</h3>
+          <h3 class="section-title" id="viewerTitle">Radar de Chuva e Precipita&ccedil;&atilde;o em Tempo Real</h3>
           <p class="section-subtitle" id="viewerSubtitle">Zona da Mata Mineira - Centro: Juiz de Fora (Lat: -21.764, Lon: -43.350)</p>
         </div>
 
@@ -1053,7 +1077,7 @@
             Radar de Chuva (ECMWF)
           </button>
           <button class="viewer-tab" id="tabWind" onclick="switchLayer('wind')">
-            Vento & Vetores
+            Vento &amp; Vetores
           </button>
           <button class="viewer-tab" id="tabGeo" onclick="switchLayer('geo')">
             Mapa de Encostas (Leaflet)
@@ -1066,29 +1090,31 @@
       </div>
     </section>
 
-    <!-- ORIENTACOES DA DEFESA CIVIL & SEGURANCA COMUNITARIA -->
-    <section class="liquid-glass civil-defense-section">
-      <div class="section-header-box">
+    <!-- =====================================================================
+         BARRA DE TIMELINE & METEOGRAMA ESTILO WINDY (100% INTERATIVA E ARRASTAVEL)
+         ===================================================================== -->
+    <section class="liquid-glass windy-meteogram-section">
+      <div class="timeline-top-controls">
         <div>
-          <h3 class="section-title">Orientações de Segurança da Defesa Civil</h3>
-          <p class="section-subtitle">Recomendações práticas e imediatas para moradores de áreas de encosta</p>
+          <h3 class="section-title">Previs&atilde;o e Linha do Tempo Meteorol&oacute;gica (Estilo Windy)</h3>
+          <p class="section-subtitle">Arraste o marcador ou clique nas horas para navegar pela previs&atilde;o hor&aacute;ria e atualizar os indicadores</p>
+        </div>
+        <div class="timeline-badge-selected" id="timelineBadge">
+          Hor&aacute;rio Selecionado: <span id="selectedTimeLabel">Agora (15:00)</span>
         </div>
       </div>
 
-      <div class="cd-grid">
-        <div class="cd-tips-list" id="recommendationsList">
-          <div class="cd-tip-item">Observe o solo: se surgirem fendas ou trincas no chão ou nas paredes de casa, saia imediatamente.</div>
-          <div class="cd-tip-item">Árvores, cercas ou postes inclinados indicam movimentação lenta da encosta. Acione a Defesa Civil.</div>
-          <div class="cd-tip-item">Água minando da encosta com aspecto barrento é sinal de saturação crítica do terreno.</div>
-          <div class="cd-tip-item">Nunca jogue lixo ou entulho nas encostas, pois isso bloqueia o escoamento natural das águas de chuva.</div>
-        </div>
+      <!-- Trilho do Slider Arrastavel -->
+      <div class="timeline-slider-wrapper">
+        <input type="range" min="0" max="23" value="0" id="timeScrubber" class="timeline-scrubber" oninput="onScrubberSlide(this.value)" />
+      </div>
 
-        <div class="cd-call-card">
-          <h4>Emergência ou Sinais de Risco?</h4>
-          <p>Em caso de deslizamento, rachaduras súbitas ou inundações em sua rua, ligue gratuitamente:</p>
-          <a href="tel:199" class="btn-emergency">Disque 199 (Defesa Civil)</a>
-          <p style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">Corpo de Bombeiros Militar: 193</p>
-        </div>
+      <!-- Grade / Meteograma Completo dos Dias e Horas -->
+      <div class="meteogram-scroll-box" id="meteogramScrollBox">
+        <table class="meteogram-table" id="meteogramTable">
+          <!-- Renderizado dinamicamente via JS -->
+          <tr><td style="padding: 1.5rem; text-align: center; color: var(--text-dim);">Carregando linha do tempo meteorol&oacute;gica...</td></tr>
+        </table>
       </div>
     </section>
 
@@ -1096,14 +1122,14 @@
     <div class="advanced-toggle-box">
       <button class="btn-toggle-advanced" onclick="toggleAdvancedMode()">
         <span id="advancedBtnIcon">+</span>
-        <span id="advancedBtnText">Abrir Ferramentas Técnicas / Simulador de Encostas (Modo Especialista)</span>
+        <span id="advancedBtnText">Abrir Ferramentas T&eacute;cnicas / Simulador de Encostas (Modo Especialista)</span>
       </button>
     </div>
 
     <!-- MODO AVANCADO (RETRATIL PARA QUEM QUER DETALHES DE ENGENHARIA) -->
     <div class="advanced-panel" id="advancedPanel">
       <aside class="liquid-glass panel-box">
-        <div class="panel-heading">Parâmetros Físicos da Encosta</div>
+        <div class="panel-heading">Par&acirc;metros F&iacute;sicos da Encosta</div>
 
         <div class="form-row-2">
           <div class="form-row">
@@ -1117,7 +1143,7 @@
         </div>
 
         <div class="form-row">
-          <label>Declividade da Encosta <span class="label-badge" id="valSlope">38°</span></label>
+          <label>Declividade da Encosta <span class="label-badge" id="valSlope">38&deg;</span></label>
           <input type="range" id="inputSlope" min="10" max="75" value="38" oninput="updateSlopeVal(this.value)" />
         </div>
 
@@ -1129,42 +1155,42 @@
         <div class="form-row">
           <label>Litologia Subjacente</label>
           <select id="inputLithology">
-            <option value="Colluvial Deposits" selected>Depósitos Coluvionares (Alto Risco)</option>
+            <option value="Colluvial Deposits" selected>Dep&oacute;sitos Coluvionares (Alto Risco)</option>
             <option value="Residual Soil Gneiss">Solo Residual de Gnaisse (Complexo Juiz de Fora)</option>
             <option value="Residual Soil Granite">Solo Residual de Granito</option>
-            <option value="Fractured Gneiss Rock">Rocha Gnáissica Fraturada</option>
+            <option value="Fractured Gneiss Rock">Rocha Gn&aacute;issica Fraturada</option>
             <option value="Sedimentary Clay">Solo Sedimentar Argiloso</option>
           </select>
         </div>
 
         <div class="form-row">
-          <label>Uso e Ocupação do Solo</label>
+          <label>Uso e Ocupa&ccedil;&atilde;o do Solo</label>
           <select id="inputLandCover">
-            <option value="Dense Urban Occupation" selected>Ocupação Urbana Densa (Habitações)</option>
+            <option value="Dense Urban Occupation" selected>Ocupa&ccedil;&atilde;o Urbana Densa (Habita&ccedil;&otilde;es)</option>
             <option value="Exposed Soil / Deforested">Solo Exposto / Cortes e Aterros</option>
-            <option value="Pasture / Grassland">Pastagem / Gramíneas</option>
-            <option value="Secondary Forest">Mata Secundária</option>
-            <option value="Dense Native Forest">Mata Atlântica Densa</option>
+            <option value="Pasture / Grassland">Pastagem / Gram&iacute;neas</option>
+            <option value="Secondary Forest">Mata Secund&aacute;ria</option>
+            <option value="Dense Native Forest">Mata Atl&acirc;ntica Densa</option>
           </select>
         </div>
 
         <button class="btn-gradient" onclick="runGeotechnicalEvaluation()">
-          Calcular Fator de Segurança Local
+          Calcular Fator de Seguran&ccedil;a Local
         </button>
       </aside>
 
       <div class="data-column" style="display: flex; flex-direction: column; gap: 1.5rem;">
         <div class="kpi-cards-grid">
           <div class="liquid-glass kpi-card">
-            <div class="kpi-label">Fator de Segurança (FS)</div>
+            <div class="kpi-label">Fator de Seguran&ccedil;a (FS)</div>
             <div class="kpi-number" id="kpiFS" style="color: var(--status-safe);">1.82</div>
-            <div class="kpi-desc" id="kpiFSDesc" style="color: var(--status-safe);">Estável sob condição seca</div>
+            <div class="kpi-desc" id="kpiFSDesc" style="color: var(--status-safe);">Est&aacute;vel sob condi&ccedil;&atilde;o seca</div>
           </div>
 
           <div class="liquid-glass kpi-card">
             <div class="kpi-label">Risco Integrado</div>
             <div class="kpi-number" id="kpiRisk" style="color: var(--status-safe);">BAIXO</div>
-            <div class="kpi-desc" id="kpiRiskDesc">Sem alertas hidrológicos</div>
+            <div class="kpi-desc" id="kpiRiskDesc">Sem alertas hidrol&oacute;gicos</div>
           </div>
 
           <div class="liquid-glass kpi-card">
@@ -1174,8 +1200,8 @@
           </div>
 
           <div class="liquid-glass kpi-card">
-            <div class="kpi-label">Umidade Volumétrica Solo</div>
-            <div class="kpi-number" id="kpiMoisture">0.48 m³/m³</div>
+            <div class="kpi-label">Umidade Volum&eacute;trica Solo</div>
+            <div class="kpi-number" id="kpiMoisture">0.48 m&sup3;/m&sup3;</div>
             <div class="kpi-desc">Camadas de 0 a 28 cm</div>
           </div>
         </div>
@@ -1186,8 +1212,8 @@
     <section class="liquid-glass table-card">
       <div class="section-header-box">
         <div>
-          <h3 class="section-title">Situação em Tempo Real na Zona da Mata Mineira</h3>
-          <p class="section-subtitle">Temperaturas atuais, ventos e chuvas acumuladas nas cidades da região (clique em qualquer cidade para abrir)</p>
+          <h3 class="section-title">Situa&ccedil;&atilde;o em Tempo Real na Zona da Mata Mineira</h3>
+          <p class="section-subtitle">Temperaturas atuais, ventos e chuvas acumuladas nas cidades da regi&atilde;o (clique em qualquer cidade para abrir)</p>
         </div>
       </div>
 
@@ -1195,8 +1221,8 @@
         <table>
           <thead>
             <tr>
-              <th>Município</th>
-              <th>Característica</th>
+              <th>Munic&iacute;pio</th>
+              <th>Caracter&iacute;stica</th>
               <th>Temperatura</th>
               <th>Vento</th>
               <th>Rajadas</th>
@@ -1217,7 +1243,7 @@
   <footer>
     <p>
       Desenvolvido por <a href="https://renan-nocelli.vercel.app" target="_blank">Renan Nocelli</a> &copy; 2026. 
-      Plataforma Especializada de Monitoramento de Chuva, Vento e Risco Geotécnico na Zona da Mata Mineira.
+      Plataforma Especializada de Monitoramento de Chuva, Vento e Risco Geot&eacute;cnico na Zona da Mata Mineira.
     </p>
     <p style="margin-top: 0.35rem; color: var(--text-muted); font-size: 0.72rem;">
       Fontes de Dados: Open-Meteo ECMWF ERA5-Land / GFS | Windy Interactive Streamlines | Modelo de Encosta Infinita Taylor-Skempton | Metodologia Saaty AHP
@@ -1237,7 +1263,7 @@
         landCover: 'Dense Urban Occupation'
       },
       'uba': {
-        name: 'Ubá - MG',
+        name: 'Ub\u00e1 - MG',
         role: 'Polo Moveleiro / Encostas Acidentadas',
         lat: -21.1211,
         lon: -42.9431,
@@ -1247,8 +1273,8 @@
         landCover: 'Dense Urban Occupation'
       },
       'vicosa': {
-        name: 'Viçosa - MG',
-        role: 'Zona Universitária / Relevo Dissecado',
+        name: 'Vi\u00e7osa - MG',
+        role: 'Zona Universit\u00e1ria / Relevo Dissecado',
         lat: -20.7546,
         lon: -42.8817,
         slope: 36,
@@ -1257,8 +1283,8 @@
         landCover: 'Dense Urban Occupation'
       },
       'muriae': {
-        name: 'Muriaé - MG',
-        role: 'Bacia Hidrográfica do Rio Muriaé',
+        name: 'Muria\u00e9 - MG',
+        role: 'Bacia Hidrogr\u00e1fica do Rio Muria\u00e9',
         lat: -21.1306,
         lon: -42.3664,
         slope: 35,
@@ -1297,7 +1323,7 @@
         landCover: 'Pasture / Grassland'
       },
       'sao-joao-nepomuceno': {
-        name: 'São João Nepomuceno - MG',
+        name: 'S\u00e3o Jo\u00e3o Nepomuceno - MG',
         role: 'Vale Central / Encostas Desnudas',
         lat: -21.5436,
         lon: -43.0089,
@@ -1308,7 +1334,7 @@
       },
       'lima-duarte': {
         name: 'Lima Duarte / Ibitipoca - MG',
-        role: 'Serra do Ibitipoca / Maciço Quartzítico',
+        role: 'Serra do Ibitipoca / Maci\u00e7o Quartz\u00edtico',
         lat: -21.8436,
         lon: -43.7928,
         slope: 44,
@@ -1321,6 +1347,8 @@
     let currentLayer = 'rain';
     let currentCityKey = 'juiz-de-fora';
     let isAdvancedOpen = false;
+    let globalHourlyForecast = [];
+    let currentSelectedIndex = 0;
 
     function toggleAdvancedMode() {
       isAdvancedOpen = !isAdvancedOpen;
@@ -1330,17 +1358,17 @@
 
       if (isAdvancedOpen) {
         panel.classList.add('is-open');
-        icon.textContent = '−';
-        text.textContent = 'Ocultar Ferramentas Técnicas / Modo Especialista';
+        icon.textContent = '\u2212';
+        text.textContent = 'Ocultar Ferramentas T\u00e9cnicas / Modo Especialista';
       } else {
         panel.classList.remove('is-open');
         icon.textContent = '+';
-        text.textContent = 'Abrir Ferramentas Técnicas / Simulador de Encostas (Modo Especialista)';
+        text.textContent = 'Abrir Ferramentas T\u00e9cnicas / Simulador de Encostas (Modo Especialista)';
       }
     }
 
     function updateSlopeVal(val) {
-      document.getElementById('valSlope').textContent = val + '°';
+      document.getElementById('valSlope').textContent = val + '\u00b0';
     }
 
     function updateSoilVal(val) {
@@ -1353,16 +1381,16 @@
 
       if (currentLayer === 'rain') {
         iframe.src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=rain&product=ecmwf&level=surface&lat=${city.lat}&lon=${city.lon}`;
-        document.getElementById('viewerTitle').textContent = 'Radar de Chuva e Precipitação em Tempo Real';
+        document.getElementById('viewerTitle').textContent = 'Radar de Chuva e Precipita\u00e7\u00e3o em Tempo Real';
         document.getElementById('viewerSubtitle').textContent = `Zona da Mata Mineira - Centro: ${city.name} (Lat: ${city.lat}, Lon: ${city.lon})`;
       } else if (currentLayer === 'wind') {
         iframe.src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=wind&product=ecmwf&level=surface&lat=${city.lat}&lon=${city.lon}`;
-        document.getElementById('viewerTitle').textContent = 'Dinâmica de Ventos e Vetores de Partículas em Tempo Real';
+        document.getElementById('viewerTitle').textContent = 'Din\u00e2mica de Ventos e Vetores de Part\u00edculas em Tempo Real';
         document.getElementById('viewerSubtitle').textContent = `Zona da Mata Mineira - Centro: ${city.name} (Lat: ${city.lat}, Lon: ${city.lon})`;
       } else if (currentLayer === 'geo') {
         iframe.src = '/api/v1/spatial/map-html';
-        document.getElementById('viewerTitle').textContent = 'Mapeamento Geoespacial de Encostas e Risco Geotécnico';
-        document.getElementById('viewerSubtitle').textContent = 'Camadas Cartográficas, Setores Críticos e Fatores de Segurança';
+        document.getElementById('viewerTitle').textContent = 'Mapeamento Geoespacial de Encostas e Risco Geot\u00e9cnico';
+        document.getElementById('viewerSubtitle').textContent = 'Camadas Cartogr\u00e1ficas, Setores Cr\u00edticos e Fatores de Seguran\u00e7a';
       }
     }
 
@@ -1450,7 +1478,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Falha na avaliacao');
+        if (!res.ok) throw new Error('Falha na avaliacao pontual');
         const data = await res.json();
         renderResults(data);
       } catch (err) {
@@ -1458,79 +1486,88 @@
       }
     }
 
-    function getWeatherEmoji(desc) {
+    function getWeatherIcon(desc) {
       const d = desc.toLowerCase();
-      if (d.includes('limpo') || d.includes('sol')) return '☀️';
-      if (d.includes('parcialmente')) return '⛅';
-      if (d.includes('nublado')) return '☁️';
-      if (d.includes('chuvisco') || d.includes('garoa')) return '🌦️';
-      if (d.includes('chuva')) return '🌧️';
-      if (d.includes('tempestade') || d.includes('trovoada')) return '⛈️';
-      return '🌤️';
+      if (d.includes('limpo') || d.includes('sol')) return '\u2600\ufe0f';
+      if (d.includes('parcialmente')) return '\u26c5';
+      if (d.includes('nublado')) return '\u2601\ufe0f';
+      if (d.includes('chuvisco') || d.includes('garoa')) return '\ud83c\udf26\ufe0f';
+      if (d.includes('chuva')) return '\ud83c\udf27\ufe0f';
+      if (d.includes('tempestade') || d.includes('trovoada')) return '\u26c8\ufe0f';
+      return '\ud83c\udf24\ufe0f';
+    }
+
+    function getWindColor(speed) {
+      if (speed < 15) return '#059669'; // verde suave
+      if (speed < 25) return '#0284c7'; // azul ciano
+      if (speed < 40) return '#d97706'; // amarelo/laranja
+      return '#dc2626'; // vermelho rajada
+    }
+
+    function getGustColor(gust) {
+      if (gust < 20) return '#34d399';
+      if (gust < 35) return '#facc15';
+      if (gust < 50) return '#fb923c';
+      return '#f87171';
     }
 
     function renderResults(data) {
-      // 1. Clima e Temperatura em Destaque
       if (data.live_weather) {
         const w = data.live_weather;
-        document.getElementById('heroTemp').innerHTML = `${Math.round(w.temperature_c)}<span>°C</span>`;
-        document.getElementById('heroCondition').textContent = w.weather_condition_text;
-        document.getElementById('heroApparent').textContent = `Sensação térmica de ${Math.round(w.apparent_temperature_c)}°C`;
-        document.getElementById('heroMax').textContent = `${Math.round(w.temp_max_24h_c)}°C`;
-        document.getElementById('heroMin').textContent = `${Math.round(w.temp_min_24h_c)}°C`;
+        globalHourlyForecast = w.hourly_forecast || [];
 
-        document.getElementById('heroRainNow').textContent = `${w.current_rain_rate_mmh.toFixed(1)} mm/h`;
-        document.getElementById('heroRain24').textContent = `${w.accumulated_rain_24h_mm.toFixed(1)} mm`;
+        // Atualiza Hero Inicial
+        updateHeroWeather(w.temperature_c, w.apparent_temperature_c, w.weather_condition_text, w.current_rain_rate_mmh, w.accumulated_rain_24h_mm, w.wind_speed_10m_kmh, w.wind_gusts_10m_kmh, w.wind_cardinal_direction);
 
-        document.getElementById('heroWind').textContent = `${w.wind_speed_10m_kmh.toFixed(1)} km/h`;
-        document.getElementById('heroGusts').textContent = `${w.wind_gusts_10m_kmh.toFixed(1)} km/h (${w.wind_cardinal_direction})`;
+        document.getElementById('heroMax').textContent = Math.round(w.temp_max_24h_c) + '\u00b0C';
+        document.getElementById('heroMin').textContent = Math.round(w.temp_min_24h_c) + '\u00b0C';
 
-        // Renderizar Carrossel Hora a Hora
-        renderHourlyForecast(w.hourly_forecast);
+        // Renderiza a barra do Meteograma estilo Windy
+        buildWindyMeteogram(globalHourlyForecast);
       }
 
-      // 2. Indicador de Risco Popular
+      // Risco Geotecnico
       const fs = data.factor_of_safety;
       const riskStatusEl = document.getElementById('heroRiskStatus');
       const riskSubEl = document.getElementById('heroRiskSub');
       const safetyCard = document.getElementById('heroSafetyCard');
 
       if (fs < 1.0) {
-        riskStatusEl.textContent = 'Alerta de Risco: Encosta Instável (Atenção Máxima)';
+        riskStatusEl.textContent = 'Alerta de Risco: Encosta Inst\u00e1vel (Ruptura Iminente)';
         riskStatusEl.style.color = 'var(--status-critical)';
-        riskSubEl.textContent = 'As forças de deslizamento superam a resistência do solo. Evacue áreas de risco.';
+        riskSubEl.textContent = 'For\u00e7as instabilizantes superam a resist\u00eancia do solo. Evacue \u00e1reas vulner\u00e1veis.';
         safetyCard.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(2, 6, 23, 0.9))';
         safetyCard.style.borderColor = 'rgba(239, 68, 68, 0.5)';
       } else if (fs <= 1.5) {
-        riskStatusEl.textContent = 'Nível de Atenção: Monitoramento de Encosta Recomendado';
+        riskStatusEl.textContent = 'N\u00edvel de Aten\u00e7\u00e3o: Monitoramento de Encosta Recomendado';
         riskStatusEl.style.color = 'var(--status-warning)';
-        riskSubEl.textContent = 'Solo úmido com redução da margem de segurança. Fique atento a trincas e minas d água.';
+        riskSubEl.textContent = 'Solo \u00famido com redu\u00e7\u00e3o da margem de seguran\u00e7a hidrogeol\u00f3gica.';
         safetyCard.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(2, 6, 23, 0.9))';
         safetyCard.style.borderColor = 'rgba(245, 158, 11, 0.4)';
       } else {
-        riskStatusEl.textContent = 'Encostas Estáveis (Sem Risco de Deslizamento)';
+        riskStatusEl.textContent = 'Encostas Est\u00e1veis (Sem Risco Iminente)';
         riskStatusEl.style.color = 'var(--status-safe)';
-        riskSubEl.textContent = 'Solo com boa margem de equilíbrio. Sem indícios de instabilidade ou chuvas torrenciais.';
+        riskSubEl.textContent = 'Solo em n\u00edvel seguro de equil\u00edbrio. Sem previs\u00e3o de colapso.';
         safetyCard.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(2, 6, 23, 0.9))';
         safetyCard.style.borderColor = 'rgba(16, 185, 129, 0.35)';
       }
 
-      // 3. Modo Avancado (KPIs de Engenharia)
+      // Modo Avancado (KPIs)
       const fsEl = document.getElementById('kpiFS');
       const fsDescEl = document.getElementById('kpiFSDesc');
       fsEl.textContent = fs.toFixed(2);
 
       if (fs < 1.0) {
         fsEl.style.color = 'var(--status-critical)';
-        fsDescEl.textContent = 'Ruptura física iminente (FS < 1.0)';
+        fsDescEl.textContent = 'Ruptura f\u00edsica iminente (FS < 1.0)';
         fsDescEl.style.color = 'var(--status-critical)';
       } else if (fs <= 1.5) {
         fsEl.style.color = 'var(--status-warning)';
-        fsDescEl.textContent = 'Limiar de atenção (FS <= 1.5)';
+        fsDescEl.textContent = 'Limiar de aten\u00e7\u00e3o (FS <= 1.5)';
         fsDescEl.style.color = 'var(--status-warning)';
       } else {
         fsEl.style.color = 'var(--status-safe)';
-        fsDescEl.textContent = 'Estável sob condição atual (FS > 1.5)';
+        fsDescEl.textContent = 'Est\u00e1vel sob condi\u00e7\u00e3o atual (FS > 1.5)';
         fsDescEl.style.color = 'var(--status-safe)';
       }
 
@@ -1547,51 +1584,192 @@
       document.getElementById('kpiAHP').textContent = 'Score AHP: ' + data.ahp_susceptibility_score.toFixed(1) + ' / 100';
 
       if (data.live_weather) {
-        document.getElementById('kpiMoisture').textContent = data.live_weather.soil_moisture_volumetric_m3_m3.toFixed(2) + ' m³/m³';
-      }
-
-      // Recomendacoes da Defesa Civil
-      const recList = document.getElementById('recommendationsList');
-      recList.innerHTML = '';
-      if (data.recommendations && data.recommendations.length > 0) {
-        data.recommendations.forEach(r => {
-          const div = document.createElement('div');
-          div.className = 'cd-tip-item';
-          div.textContent = r;
-          recList.appendChild(div);
-        });
+        document.getElementById('kpiMoisture').textContent = data.live_weather.soil_moisture_volumetric_m3_m3.toFixed(2) + ' m\u00b3/m\u00b3';
       }
     }
 
-    function renderHourlyForecast(hourlyList) {
-      const container = document.getElementById('hourlyContainer');
-      if (!hourlyList || hourlyList.length === 0) {
-        container.innerHTML = '<div style="padding: 1rem; color: var(--text-dim);">Previsão horária indisponível no momento.</div>';
-        return;
-      }
+    function updateHeroWeather(temp, apparent, condition, rainRate, rain24, windSpeed, windGust, windCard) {
+      document.getElementById('heroTemp').innerHTML = `${Math.round(temp)}<span>\u00b0C</span>`;
+      document.getElementById('heroCondition').textContent = condition;
+      document.getElementById('heroApparent').textContent = `Sensa\u00e7\u00e3o t\u00e9rmica de ${Math.round(apparent)}\u00b0C`;
+      document.getElementById('heroRainNow').textContent = `${rainRate.toFixed(1)} mm/h`;
+      document.getElementById('heroRain24').textContent = `${rain24.toFixed(1)} mm`;
+      document.getElementById('heroWind').textContent = `${windSpeed.toFixed(1)} km/h`;
+      document.getElementById('heroGusts').textContent = `${windGust.toFixed(1)} km/h (${windCard})`;
+    }
 
-      container.innerHTML = '';
+    /* =========================================================================
+       CONSTRUCAO DO METEOGRAMA MULTI-DIAS ESTILO WINDY
+       ========================================================================= */
+    function buildWindyMeteogram(hourlyList) {
+      if (!hourlyList || hourlyList.length === 0) return;
 
-      hourlyList.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = index === 0 ? 'hourly-card is-now' : 'hourly-card';
+      const scrubber = document.getElementById('timeScrubber');
+      scrubber.max = hourlyList.length - 1;
+      scrubber.value = 0;
 
-        const labelTime = index === 0 ? 'Agora' : item.time;
-        const emoji = getWeatherEmoji(item.weather_description);
-        const hasRain = item.precipitation_mm > 0.1 || item.precipitation_probability_pct >= 40;
-
-        card.innerHTML = `
-          <div class="hourly-time">${labelTime}</div>
-          <div class="hourly-icon-box" title="${item.weather_description}">${emoji}</div>
-          <div class="hourly-temp">${Math.round(item.temperature_c)}°</div>
-          <div class="hourly-rain-pill ${item.precipitation_probability_pct >= 60 ? 'high-rain' : ''}">
-            <span>${item.precipitation_probability_pct}% chuva</span>
-            <span>${item.precipitation_mm.toFixed(1)} mm</span>
-          </div>
-          <div class="hourly-wind">${Math.round(item.wind_speed_kmh)} km/h</div>
-        `;
-        container.appendChild(card);
+      // Agrupa colunas por dia
+      const dayGroups = {};
+      hourlyList.forEach((item, idx) => {
+        if (!dayGroups[item.day_label]) {
+          dayGroups[item.day_label] = [];
+        }
+        dayGroups[item.day_label].push({ item, idx });
       });
+
+      let html = '';
+
+      // Linha 1: Cabecalhos dos Dias
+      html += '<thead><tr><th class="label-col">Dias</th>';
+      for (const day in dayGroups) {
+        const span = dayGroups[day].length;
+        html += `<th colspan="${span}" class="day-header-cell">${day}</th>`;
+      }
+      html += '</tr>';
+
+      // Linha 2: Horas (ex: 0, 3, 6, 9...)
+      html += '<tr><th class="label-col">Horas</th>';
+      hourlyList.forEach((item, idx) => {
+        html += `<th class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong>${item.time}</strong></th>`;
+      });
+      html += '</tr></thead>';
+
+      html += '<tbody>';
+
+      // Linha 3: Icone do Clima
+      html += '<tr><td class="label-col">Tempo</td>';
+      hourlyList.forEach((item, idx) => {
+        const icon = getWeatherIcon(item.weather_description);
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" title="${item.weather_description}"><span style="font-size: 1.25rem;">${icon}</span></td>`;
+      });
+      html += '</tr>';
+
+      // Linha 4: Temperatura (C)
+      html += '<tr><td class="label-col">Temperatura</td>';
+      hourlyList.forEach((item, idx) => {
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})"><strong style="font-size: 0.9rem; color: #fff;">${Math.round(item.temperature_c)}\u00b0</strong></td>`;
+      });
+      html += '</tr>';
+
+      // Linha 5: Parece (Sensacao Termica)
+      html += '<tr><td class="label-col">Parece (\u00b0C)</td>';
+      hourlyList.forEach((item, idx) => {
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" style="color: var(--text-muted);">${Math.round(item.apparent_temperature_c)}\u00b0</td>`;
+      });
+      html += '</tr>';
+
+      // Linha 6: Chuva (mm) com barrinhas verticais
+      html += '<tr><td class="label-col">Chuva (mm)</td>';
+      hourlyList.forEach((item, idx) => {
+        const mm = item.precipitation_mm;
+        const barHeight = Math.min(30, Math.max(3, Math.round(mm * 8)));
+        if (mm > 0.0) {
+          html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
+            <div class="rain-bar-container">
+              <span class="rain-val-text">${mm.toFixed(1)}</span>
+              <div class="rain-bar-fill" style="height: ${barHeight}px;"></div>
+            </div>
+          </td>`;
+        } else {
+          html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" style="color: var(--text-dim);">&minus;</td>`;
+        }
+      });
+      html += '</tr>';
+
+      // Linha 7: Vento (km/h)
+      html += '<tr><td class="label-col">Vento (km/h)</td>';
+      hourlyList.forEach((item, idx) => {
+        const spd = Math.round(item.wind_speed_kmh);
+        const bg = getWindColor(spd);
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
+          <span class="wind-speed-badge" style="background: ${bg};">${spd}</span>
+        </td>`;
+      });
+      html += '</tr>';
+
+      // Linha 8: Rajadas de Vento (km/h)
+      html += '<tr><td class="label-col">Rajadas (km/h)</td>';
+      hourlyList.forEach((item, idx) => {
+        const gst = Math.round(item.wind_gusts_kmh);
+        const bg = getGustColor(gst);
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})">
+          <span class="wind-gust-badge" style="background: ${bg};">${gst}</span>
+        </td>`;
+      });
+      html += '</tr>';
+
+      // Linha 9: Direcao do Vento (com setinhas rotacionadas)
+      html += '<tr><td class="label-col">Dir. do vento</td>';
+      hourlyList.forEach((item, idx) => {
+        const deg = Math.round(item.wind_direction_deg);
+        // Seta aponta para onde o vento sopra (180deg invertido para fluxo)
+        html += `<td class="meteogram-cell col-${idx}" onclick="selectMeteogramColumn(${idx})" title="${deg}\u00b0 ${item.wind_cardinal}">
+          <span class="wind-arrow" style="transform: rotate(${deg}deg);">&darr;</span>
+        </td>`;
+      });
+      html += '</tr>';
+
+      html += '</tbody>';
+
+      document.getElementById('meteogramTable').innerHTML = html;
+
+      // Seleciona a primeira coluna (Agora)
+      highlightMeteogramColumn(0);
+    }
+
+    /* Evento ao arrastar o Scrubber */
+    function onScrubberSlide(value) {
+      const idx = parseInt(value, 10);
+      selectMeteogramColumn(idx);
+    }
+
+    /* Seleciona coluna na grade e atualiza o Hero */
+    function selectMeteogramColumn(idx) {
+      if (!globalHourlyForecast || idx >= globalHourlyForecast.length) return;
+
+      currentSelectedIndex = idx;
+      document.getElementById('timeScrubber').value = idx;
+
+      const item = globalHourlyForecast[idx];
+
+      // Atualiza o Badge de horario
+      const labelText = idx === 0 ? `Agora (${item.time})` : `${item.day_label} \u00e0s ${item.time}`;
+      document.getElementById('selectedTimeLabel').textContent = labelText;
+
+      // Atualiza os indicadores do Hero
+      updateHeroWeather(
+        item.temperature_c,
+        item.apparent_temperature_c,
+        item.weather_description,
+        item.precipitation_mm,
+        item.precipitation_mm * 4,
+        item.wind_speed_kmh,
+        item.wind_gusts_kmh,
+        item.wind_cardinal
+      );
+
+      highlightMeteogramColumn(idx);
+      scrollMeteogramIntoView(idx);
+    }
+
+    /* Destaque visual da coluna selecionada */
+    function highlightMeteogramColumn(idx) {
+      document.querySelectorAll('.meteogram-cell.selected-col').forEach(el => el.classList.remove('selected-col'));
+      document.querySelectorAll(`.col-${idx}`).forEach(el => el.classList.add('selected-col'));
+    }
+
+    /* Rola a tabela suavemente para manter a coluna visivel */
+    function scrollMeteogramIntoView(idx) {
+      const cell = document.querySelector(`.meteogram-cell.col-${idx}`);
+      const scrollBox = document.getElementById('meteogramScrollBox');
+      if (cell && scrollBox) {
+        const cellLeft = cell.offsetLeft;
+        const boxWidth = scrollBox.clientWidth;
+        scrollBox.scrollTo({
+          left: Math.max(0, cellLeft - boxWidth / 2 + 30),
+          behavior: 'smooth'
+        });
+      }
     }
 
     async function loadRegionalWeatherTable() {
@@ -1606,11 +1784,11 @@
           const w = item.weather;
           const tr = document.createElement('tr');
           tr.style.cursor = 'pointer';
-          tr.title = 'Clique para visualizar este município';
+          tr.title = 'Clique para visualizar este munic\u00edpio';
           tr.onclick = () => selectCity(item.id);
 
-          const tempDisplay = w.temperature_c ? `${Math.round(w.temperature_c)}°C` : '—';
-          const conditionText = w.weather_condition_text || 'Estável';
+          const tempDisplay = w.temperature_c ? `${Math.round(w.temperature_c)}\u00b0C` : '\u2014';
+          const conditionText = w.weather_condition_text || 'Est\u00e1vel';
 
           tr.innerHTML = `
             <td><strong>${item.name}</strong></td>
