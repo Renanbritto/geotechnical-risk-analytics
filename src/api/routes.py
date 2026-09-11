@@ -1,7 +1,7 @@
 """FastAPI endpoint routers for geotechnical risk evaluation and hydrometeorological monitoring."""
 
 from fastapi import APIRouter, HTTPException, Query, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 import os
 from typing import Dict, Any, List, Optional
 from src.domain.schemas import (
@@ -49,6 +49,24 @@ def get_dashboard_ui():
         with open(template_path, "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>Geotechnical Risk Analytics</h1><p><a href='/docs'>Swagger API</a></p>")
+
+
+@router.get("/static/logo.png", tags=["Assets"])
+def get_site_logo():
+    """Serve the official site logo."""
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo nao encontrado")
+
+
+@router.get("/favicon.ico", include_in_schema=False)
+def get_favicon():
+    """Serve favicon for browser tabs."""
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Favicon nao encontrado")
 
 
 @router.get("/health", response_model=HealthResponse, tags=["Monitoramento"])

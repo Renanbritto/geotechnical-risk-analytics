@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/static/logo.png" />
   <title>Renan Nocelli | Geotechnical Risk Analytics - Chuva e Vento na Zona da Mata</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,6 +136,23 @@
       align-items: center;
       gap: 0.9rem;
       text-decoration: none;
+    }
+
+    .brand-avatar-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(15, 23, 42, 0.8);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: block;
+    }
+
+    .brand-avatar-img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.6);
     }
 
     .brand-avatar {
@@ -640,7 +658,7 @@
   <!-- Header na Identidade Visual do Portfolio Renan Nocelli -->
   <header>
     <a href="https://renan-nocelli.vercel.app" target="_blank" class="brand-container">
-      <div class="brand-avatar">RN</div>
+      <img src="/static/logo.png" alt="Renan Nocelli Logo" class="brand-avatar-img" />
       <div class="brand-info">
         <h1>
           Renan Nocelli
