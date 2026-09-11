@@ -1,0 +1,21 @@
+services:
+  geotechnical-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: geotechnical-risk-analytics-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - API_PORT=8000
+      - API_HOST=0.0.0.0
+    volumes:
+      - ./output:/app/output
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

@@ -1,4 +1,4 @@
-﻿# Geotechnical Risk Analytics
+# Geotechnical Risk Analytics
 
 Pipeline analítico geoespacial e motor de inteligência para mapeamento de suscetibilidade a deslizamentos de terra, avaliação de estabilidade de encostas e monitoramento de risco geotécnico sob eventos pluviométricos críticos.
 
