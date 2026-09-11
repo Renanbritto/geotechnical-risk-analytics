@@ -1,6 +1,8 @@
 """FastAPI endpoint routers for geotechnical risk evaluation."""
 
 from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi.responses import HTMLResponse
+import os
 from typing import Dict, Any, List, Optional
 from src.domain.schemas import (
     SlopePointEvaluationRequest,
@@ -25,6 +27,16 @@ risk_engine = GeotechnicalRiskClassifier()
 data_generator = GeotechnicalDataGenerator()
 map_renderer = GeotechnicalMapRenderer()
 weather_service = WeatherService()
+
+
+@router.get("/", response_class=HTMLResponse, tags=["Painel Operacional"])
+def get_dashboard_ui():
+    """Render the operational real-time geotechnical analytics dashboard."""
+    template_path = os.path.join(os.path.dirname(__file__), "..", "templates", "dashboard.html")
+    if os.path.exists(template_path):
+        with open(template_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Geotechnical Risk Analytics</h1><p><a href='/docs'>Swagger API</a></p>")
 
 
 @router.get("/health", response_model=HealthResponse, tags=["Monitoramento"])

@@ -84,3 +84,9 @@ def test_batch_assessment_endpoint(client):
     data = response.json()
     assert data["total_evaluated"] == 2
     assert "average_factor_of_safety" in data
+
+def test_dashboard_ui_endpoint(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert "GEOTECHNICAL RISK ANALYTICS" in response.text
