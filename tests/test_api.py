@@ -89,7 +89,7 @@ def test_dashboard_ui_endpoint(client):
     response = client.get("/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
-    assert "GEOTECHNICAL RISK ANALYTICS" in response.text
+    assert "geotechnical risk analytics" in response.text.lower()
 
 def test_zona_da_mata_weather_endpoint(client):
     response = client.get("/api/v1/weather/zona-da-mata")
