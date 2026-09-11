@@ -1,4 +1,4 @@
-"""FastAPI endpoint routers for geotechnical risk evaluation."""
+"""FastAPI endpoint routers for geotechnical risk evaluation and hydrometeorological monitoring."""
 
 from fastapi import APIRouter, HTTPException, Query, Response
 from fastapi.responses import HTMLResponse
@@ -28,10 +28,22 @@ data_generator = GeotechnicalDataGenerator()
 map_renderer = GeotechnicalMapRenderer()
 weather_service = WeatherService()
 
+ZONA_DA_MATA_CITIES = [
+    {"id": "juiz-de-fora", "name": "Juiz de Fora", "latitude": -21.7642, "longitude": -43.3496, "default_slope": 38.0, "role": "Polo Regional"},
+    {"id": "uba", "name": "Ubá", "latitude": -21.1211, "longitude": -42.9431, "default_slope": 32.0, "role": "Polo Moveleiro"},
+    {"id": "vicosa", "name": "Viçosa", "latitude": -20.7546, "longitude": -42.8817, "default_slope": 36.0, "role": "Zona Universitária"},
+    {"id": "muriae", "name": "Muriaé", "latitude": -21.1306, "longitude": -42.3664, "default_slope": 35.0, "role": "Bacia do Muriaé"},
+    {"id": "cataguases", "name": "Cataguases", "latitude": -21.3892, "longitude": -42.6967, "default_slope": 30.0, "role": "Vale do Pomba"},
+    {"id": "santos-dumont", "name": "Santos Dumont", "latitude": -21.4567, "longitude": -43.5525, "default_slope": 42.0, "role": "Alto da Mantiqueira"},
+    {"id": "leopoldina", "name": "Leopoldina", "latitude": -21.5322, "longitude": -42.6431, "default_slope": 33.0, "role": "Entroncamento Sul"},
+    {"id": "sao-joao-nepomuceno", "name": "São João Nepomuceno", "latitude": -21.5436, "longitude": -43.0089, "default_slope": 34.0, "role": "Vale Central"},
+    {"id": "lima-duarte", "name": "Lima Duarte", "latitude": -21.8436, "longitude": -43.7928, "default_slope": 44.0, "role": "Serra de Ibitipoca"}
+]
+
 
 @router.get("/", response_class=HTMLResponse, tags=["Painel Operacional"])
 def get_dashboard_ui():
-    """Render the operational real-time geotechnical analytics dashboard."""
+    """Render the operational real-time geotechnical analytics and hydrometeorological dashboard."""
     template_path = os.path.join(os.path.dirname(__file__), "..", "templates", "dashboard.html")
     if os.path.exists(template_path):
         with open(template_path, "r", encoding="utf-8") as f:
@@ -52,27 +64,53 @@ def health_check():
 
 @router.get("/api/v1/weather/live", response_model=LiveWeatherMetrics, tags=["Meteorologia em Tempo Real"])
 def get_live_weather(
-    latitude: float = Query(default=-22.4200, ge=-90.0, le=90.0),
-    longitude: float = Query(default=-42.9700, ge=-180.0, le=180.0)
+    latitude: float = Query(default=-21.7642, ge=-90.0, le=90.0, description="Latitude (Padrao: Juiz de Fora - MG)"),
+    longitude: float = Query(default=-43.3496, ge=-180.0, le=180.0, description="Longitude (Padrao: Juiz de Fora - MG)")
 ):
     """
-    Fetch real-time observed rainfall (24h/72h), soil moisture, and forecast from Open-Meteo.
+    Fetch real-time observed rainfall (24h/72h), wind dynamics, and soil moisture from Open-Meteo.
     """
     return weather_service.fetch_live_weather(latitude, longitude)
 
 
+@router.get("/api/v1/weather/zona-da-mata", tags=["Meteorologia em Tempo Real"])
+def get_zona_da_mata_weather():
+    """
+    Fetch consolidated live wind, rain and temperature metrics across principal Zona da Mata Mineira municipalities.
+    """
+    results = []
+    for c in ZONA_DA_MATA_CITIES:
+        w = weather_service.fetch_live_weather(c["latitude"], c["longitude"])
+        results.append({
+            "id": c["id"],
+            "name": c["name"],
+            "role": c["role"],
+            "latitude": c["latitude"],
+            "longitude": c["longitude"],
+            "default_slope": c["default_slope"],
+            "weather": w
+        })
+
+    return {
+        "region": "Zona da Mata Mineira",
+        "state": "MG",
+        "total_monitored": len(results),
+        "municipalities": results
+    }
+
+
 @router.get("/api/v1/risk/evaluate-live", response_model=LiveSlopeEvaluationResponse, tags=["Avaliacao em Tempo Real"])
 def evaluate_slope_live(
-    latitude: float = Query(default=-22.4200, ge=-90.0, le=90.0, description="Latitude da encosta"),
-    longitude: float = Query(default=-42.9700, ge=-180.0, le=180.0, description="Longitude da encosta"),
-    slope_angle_deg: float = Query(default=34.0, ge=1.0, le=80.0, description="Inclinacao em graus"),
-    soil_depth_m: float = Query(default=2.5, ge=0.5, le=15.0, description="Espessura do solo em metros"),
+    latitude: float = Query(default=-21.7642, ge=-90.0, le=90.0, description="Latitude da encosta (Juiz de Fora)"),
+    longitude: float = Query(default=-43.3496, ge=-180.0, le=180.0, description="Longitude da encosta (Juiz de Fora)"),
+    slope_angle_deg: float = Query(default=38.0, ge=1.0, le=80.0, description="Inclinacao em graus"),
+    soil_depth_m: float = Query(default=3.5, ge=0.5, le=15.0, description="Espessura do solo em metros"),
     lithology: LithologyType = Query(default=LithologyType.COLLUVIAL_DEPOSITS),
     land_cover: LandCoverType = Query(default=LandCoverType.URBAN_OCCUPATION)
 ):
     """
     Query real-time meteorological conditions and evaluate geotechnical stability instantly.
-    Integrates actual precipitation and soil saturation from ECMWF ERA5-Land.
+    Integrates actual precipitation, wind speed, and soil saturation from ECMWF ERA5-Land.
     """
     live_weather = weather_service.fetch_live_weather(latitude, longitude)
 
@@ -92,13 +130,20 @@ def evaluate_slope_live(
 
     base_eval = risk_engine.evaluate_point(eval_req)
 
-    # Predictive warning based on forecast precipitation
-    predictive_warning = None
+    # Predictive warning based on forecast precipitation and wind
+    warnings = []
     if live_weather.forecast_rain_next_24h_mm >= 50.0:
-        predictive_warning = (
-            f"Alerta Preventivo: Previsao de {live_weather.forecast_rain_next_24h_mm:.1f} mm de chuva nas proximas 24h. "
-            "Risco iminente de reducao do Fator de Seguranca para niveis criticos."
+        warnings.append(
+            f"Alerta Pluviometrico Preventivo: Previsao de {live_weather.forecast_rain_next_24h_mm:.1f} mm de chuva nas proximas 24h. "
+            "Risco iminente de saturacao completa do manto de solo."
         )
+    if live_weather.wind_gusts_10m_kmh >= 45.0:
+        warnings.append(
+            f"Alerta de Rajadas de Vento: Rajadas de {live_weather.wind_gusts_10m_kmh:.1f} km/h detectadas. "
+            "Forcante eolica adicional sobre copas arboreas em encostas saturadas."
+        )
+
+    predictive_warning = " | ".join(warnings) if warnings else None
 
     return LiveSlopeEvaluationResponse(
         latitude=base_eval.latitude,
@@ -172,9 +217,9 @@ def get_rainfall_thresholds():
 
 
 @router.get("/api/v1/spatial/geojson", tags=["Camadas Espaciais"])
-def get_spatial_geojson(n_points: int = Query(default=35, ge=5, le=200)):
+def get_spatial_geojson(n_points: int = Query(default=45, ge=5, le=200)):
     """
-    Generate GeoJSON FeatureCollection of evaluated slope monitoring points.
+    Generate GeoJSON FeatureCollection of evaluated slope monitoring points in Zona da Mata.
     Ready for integration into QGIS, ArcGIS or Leaflet frontend web applications.
     """
     simulated_points = data_generator.generate_monitored_points(n_points=n_points)
@@ -183,9 +228,9 @@ def get_spatial_geojson(n_points: int = Query(default=35, ge=5, le=200)):
 
 
 @router.get("/api/v1/spatial/map-html", tags=["Camadas Espaciais"])
-def get_interactive_map_html(n_points: int = Query(default=40, ge=10, le=150)):
+def get_interactive_map_html(n_points: int = Query(default=45, ge=10, le=150)):
     """
-    Render and return the full HTML of the interactive Folium Leaflet map.
+    Render and return the full HTML of the interactive Folium Leaflet map centered in Zona da Mata Mineira.
     """
     simulated_points = data_generator.generate_monitored_points(n_points=n_points)
     evaluated = [risk_engine.evaluate_point(p) for p in simulated_points]

@@ -12,7 +12,7 @@ class RainfallThresholds(BaseModel):
 
 
 class SoilDefaultProperties(BaseModel):
-    """Default physical properties for residual tropical soils (Serra do Mar / Mantiqueira)."""
+    """Default physical properties for residual tropical soils (Zona da Mata Mineira / Complexo Juiz de Fora)."""
     cohesion_kpa: float = Field(default=12.5, description="Effective soil cohesion c' in kPa")
     friction_angle_deg: float = Field(default=28.0, description="Effective internal friction angle phi' in degrees")
     saturated_unit_weight_kn_m3: float = Field(default=18.5, description="Saturated soil unit weight in kN/m3")
@@ -33,9 +33,9 @@ class AppSettings(BaseModel):
     rainfall_thresholds: RainfallThresholds = Field(default_factory=RainfallThresholds)
     soil_defaults: SoilDefaultProperties = Field(default_factory=SoilDefaultProperties)
 
-    # Reference study area (Serra do Mar / Regiao Serrana, RJ/SP)
-    center_latitude: float = -22.4200
-    center_longitude: float = -42.9700
+    # Reference study area (Zona da Mata Mineira - Juiz de Fora e microrregioes)
+    center_latitude: float = -21.7642
+    center_longitude: float = -43.3496
 
 
 settings = AppSettings()

@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geotechnical Risk Analytics - Painel Operacional</title>
+  <title>Geotechnical Risk Analytics - Chuva e Vento na Zona da Mata Mineira</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-card: #151e32;
-      --bg-card-hover: #1c2742;
-      --border-color: #1f2d47;
-      --border-highlight: #334b73;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --text-dim: #6b7280;
+      --bg-primary: #070b14;
+      --bg-secondary: #0d1424;
+      --bg-card: #121d33;
+      --bg-card-hover: #192744;
+      --border-color: #1e2e4f;
+      --border-highlight: #2f4879;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
       --accent-cyan: #06b6d4;
       --accent-blue: #3b82f6;
+      --accent-wind: #38bdf8;
+      --accent-rain: #60a5fa;
       --status-safe: #10b981;
       --status-warning: #f59e0b;
-      --status-danger: #ef4444;
-      --status-critical: #dc2626;
+      --status-danger: #f97316;
+      --status-critical: #ef4444;
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -45,10 +47,10 @@
     }
 
     header {
-      background-color: rgba(17, 24, 39, 0.95);
+      background-color: rgba(13, 20, 36, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
+      padding: 0.85rem 2rem;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -62,13 +64,13 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -76,7 +78,8 @@
       font-weight: 800;
       color: #fff;
       font-family: var(--font-mono);
-      box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.35);
+      font-size: 0.9rem;
     }
 
     .brand-text h1 {
@@ -87,14 +90,15 @@
     }
 
     .brand-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      font-size: 0.76rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
     }
 
     .header-badges {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       flex-wrap: wrap;
     }
 
@@ -107,7 +111,7 @@
       font-size: 0.72rem;
       font-family: var(--font-mono);
       font-weight: 600;
-      background: rgba(31, 45, 71, 0.6);
+      background: rgba(30, 46, 79, 0.5);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
     }
@@ -149,66 +153,226 @@
     main {
       flex: 1;
       padding: 1.5rem 2rem;
-      max-width: 1600px;
+      max-width: 1680px;
       margin: 0 auto;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
-    /* Preset Cidades */
-    .city-presets {
-      margin-bottom: 1.5rem;
+    /* Seletor de Cidades da Zona da Mata */
+    .zdm-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: space-between;
+      gap: 1rem;
       flex-wrap: wrap;
       background: var(--bg-secondary);
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
       border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
     }
 
-    .city-presets-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
+    .zdm-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .zdm-title {
+      font-size: 0.82rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-right: 0.5rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
     }
 
-    .city-chip {
+    .zdm-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .zdm-chips {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .zdm-chip {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       color: var(--text-main);
       padding: 0.35rem 0.85rem;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
-      font-weight: 500;
+      font-weight: 600;
+      font-family: var(--font-mono);
     }
 
-    .city-chip:hover, .city-chip.active {
-      background: var(--accent-blue);
-      border-color: var(--accent-blue);
+    .zdm-chip:hover, .zdm-chip.active {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(14, 165, 233, 0.4);
+    }
+
+    /* HERO SECTION: VISUALIZADOR PRINCIPAL DE CHUVA E VENTO */
+    .hero-viewer-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-viewer-header {
+      padding: 1rem 1.5rem;
+      background: rgba(18, 29, 51, 0.8);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .viewer-title-box h2 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .viewer-title-box p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Botoes de Alternancia de Camada Visual */
+    .layer-tabs {
+      display: flex;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+
+    .layer-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-sans);
+    }
+
+    .layer-tab:hover {
+      color: var(--text-main);
+    }
+
+    .layer-tab.active {
+      background: var(--bg-card);
+      color: #fff;
+      border: 1px solid var(--border-highlight);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .layer-tab.active.tab-rain {
+      color: var(--accent-rain);
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+    .layer-tab.active.tab-wind {
+      color: var(--accent-wind);
+      border-color: rgba(56, 189, 248, 0.5);
+    }
+
+    .layer-tab.active.tab-geo {
+      color: var(--status-safe);
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    /* Container do Iframe do Mapa */
+    .hero-map-frame-container {
+      width: 100%;
+      height: 600px;
+      background: #000;
+      position: relative;
+    }
+
+    .hero-map-frame-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Barra Flutuante de Telemetria sobre o Mapa */
+    .live-telemetry-banner {
+      background: rgba(13, 20, 36, 0.96);
+      border-top: 1px solid var(--border-color);
+      padding: 0.85rem 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .tel-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .tel-metric-label {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tel-metric-value {
+      font-size: 1.2rem;
+      font-weight: 800;
       color: #fff;
     }
 
-    /* Grid Layout */
-    .dashboard-grid {
+    .tel-metric-sub {
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Grid Inferior: Controles e Detalhamento */
+    .bottom-grid {
       display: grid;
       grid-template-columns: 380px 1fr;
       gap: 1.5rem;
     }
 
-    @media (max-width: 1100px) {
-      .dashboard-grid {
+    @media (max-width: 1150px) {
+      .bottom-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Painel de Controles */
-    .control-panel {
+    /* Painel de Parametros */
+    .panel-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 12px;
@@ -218,9 +382,9 @@
       gap: 1.25rem;
     }
 
-    .section-title {
-      font-size: 0.95rem;
-      font-weight: 700;
+    .panel-header {
+      font-size: 0.9rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: #fff;
@@ -244,7 +408,7 @@
     }
 
     label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-muted);
       display: flex;
@@ -257,7 +421,7 @@
       font-weight: 700;
     }
 
-    input[type="number"], input[type="text"], select {
+    input[type="number"], select {
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       color: var(--text-main);
@@ -269,7 +433,7 @@
       font-family: var(--font-mono);
     }
 
-    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+    input[type="number"]:focus, select:focus {
       border-color: var(--accent-cyan);
     }
 
@@ -299,7 +463,7 @@
       padding: 0.75rem 1rem;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
@@ -312,7 +476,6 @@
     .btn-action:hover {
       opacity: 0.95;
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
     }
 
     .btn-action-secondary {
@@ -336,16 +499,16 @@
       border-color: var(--accent-cyan);
     }
 
-    /* Area Principal de Resultados */
-    .results-area {
+    /* Detalhamento de Risco e Defesa Civil */
+    .detail-column {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
 
-    .kpi-cards {
+    .kpi-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 1rem;
     }
 
@@ -353,16 +516,14 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 10px;
-      padding: 1.25rem;
+      padding: 1.15rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
-      overflow: hidden;
     }
 
     .kpi-card-header {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       font-weight: 700;
       color: var(--text-muted);
@@ -370,7 +531,7 @@
     }
 
     .kpi-card-value {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 800;
       font-family: var(--font-mono);
       margin: 0.35rem 0;
@@ -378,11 +539,8 @@
     }
 
     .kpi-card-status {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
     }
 
     .status-safe { color: var(--status-safe); }
@@ -390,28 +548,8 @@
     .status-danger { color: var(--status-danger); }
     .status-critical { color: var(--status-critical); }
 
-    /* Recomendacoes e Alertas */
-    .alerts-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .rec-item {
-      background: var(--bg-card);
-      border-left: 3px solid var(--accent-cyan);
-      padding: 0.6rem 0.85rem;
-      border-radius: 0 6px 6px 0;
-      font-size: 0.82rem;
-      color: var(--text-main);
-    }
-
-    /* Mapa Container */
-    .map-section {
+    /* Tabela da Zona da Mata */
+    .zdm-table-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 12px;
@@ -421,44 +559,57 @@
       gap: 1rem;
     }
 
-    .map-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .table-container {
+      overflow-x: auto;
     }
 
-    .map-iframe-container {
+    table {
       width: 100%;
-      height: 520px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      background: #000;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: left;
     }
 
-    .map-iframe-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Console / Telemetria */
-    .telemetry-bar {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
+    th {
+      background: var(--bg-primary);
       color: var(--text-muted);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      align-items: center;
+      padding: 0.65rem 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .telemetry-item strong {
-      color: var(--accent-cyan);
+    td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+    }
+
+    tr:hover td {
+      background: var(--bg-card);
+    }
+
+    /* Recomendacoes */
+    .rec-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .rec-item {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.65rem 0.9rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-main);
     }
 
     footer {
@@ -476,60 +627,131 @@
 
   <header>
     <div class="brand">
-      <div class="brand-icon">GRA</div>
+      <div class="brand-icon">ZDM</div>
       <div class="brand-text">
-        <h1>GEOTECHNICAL RISK ANALYTICS</h1>
-        <p>Monitoramento Operacional & Previsao de Estabilidade de Encostas</p>
+        <h1>ZONA DA MATA MINEIRA - RISCO & METEOROLOGIA</h1>
+        <p>Monitoramento Dinamico de Chuva, Vento e Estabilidade de Encostas</p>
       </div>
     </div>
 
     <div class="header-badges">
-      <div class="badge"><span class="badge-dot"></span> API REST :8000 ONLINE</div>
-      <div class="badge"><span class="badge-dot"></span> OPEN-METEO ECMWF CONECTADO</div>
-      <div class="badge"><span class="badge-dot"></span> MOTOR FISICO INFINITO ATIVO</div>
+      <div class="badge"><span class="badge-dot"></span> RADAR ECMWF / WINDY ATIVO</div>
+      <div class="badge"><span class="badge-dot"></span> OPEN-METEO ONLINE</div>
+      <div class="badge"><span class="badge-dot"></span> MOTOR GEOTECNICO :8000</div>
     </div>
 
     <div class="header-links">
-      <a href="/docs" target="_blank" class="btn-nav">Swagger OpenAPI</a>
+      <a href="/docs" target="_blank" class="btn-nav">Swagger API</a>
       <a href="/api/v1/spatial/map-html" target="_blank" class="btn-nav">Mapa GIS Full</a>
-      <a href="https://github.com/Renanbritto/geotechnical-risk-analytics" target="_blank" class="btn-nav">GitHub Repositório</a>
+      <a href="https://github.com/Renanbritto/geotechnical-risk-analytics" target="_blank" class="btn-nav">GitHub</a>
     </div>
   </header>
 
   <main>
-    <!-- Selecao de Cidades de Referencia -->
-    <div class="city-presets">
-      <span class="city-presets-label">Cenarios Criticos:</span>
-      <button class="city-chip active" onclick="loadCity('petropolis')">Petrópolis - RJ</button>
-      <button class="city-chip" onclick="loadCity('juiz-de-fora')">Juiz de Fora - MG</button>
-      <button class="city-chip" onclick="loadCity('nova-friburgo')">Nova Friburgo - RJ</button>
-      <button class="city-chip" onclick="loadCity('teresopolis')">Teresópolis - RJ</button>
-      <button class="city-chip" onclick="loadCity('angra')">Angra dos Reis - RJ</button>
+    <!-- Barra de Municipios da Zona da Mata Mineira -->
+    <div class="zdm-bar">
+      <div class="zdm-title-group">
+        <span class="zdm-title">Polos da Zona da Mata Mineira:</span>
+        <span class="zdm-subtitle">Selecione o municipio para centralizar o radar e a telemetria hidrometeorologica</span>
+      </div>
+      <div class="zdm-chips">
+        <button class="zdm-chip active" onclick="selectCity('juiz-de-fora')">Juiz de Fora</button>
+        <button class="zdm-chip" onclick="selectCity('uba')">Ubá</button>
+        <button class="zdm-chip" onclick="selectCity('vicosa')">Viçosa</button>
+        <button class="zdm-chip" onclick="selectCity('muriae')">Muriaé</button>
+        <button class="zdm-chip" onclick="selectCity('cataguases')">Cataguases</button>
+        <button class="zdm-chip" onclick="selectCity('santos-dumont')">Santos Dumont</button>
+        <button class="zdm-chip" onclick="selectCity('leopoldina')">Leopoldina</button>
+        <button class="zdm-chip" onclick="selectCity('sao-joao-nepomuceno')">S. João Nepomuceno</button>
+        <button class="zdm-chip" onclick="selectCity('lima-duarte')">Lima Duarte / Ibitipoca</button>
+      </div>
     </div>
 
-    <div class="dashboard-grid">
-      <!-- Painel Esquerdo: Parametros e Controles -->
-      <aside class="control-panel">
-        <div class="section-title">Parametros da Encosta</div>
+    <!-- HERO VIEWER: A PRINCIPAL VISUALIZACAO DE CHUVA E VENTO -->
+    <section class="hero-viewer-section">
+      <div class="hero-viewer-header">
+        <div class="viewer-title-box">
+          <h2 id="viewerTitle">Radar de Chuva e Precipitação em Tempo Real</h2>
+          <p id="viewerSubtitle">Zona da Mata Mineira - Centro Regional: Juiz de Fora (Lat: -21.764, Lon: -43.350)</p>
+        </div>
+
+        <!-- Seletor de Modo de Visualizacao -->
+        <div class="layer-tabs">
+          <button class="layer-tab active tab-rain" id="tabRain" onclick="switchLayer('rain')">
+            Chuva em Tempo Real (Radar ECMWF)
+          </button>
+          <button class="layer-tab tab-wind" id="tabWind" onclick="switchLayer('wind')">
+            Vento & Rajadas (Vetores de Partículas)
+          </button>
+          <button class="layer-tab tab-geo" id="tabGeo" onclick="switchLayer('geo')">
+            Mapa Geotécnico de Risco (Leaflet)
+          </button>
+        </div>
+      </div>
+
+      <!-- Iframe do Mapa Principal -->
+      <div class="hero-map-frame-container">
+        <iframe id="heroMapIframe" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=rain&product=ecmwf&level=surface&lat=-21.764&lon=-43.350"></iframe>
+      </div>
+
+      <!-- Barra de Telemetria Dinamica ao Vivo -->
+      <div class="live-telemetry-banner">
+        <div class="tel-metric">
+          <span class="tel-metric-label">Municipio Ativo</span>
+          <span class="tel-metric-value" id="telCity">Juiz de Fora - MG</span>
+          <span class="tel-metric-sub" id="telRole">Polo Regional da Zona da Mata</span>
+        </div>
+
+        <div class="tel-metric">
+          <span class="tel-metric-label">Vento & Rajadas</span>
+          <span class="tel-metric-value" id="telWind"><span id="telWindSpeed">14.1</span> km/h</span>
+          <span class="tel-metric-sub">Rajada: <strong id="telGusts">40.3 km/h</strong> | Dir: <strong id="telDir">10° NNE</strong></span>
+        </div>
+
+        <div class="tel-metric">
+          <span class="tel-metric-label">Precipitacao Observada</span>
+          <span class="tel-metric-value" id="telRain24">0.0 mm</span>
+          <span class="tel-metric-sub">Acumulado 72h: <strong id="telRain72">0.0 mm</strong> | Taxa: <strong id="telRainRate">0.0 mm/h</strong></span>
+        </div>
+
+        <div class="tel-metric">
+          <span class="tel-metric-label">Umidade do Solo & Clima</span>
+          <span class="tel-metric-value" id="telMoisture">0.32 m³/m³</span>
+          <span class="tel-metric-sub">Temp: <strong id="telTemp">27.1 °C</strong> | UR: <strong id="telHum">64%</strong></span>
+        </div>
+
+        <div class="tel-metric">
+          <span class="tel-metric-label">Fator de Seguranca (FS)</span>
+          <span class="tel-metric-value status-safe" id="telFS">1.82</span>
+          <span class="tel-metric-sub" id="telStatusFS">ESTAVEL (FS > 1.5)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid Inferior: Controles e Matriz de Riscos -->
+    <div class="bottom-grid">
+      <!-- Painel de Simulacao Geotecnica -->
+      <aside class="panel-card">
+        <div class="panel-header">Parametros da Encosta Local</div>
 
         <div class="form-group-inline">
           <div class="form-group">
             <label>Latitude</label>
-            <input type="number" id="inputLat" step="0.0001" value="-22.5050" />
+            <input type="number" id="inputLat" step="0.0001" value="-21.7642" />
           </div>
           <div class="form-group">
             <label>Longitude</label>
-            <input type="number" id="inputLon" step="0.0001" value="-43.1789" />
+            <input type="number" id="inputLon" step="0.0001" value="-43.3496" />
           </div>
         </div>
 
         <div class="form-group">
-          <label>Inclinacao da Encosta (Slope) <span class="label-val" id="valSlope">42°</span></label>
-          <input type="range" id="inputSlope" min="10" max="75" value="42" oninput="updateSlopeVal(this.value)" />
+          <label>Inclinacao da Encosta (Declividade) <span class="label-val" id="valSlope">38°</span></label>
+          <input type="range" id="inputSlope" min="10" max="75" value="38" oninput="updateSlopeVal(this.value)" />
         </div>
 
         <div class="form-group">
-          <label>Espessura do Solo (m) <span class="label-val" id="valSoil">3.5 m</span></label>
+          <label>Espessura do Solo (Manto) <span class="label-val" id="valSoil">3.5 m</span></label>
           <input type="range" id="inputSoil" min="0.5" max="10.0" step="0.5" value="3.5" oninput="updateSoilVal(this.value)" />
         </div>
 
@@ -537,7 +759,7 @@
           <label>Litologia Subjacente</label>
           <select id="inputLithology">
             <option value="Colluvial Deposits" selected>Depositos Coluvionares (Alto Risco)</option>
-            <option value="Residual Soil Gneiss">Solo Residual de Gnaisse</option>
+            <option value="Residual Soil Gneiss">Solo Residual de Gnaisse (Complexo Juiz de Fora)</option>
             <option value="Residual Soil Granite">Solo Residual de Granito</option>
             <option value="Fractured Gneiss Rock">Rocha Gnaissica Fraturada</option>
             <option value="Sedimentary Clay">Solo Sedimentar Argiloso</option>
@@ -547,151 +769,190 @@
         <div class="form-group">
           <label>Uso e Ocupacao do Solo</label>
           <select id="inputLandCover">
-            <option value="Dense Urban Occupation" selected>Ocupacao Urbana Densa</option>
-            <option value="Exposed Soil / Deforested">Solo Exposto / Desmatado</option>
+            <option value="Dense Urban Occupation" selected>Ocupacao Urbana Densa (Encostas habitadas)</option>
+            <option value="Exposed Soil / Deforested">Solo Exposto / Cortes e Aterros</option>
             <option value="Pasture / Grassland">Pastagem / Gramineas</option>
-            <option value="Secondary Forest">Mata Secundaria</option>
-            <option value="Dense Native Forest">Floresta Nativa Densa</option>
+            <option value="Secondary Forest">Mata Secundaria em Regeneracao</option>
+            <option value="Dense Native Forest">Mata Atlantica Densa</option>
           </select>
         </div>
 
-        <div class="section-title">Parametros Pluviometricos</div>
-
-        <div class="form-group">
-          <label>Chuva Acumulada 72h (mm) <span class="label-val" id="valRain72">195 mm</span></label>
-          <input type="range" id="inputRain72" min="0" max="400" value="195" oninput="updateRainVal(this.value)" />
-        </div>
-
-        <button class="btn-action" onclick="runLiveEvaluation()">
-          Consultar Meteorologia em Tempo Real (Open-Meteo)
+        <button class="btn-action" onclick="fetchLiveCityData()">
+          Atualizar Telemetria em Tempo Real (Open-Meteo)
         </button>
 
-        <button class="btn-action-secondary" onclick="runManualEvaluation()">
-          Calcular Estabilidade Local (Parametros Manuais)
+        <button class="btn-action-secondary" onclick="runGeotechnicalEvaluation()">
+          Recalcular Estabilidade Local
         </button>
       </aside>
 
-      <!-- Painel Direito: Resultados & Visualizacao -->
-      <section class="results-area">
+      <!-- Painel de Detalhes da Zona da Mata -->
+      <div class="detail-column">
         <!-- KPI Cards -->
-        <div class="kpi-cards">
+        <div class="kpi-cards-grid">
           <div class="kpi-card">
-            <div class="kpi-card-header">Fator de Seguranca (FS)</div>
-            <div class="kpi-card-value" id="kpiFS">0.82</div>
-            <div class="kpi-card-status status-critical" id="statusFS">INSTAVEL / RUPTURA IMINENTE</div>
+            <div class="kpi-card-header">Fator de Seguranca</div>
+            <div class="kpi-card-value status-safe" id="kpiFS">1.82</div>
+            <div class="kpi-card-status status-safe" id="kpiFSDesc">Estavel sob condicao seca</div>
           </div>
 
           <div class="kpi-card">
             <div class="kpi-card-header">Risco Combinado</div>
-            <div class="kpi-card-value status-critical" id="kpiRisk">CRITICO</div>
-            <div class="kpi-card-status" id="statusRiskDesc">Suscetibilidade Geologica Elevada</div>
+            <div class="kpi-card-value status-safe" id="kpiRisk">BAIXO</div>
+            <div class="kpi-card-status" id="kpiRiskDesc">Sem alertas hidrologicos ativos</div>
           </div>
 
           <div class="kpi-card">
-            <div class="kpi-card-header">Probabilidade Falha (ML)</div>
-            <div class="kpi-card-value" id="kpiML">89.4%</div>
-            <div class="kpi-card-status" id="statusAHP">Score AHP: 82.5 / 100</div>
+            <div class="kpi-card-header">Probabilidade Ruptura (ML)</div>
+            <div class="kpi-card-value" id="kpiML">12.3%</div>
+            <div class="kpi-card-status" id="kpiAHP">Score AHP: 28.4 / 100</div>
           </div>
 
           <div class="kpi-card">
-            <div class="kpi-card-header">Alerta Pluviometrico</div>
-            <div class="kpi-card-value status-danger" id="kpiRainAlert">ALERTA MAXIMO</div>
-            <div class="kpi-card-status" id="statusRainObs">Acumulado 72h: 195 mm</div>
+            <div class="kpi-card-header">Vento e Rajada Maxima</div>
+            <div class="kpi-card-value" id="kpiWind">40 km/h</div>
+            <div class="kpi-card-status" id="kpiWindDir">Direcao: 10° NNE</div>
           </div>
         </div>
 
-        <!-- Telemetria Observada -->
-        <div class="telemetry-bar" id="telemetryBar">
-          <div class="telemetry-item">Estacao: <strong id="telStation">Petropolis (Centro)</strong></div>
-          <div class="telemetry-item">Chuva 24h: <strong id="telRain24">85 mm</strong></div>
-          <div class="telemetry-item">Chuva Prevista 24h: <strong id="telRainForecast">48 mm</strong></div>
-          <div class="telemetry-item">Umidade Solo (0-7cm): <strong id="telMoisture">0.42 m3/m3</strong></div>
-          <div class="telemetry-item">Temperatura: <strong id="telTemp">19.5 °C</strong></div>
+        <!-- Tabela Regional da Zona da Mata -->
+        <div class="zdm-table-card">
+          <div class="panel-header">Monitoramento Meteorologico Regional (Zona da Mata Mineira)</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Municipio</th>
+                  <th>Funcao Regional</th>
+                  <th>Vento (km/h)</th>
+                  <th>Rajada (km/h)</th>
+                  <th>Chuva 24h</th>
+                  <th>Chuva 72h</th>
+                  <th>Temperatura</th>
+                  <th>Umidade Solo</th>
+                </tr>
+              </thead>
+              <tbody id="regionalTableBody">
+                <tr><td colspan="8" style="text-align: center; color: var(--text-dim);">Carregando telemetria da Zona da Mata...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- Alertas e Recomendacoes Defesa Civil -->
-        <div class="alerts-card">
-          <div class="section-title">Diretrizes Operacionais & Recomendacoes Tecnicas</div>
+        <!-- Recomendacoes Defesa Civil -->
+        <div class="rec-card">
+          <div class="panel-header">Diretrizes da Defesa Civil & Protocolo Operacional</div>
           <div id="recommendationsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <div class="rec-item">Evacuacao imediata de residencias no raio de alcance da crista e pe da encosta.</div>
-            <div class="rec-item">Acionamento continuo do sistema de sirenes comunitarias da Defesa Civil.</div>
-            <div class="rec-item">Monitoramento instrumental por piezometros e marcos superficiais a cada 1 hora.</div>
-            <div class="rec-item">Interdicao de vias de acesso na base da encosta contra fluxo de detritos.</div>
+            <div class="rec-item">Situacao hidrometeorologica em nivel de observacao na regiao de Juiz de Fora.</div>
+            <div class="rec-item">Manter monitoramento continuo das rajadas de vento sobre encostas com arvoredo inclinado.</div>
+            <div class="rec-item">Verificacao preventiva de calhas, canaletas pluviais e muros de contencao.</div>
           </div>
         </div>
-
-        <!-- Mapa Leaflet Integrado -->
-        <div class="map-section">
-          <div class="map-header">
-            <div class="section-title">Mapeamento Cartografico Espacial (Folium / Leaflet)</div>
-            <a href="/api/v1/spatial/map-html" target="_blank" class="btn-nav">Abrir Mapa em Tela Cheia</a>
-          </div>
-          <div class="map-iframe-container">
-            <iframe id="mapFrame" src="/api/v1/spatial/map-html"></iframe>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   </main>
 
   <footer>
-    <p>Geotechnical Risk Analytics &copy; 2026 - Desenvolvido para Modelagem Preditiva de Desastres Naturais e Defesa Civil.</p>
-    <p>Algoritmos: Modelo Fisico de Encosta Infinita (Taylor/Skempton) | AHP (Saaty 1980) | Random Forest | Open-Meteo ECMWF ERA5-Land</p>
+    <p>Geotechnical Risk Analytics &copy; 2026 - Plataforma Especializada de Monitoramento Hidrometeorologico & Risco Geotecnico na Zona da Mata Mineira.</p>
+    <p>Fontes de Dados: Open-Meteo ECMWF ERA5-Land / GFS | Windy Interactive Visualization | Modelo de Encosta Infinita Taylor-Skempton | Metodologia Saaty AHP</p>
   </footer>
 
   <script>
-    const CITIES = {
-      'petropolis': {
-        name: 'Petrópolis - RJ',
-        lat: -22.5050,
-        lon: -43.1789,
-        slope: 42,
-        soil: 3.5,
-        rain72: 245,
-        lithology: 'Colluvial Deposits',
-        landCover: 'Dense Urban Occupation'
-      },
+    const ZDM_CITIES = {
       'juiz-de-fora': {
         name: 'Juiz de Fora - MG',
+        role: 'Polo Regional da Zona da Mata',
         lat: -21.7642,
         lon: -43.3496,
         slope: 38,
-        soil: 4.2,
-        rain72: 185,
+        soil: 3.5,
+        lithology: 'Colluvial Deposits',
+        landCover: 'Dense Urban Occupation'
+      },
+      'uba': {
+        name: 'Ubá - MG',
+        role: 'Polo Moveleiro / Encostas Acidentadas',
+        lat: -21.1211,
+        lon: -42.9431,
+        slope: 32,
+        soil: 3.0,
         lithology: 'Residual Soil Gneiss',
         landCover: 'Dense Urban Occupation'
       },
-      'nova-friburgo': {
-        name: 'Nova Friburgo - RJ',
-        lat: -22.2819,
-        lon: -42.5311,
-        slope: 45,
-        soil: 3.0,
-        rain72: 220,
+      'vicosa': {
+        name: 'Viçosa - MG',
+        role: 'Zona Universitária / Relevo Dissecado',
+        lat: -20.7546,
+        lon: -42.8817,
+        slope: 36,
+        soil: 3.2,
+        lithology: 'Residual Soil Gneiss',
+        landCover: 'Dense Urban Occupation'
+      },
+      'muriae': {
+        name: 'Muriaé - MG',
+        role: 'Bacia Hidrográfica do Rio Muriaé',
+        lat: -21.1306,
+        lon: -42.3664,
+        slope: 35,
+        soil: 3.4,
         lithology: 'Colluvial Deposits',
         landCover: 'Exposed Soil / Deforested'
       },
-      'teresopolis': {
-        name: 'Teresópolis - RJ',
-        lat: -22.4123,
-        lon: -42.9664,
-        slope: 40,
-        soil: 3.8,
-        rain72: 195,
+      'cataguases': {
+        name: 'Cataguases - MG',
+        role: 'Vale do Rio Pomba / Zonas de Inundação e Encosta',
+        lat: -21.3892,
+        lon: -42.6967,
+        slope: 30,
+        soil: 2.8,
+        lithology: 'Residual Soil Gneiss',
+        landCover: 'Dense Urban Occupation'
+      },
+      'santos-dumont': {
+        name: 'Santos Dumont - MG',
+        role: 'Alto da Mantiqueira / Declividades Severas',
+        lat: -21.4567,
+        lon: -43.5525,
+        slope: 42,
+        soil: 4.0,
         lithology: 'Fractured Gneiss Rock',
+        landCover: 'Dense Urban Occupation'
+      },
+      'leopoldina': {
+        name: 'Leopoldina - MG',
+        role: 'Entroncamento Sul / Relevo Ondulado',
+        lat: -21.5322,
+        lon: -42.6431,
+        slope: 33,
+        soil: 3.1,
+        lithology: 'Residual Soil Gneiss',
         landCover: 'Pasture / Grassland'
       },
-      'angra': {
-        name: 'Angra dos Reis - RJ',
-        lat: -23.0067,
-        lon: -44.3181,
-        slope: 46,
-        soil: 2.8,
-        rain72: 280,
+      'sao-joao-nepomuceno': {
+        name: 'São João Nepomuceno - MG',
+        role: 'Vale Central / Encostas Desnudas',
+        lat: -21.5436,
+        lon: -43.0089,
+        slope: 34,
+        soil: 3.2,
         lithology: 'Colluvial Deposits',
-        landCover: 'Dense Urban Occupation'
+        landCover: 'Pasture / Grassland'
+      },
+      'lima-duarte': {
+        name: 'Lima Duarte / Ibitipoca - MG',
+        role: 'Serra do Ibitipoca / Maciço Quartzítico e Gnáissico',
+        lat: -21.8436,
+        lon: -43.7928,
+        slope: 44,
+        soil: 2.5,
+        lithology: 'Fractured Gneiss Rock',
+        landCover: 'Dense Native Forest'
       }
     };
+
+    let currentLayer = 'rain'; // 'rain' | 'wind' | 'geo'
+    let currentCityKey = 'juiz-de-fora';
 
     function updateSlopeVal(val) {
       document.getElementById('valSlope').textContent = val + '°';
@@ -701,42 +962,68 @@
       document.getElementById('valSoil').textContent = val + ' m';
     }
 
-    function updateRainVal(val) {
-      document.getElementById('valRain72').textContent = val + ' mm';
+    function updateIframe() {
+      const city = ZDM_CITIES[currentCityKey];
+      const iframe = document.getElementById('heroMapIframe');
+
+      if (currentLayer === 'rain') {
+        iframe.src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=rain&product=ecmwf&level=surface&lat=${city.lat}&lon=${city.lon}`;
+        document.getElementById('viewerTitle').textContent = 'Radar de Chuva e Precipitação em Tempo Real';
+        document.getElementById('viewerSubtitle').textContent = `Zona da Mata Mineira - Centro: ${city.name} (Lat: ${city.lat}, Lon: ${city.lon})`;
+      } else if (currentLayer === 'wind') {
+        iframe.src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=wind&product=ecmwf&level=surface&lat=${city.lat}&lon=${city.lon}`;
+        document.getElementById('viewerTitle').textContent = 'Dinâmica de Ventos e Vetores de Partículas em Tempo Real';
+        document.getElementById('viewerSubtitle').textContent = `Zona da Mata Mineira - Centro: ${city.name} (Lat: ${city.lat}, Lon: ${city.lon})`;
+      } else if (currentLayer === 'geo') {
+        iframe.src = '/api/v1/spatial/map-html';
+        document.getElementById('viewerTitle').textContent = 'Mapeamento Geoespacial de Encostas e Risco Geotécnico';
+        document.getElementById('viewerSubtitle').textContent = 'Camadas Cartográficas, Setores Críticos e Fatores de Segurança';
+      }
     }
 
-    function loadCity(key) {
-      document.querySelectorAll('.city-chip').forEach(el => el.classList.remove('active'));
+    function switchLayer(layer) {
+      currentLayer = layer;
+      document.querySelectorAll('.layer-tab').forEach(b => b.classList.remove('active'));
+
+      if (layer === 'rain') document.getElementById('tabRain').classList.add('active');
+      if (layer === 'wind') document.getElementById('tabWind').classList.add('active');
+      if (layer === 'geo') document.getElementById('tabGeo').classList.add('active');
+
+      updateIframe();
+    }
+
+    function selectCity(key) {
+      currentCityKey = key;
+      document.querySelectorAll('.zdm-chip').forEach(el => el.classList.remove('active'));
       event.target.classList.add('active');
 
-      const c = CITIES[key];
+      const c = ZDM_CITIES[key];
       if (!c) return;
 
       document.getElementById('inputLat').value = c.lat;
       document.getElementById('inputLon').value = c.lon;
       document.getElementById('inputSlope').value = c.slope;
       document.getElementById('inputSoil').value = c.soil;
-      document.getElementById('inputRain72').value = c.rain72;
       document.getElementById('inputLithology').value = c.lithology;
       document.getElementById('inputLandCover').value = c.landCover;
 
       updateSlopeVal(c.slope);
       updateSoilVal(c.soil);
-      updateRainVal(c.rain72);
 
-      // Dispara avaliacao em tempo real da cidade
-      runLiveEvaluation();
+      document.getElementById('telCity').textContent = c.name;
+      document.getElementById('telRole').textContent = c.role;
+
+      updateIframe();
+      fetchLiveCityData();
     }
 
-    async function runLiveEvaluation() {
+    async function fetchLiveCityData() {
       const lat = parseFloat(document.getElementById('inputLat').value);
       const lon = parseFloat(document.getElementById('inputLon').value);
       const slope = parseFloat(document.getElementById('inputSlope').value);
       const soil = parseFloat(document.getElementById('inputSoil').value);
       const lith = document.getElementById('inputLithology').value;
       const land = document.getElementById('inputLandCover').value;
-
-      document.getElementById('statusFS').textContent = 'Consultando Open-Meteo & Avaliando...';
 
       try {
         const url = `/api/v1/risk/evaluate-live?latitude=${lat}&longitude=${lon}&slope_angle_deg=${slope}&soil_depth_m=${soil}&lithology=${encodeURIComponent(lith)}&land_cover=${encodeURIComponent(land)}`;
@@ -746,17 +1033,15 @@
         renderResults(data);
       } catch (err) {
         console.error(err);
-        // Fallback para avaliacao local
-        runManualEvaluation();
+        runGeotechnicalEvaluation();
       }
     }
 
-    async function runManualEvaluation() {
+    async function runGeotechnicalEvaluation() {
       const lat = parseFloat(document.getElementById('inputLat').value);
       const lon = parseFloat(document.getElementById('inputLon').value);
       const slope = parseFloat(document.getElementById('inputSlope').value);
       const soil = parseFloat(document.getElementById('inputSoil').value);
-      const rain72 = parseFloat(document.getElementById('inputRain72').value);
       const lith = document.getElementById('inputLithology').value;
       const land = document.getElementById('inputLandCover').value;
 
@@ -764,11 +1049,11 @@
         latitude: lat,
         longitude: lon,
         slope_angle_deg: slope,
-        elevation_m: 800,
+        elevation_m: 750,
         aspect_deg: 180,
         twi: 6.5,
-        accumulated_rain_24h_mm: rain72 * 0.45,
-        accumulated_rain_72h_mm: rain72,
+        accumulated_rain_24h_mm: 15.0,
+        accumulated_rain_72h_mm: 35.0,
         lithology: lith,
         land_cover: land,
         soil_depth_m: soil
@@ -780,67 +1065,74 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Falha na requisicao');
+        if (!res.ok) throw new Error('Falha na avaliacao pontual');
         const data = await res.json();
         renderResults(data);
       } catch (err) {
-        alert('Erro ao processar avaliacao: ' + err.message);
+        alert('Erro ao calcular: ' + err.message);
       }
     }
 
     function renderResults(data) {
       const fs = data.factor_of_safety;
       const fsEl = document.getElementById('kpiFS');
-      const fsStatusEl = document.getElementById('statusFS');
+      const telFSEl = document.getElementById('telFS');
+      const telStatusFSEl = document.getElementById('telStatusFS');
+      const fsDescEl = document.getElementById('kpiFSDesc');
+
       fsEl.textContent = fs.toFixed(2);
+      telFSEl.textContent = fs.toFixed(2);
 
       if (fs < 1.0) {
         fsEl.className = 'kpi-card-value status-critical';
-        fsStatusEl.className = 'kpi-card-status status-critical';
-        fsStatusEl.textContent = 'INSTAVEL / RUPTURA IMINENTE';
+        telFSEl.className = 'tel-metric-value status-critical';
+        telStatusFSEl.textContent = 'INSTAVEL / RUPTURA IMINENTE';
+        fsDescEl.textContent = 'Forcas instabilizantes superam resistencia';
       } else if (fs <= 1.5) {
         fsEl.className = 'kpi-card-value status-warning';
-        fsStatusEl.className = 'kpi-card-status status-warning';
-        fsStatusEl.textContent = 'LIMIAR DE ATENCAO (FS <= 1.5)';
+        telFSEl.className = 'tel-metric-value status-warning';
+        telStatusFSEl.textContent = 'LIMIAR DE ATENCAO (FS <= 1.5)';
+        fsDescEl.textContent = 'Monitoramento geotecnico intensivo requerido';
       } else {
         fsEl.className = 'kpi-card-value status-safe';
-        fsStatusEl.className = 'kpi-card-status status-safe';
-        fsStatusEl.textContent = 'ESTAVEL (FS > 1.5)';
+        telFSEl.className = 'tel-metric-value status-safe';
+        telStatusFSEl.textContent = 'ESTAVEL (FS > 1.5)';
+        fsDescEl.textContent = 'Encosta em equilibrio hidrogeotecnico';
       }
 
       // Risco Combinado
       const riskEl = document.getElementById('kpiRisk');
       const risk = data.combined_risk_level;
       riskEl.textContent = risk.toUpperCase();
-      if (risk === 'Critical') {
-        riskEl.className = 'kpi-card-value status-critical';
-      } else if (risk === 'High') {
-        riskEl.className = 'kpi-card-value status-danger';
-      } else if (risk === 'Medium') {
-        riskEl.className = 'kpi-card-value status-warning';
-      } else {
-        riskEl.className = 'kpi-card-value status-safe';
-      }
+      if (risk === 'Critical') riskEl.className = 'kpi-card-value status-critical';
+      else if (risk === 'High') riskEl.className = 'kpi-card-value status-danger';
+      else if (risk === 'Medium') riskEl.className = 'kpi-card-value status-warning';
+      else riskEl.className = 'kpi-card-value status-safe';
 
       // ML e AHP
       const mlProb = (data.ml_failure_probability * 100).toFixed(1);
       document.getElementById('kpiML').textContent = mlProb + '%';
-      document.getElementById('statusAHP').textContent = 'Score AHP: ' + data.ahp_susceptibility_score.toFixed(1) + ' / 100';
+      document.getElementById('kpiAHP').textContent = 'Score AHP: ' + data.ahp_susceptibility_score.toFixed(1) + ' / 100';
 
-      // Alerta Pluviometrico
-      const alertEl = document.getElementById('kpiRainAlert');
-      alertEl.textContent = (data.rainfall_alert_level || 'Atencao').toUpperCase();
-
-      // Telemetria se disponivel
+      // Telemetria meteorologica
       if (data.live_weather) {
-        document.getElementById('telRain24').textContent = data.live_weather.accumulated_rain_24h_mm.toFixed(1) + ' mm';
-        document.getElementById('telRainForecast').textContent = data.live_weather.forecast_rain_next_24h_mm.toFixed(1) + ' mm';
-        document.getElementById('telMoisture').textContent = data.live_weather.soil_moisture_0_to_7cm_m3m3.toFixed(2) + ' m3/m3';
-        document.getElementById('telTemp').textContent = data.live_weather.current_temperature_c.toFixed(1) + ' °C';
-        document.getElementById('statusRainObs').textContent = 'Acumulado 72h: ' + data.live_weather.accumulated_rain_72h_mm.toFixed(1) + ' mm';
+        const w = data.live_weather;
+        document.getElementById('telWindSpeed').textContent = w.wind_speed_10m_kmh.toFixed(1);
+        document.getElementById('telGusts').textContent = w.wind_gusts_10m_kmh.toFixed(1) + ' km/h';
+        document.getElementById('telDir').textContent = w.wind_direction_10m_deg.toFixed(0) + '° ' + w.wind_cardinal_direction;
+        document.getElementById('kpiWind').textContent = w.wind_gusts_10m_kmh.toFixed(0) + ' km/h';
+        document.getElementById('kpiWindDir').textContent = 'Vento: ' + w.wind_speed_10m_kmh.toFixed(1) + ' km/h (' + w.wind_cardinal_direction + ')';
+
+        document.getElementById('telRain24').textContent = w.accumulated_rain_24h_mm.toFixed(1) + ' mm';
+        document.getElementById('telRain72').textContent = w.accumulated_rain_72h_mm.toFixed(1) + ' mm';
+        document.getElementById('telRainRate').textContent = w.current_rain_rate_mmh.toFixed(1) + ' mm/h';
+
+        document.getElementById('telMoisture').textContent = w.soil_moisture_volumetric_m3_m3.toFixed(2) + ' m³/m³';
+        document.getElementById('telTemp').textContent = w.temperature_c.toFixed(1) + ' °C';
+        document.getElementById('telHum').textContent = w.relative_humidity_pct.toFixed(0) + '%';
       }
 
-      // Recomendacoes
+      // Recomendacoes da Defesa Civil
       const recList = document.getElementById('recommendationsList');
       recList.innerHTML = '';
       if (data.recommendations && data.recommendations.length > 0) {
@@ -851,11 +1143,52 @@
           recList.appendChild(div);
         });
       }
+
+      if (data.predictive_warning) {
+        const warnDiv = document.createElement('div');
+        warnDiv.className = 'rec-item';
+        warnDiv.style.borderLeftColor = 'var(--status-critical)';
+        warnDiv.style.fontWeight = '700';
+        warnDiv.textContent = data.predictive_warning;
+        recList.prepend(warnDiv);
+      }
     }
 
-    // Inicializa com Petropolis
+    async function loadRegionalWeatherTable() {
+      try {
+        const res = await fetch('/api/v1/weather/zona-da-mata');
+        if (!res.ok) return;
+        const result = await res.json();
+        const tbody = document.getElementById('regionalTableBody');
+        tbody.innerHTML = '';
+
+        result.municipalities.forEach(item => {
+          const w = item.weather;
+          const tr = document.createElement('tr');
+          tr.style.cursor = 'pointer';
+          tr.onclick = () => selectCity(item.id);
+
+          tr.innerHTML = `
+            <td><strong>${item.name}</strong></td>
+            <td style="color: var(--text-muted); font-size: 0.75rem;">${item.role}</td>
+            <td>${w.wind_speed_10m_kmh.toFixed(1)} km/h</td>
+            <td style="color: ${w.wind_gusts_10m_kmh > 40 ? 'var(--status-warning)' : 'var(--text-main)'}; font-weight: 700;">${w.wind_gusts_10m_kmh.toFixed(1)} km/h</td>
+            <td>${w.accumulated_rain_24h_mm.toFixed(1)} mm</td>
+            <td style="color: ${w.accumulated_rain_72h_mm > 70 ? 'var(--status-danger)' : 'var(--text-main)'};">${w.accumulated_rain_72h_mm.toFixed(1)} mm</td>
+            <td>${w.temperature_c.toFixed(1)} °C</td>
+            <td>${w.soil_moisture_volumetric_m3_m3.toFixed(2)} m³/m³</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar tabela regional:', err);
+      }
+    }
+
+    // Inicializacao
     window.addEventListener('DOMContentLoaded', () => {
-      runLiveEvaluation();
+      fetchLiveCityData();
+      loadRegionalWeatherTable();
     });
   </script>
 </body>
