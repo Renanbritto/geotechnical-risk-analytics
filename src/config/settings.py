@@ -11,18 +11,9 @@ class RainfallThresholds(BaseModel):
     emergency_96h_mm: float = Field(default=140.0, description="96h accumulated rainfall for Emergency level (mm)")
 
 
-class SoilDefaultProperties(BaseModel):
-    """Default physical properties for residual tropical soils (Zona da Mata Mineira / Complexo Juiz de Fora)."""
-    cohesion_kpa: float = Field(default=12.5, description="Effective soil cohesion c' in kPa")
-    friction_angle_deg: float = Field(default=28.0, description="Effective internal friction angle phi' in degrees")
-    saturated_unit_weight_kn_m3: float = Field(default=18.5, description="Saturated soil unit weight in kN/m3")
-    water_unit_weight_kn_m3: float = Field(default=9.81, description="Water unit weight in kN/m3")
-    soil_depth_m: float = Field(default=2.5, description="Representative soil mantle depth in meters")
-
-
 class AppSettings(BaseModel):
-    """Global configuration for the geotechnical risk analysis system."""
-    app_name: str = "Geotechnical Risk Analytics Engine"
+    """Global configuration for the climate monitoring system."""
+    app_name: str = "Alerta Zona da Mata - Monitoramento Climatico"
     app_version: str = "1.0.0"
     environment: str = "production"
     debug: bool = False
@@ -31,7 +22,6 @@ class AppSettings(BaseModel):
     random_seed: int = 42
 
     rainfall_thresholds: RainfallThresholds = Field(default_factory=RainfallThresholds)
-    soil_defaults: SoilDefaultProperties = Field(default_factory=SoilDefaultProperties)
 
     # Reference study area (Zona da Mata Mineira - Juiz de Fora e microrregioes)
     center_latitude: float = -21.7642

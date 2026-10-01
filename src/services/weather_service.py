@@ -166,8 +166,22 @@ class WeatherService:
         wind_dirs = hourly.get("wind_direction_10m", [])
         wind_gusts = hourly.get("wind_gusts_10m", [])
 
-        # past_days=3 provides 72 hours of antecedent records
-        current_idx = min(72, len(precip) - 1) if len(precip) >= 72 else len(precip) // 2
+        # Find the correct index for "now" in the hourly array
+        current_time_str = current.get("time", "")
+        current_idx = 72 # default fallback
+        
+        if current_time_str and times:
+            # Match the hour (e.g., "2026-10-01T11:30" -> "2026-10-01T11:00")
+            target_hour = current_time_str.split(":")[0] + ":00"
+            if target_hour in times:
+                current_idx = times.index(target_hour)
+            else:
+                # If exact match fails, fallback to 72 + current hour of day
+                try:
+                    dt = datetime.fromisoformat(current_time_str)
+                    current_idx = 72 + dt.hour
+                except:
+                    pass
 
         # 1. Past 24h precipitation sum
         start_24h = max(0, current_idx - 24)
