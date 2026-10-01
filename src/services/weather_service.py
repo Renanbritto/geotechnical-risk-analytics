@@ -92,6 +92,8 @@ class LiveWeatherMetrics(BaseModel):
     accumulated_rain_24h_mm: float = Field(..., description="Observed rainfall over the last 24 hours (mm)")
     accumulated_rain_72h_mm: float = Field(..., description="Observed rainfall over the last 72 hours (mm)")
     forecast_rain_next_24h_mm: float = Field(default=0.0, description="Forecast precipitation for the next 24h (mm)")
+    peak_rain_rate_24h_mmh: float = Field(default=0.0, description="Max hourly rainfall rate forecast for the next 24h (mm/h)")
+    max_precipitation_probability_24h_pct: int = Field(default=0, description="Max precipitation probability for the next 24h (%)")
     current_rain_rate_mmh: float = Field(default=0.0, description="Current instantaneous precipitation rate (mm/h)")
     soil_moisture_volumetric_m3_m3: float = Field(default=0.35, description="Volumetric soil moisture (0-28cm) in m3/m3")
     relative_humidity_pct: float = Field(default=80.0, description="Relative humidity percentage")
@@ -193,7 +195,12 @@ class WeatherService:
 
         # 3. Forecast next 24h precipitation
         end_forecast = min(len(precip), current_idx + 24)
-        rain_forecast_24h = float(sum(p for p in precip[current_idx:end_forecast] if p is not None))
+        next_24_precips = [p for p in precip[current_idx:end_forecast] if p is not None]
+        rain_forecast_24h = float(sum(next_24_precips))
+        peak_rain_rate_24h = float(max(next_24_precips)) if next_24_precips else 0.0
+
+        next_24_probs = [p for p in precip_probs[current_idx:end_forecast] if p is not None]
+        max_prob_24h = int(max(next_24_probs)) if next_24_probs else 0
 
         # 4. Volumetric soil moisture
         moist_0_7 = soil_0_7[current_idx] if (soil_0_7 and current_idx < len(soil_0_7) and soil_0_7[current_idx] is not None) else 0.32
@@ -300,6 +307,8 @@ class WeatherService:
             accumulated_rain_24h_mm=round(float(rain_24h), 1),
             accumulated_rain_72h_mm=round(float(rain_72h), 1),
             forecast_rain_next_24h_mm=round(float(rain_forecast_24h), 1),
+            peak_rain_rate_24h_mmh=round(float(peak_rain_rate_24h), 1),
+            max_precipitation_probability_24h_pct=int(max_prob_24h),
             current_rain_rate_mmh=round(float(curr_rain_rate), 2),
             soil_moisture_volumetric_m3_m3=round(float(avg_soil_moisture), 3),
             relative_humidity_pct=round(float(curr_rh), 1),
