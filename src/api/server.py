@@ -12,9 +12,9 @@ def create_app() -> FastAPI:
         title=settings.app_name,
         version=settings.app_version,
         description=(
-            "API RESTful para modelagem geoespacial de suscetibilidade a deslizamentos de terra, "
-            "calculo de Fator de Seguranca (FS) de encostas infinitas, ponderacao multicriterio AHP (Saaty) "
-            "e geracao de camadas cartograficas GeoJSON/Leaflet."
+            "AlertaGeo - Plataforma de monitoramento geotecnico em tempo real. "
+            "API para analise de estabilidade de encostas, dados meteorologicos, "
+            "calculo de Fator de Seguranca (FS) e geracao de camadas GeoJSON/Leaflet."
         ),
         docs_url="/docs",
         redoc_url="/redoc",
