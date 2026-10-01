@@ -57,6 +57,14 @@ def get_alertageo_logo():
     raise HTTPException(status_code=404, detail="Logo AlertaGeo nao encontrado")
 
 
+@router.get("/static/alerta_chuva.png", tags=["Assets"])
+def get_alerta_chuva_banner():
+    banner_path = os.path.join(os.path.dirname(__file__), "..", "static", "alerta_chuva.png")
+    if os.path.exists(banner_path):
+        return FileResponse(banner_path, media_type="image/png", headers={"Cache-Control": "max-age=86400"})
+    raise HTTPException(status_code=404, detail="Banner Alerta Chuva nao encontrado")
+
+
 @router.get("/favicon.ico", include_in_schema=False)
 def get_favicon():
     logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
