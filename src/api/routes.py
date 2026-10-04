@@ -41,33 +41,26 @@ def get_dashboard_ui():
     return HTMLResponse(content="<h1>Monitoramento Climatico</h1><p><a href='/docs'>Swagger API</a></p>")
 
 
-@router.get("/static/logo.png", tags=["Assets"])
-def get_site_logo():
-    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
-    if os.path.exists(logo_path):
-        return FileResponse(logo_path, media_type="image/png")
-    raise HTTPException(status_code=404, detail="Logo nao encontrado")
-
-
-@router.get("/static/alertageo_logo.jpg", tags=["Assets"])
-def get_alertageo_logo():
-    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "alertageo_logo.jpg")
-    if os.path.exists(logo_path):
-        return FileResponse(logo_path, media_type="image/jpeg", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
-    raise HTTPException(status_code=404, detail="Logo AlertaGeo nao encontrado")
-
-
-@router.get("/static/alerta_chuva.png", tags=["Assets"])
-def get_alerta_chuva_banner():
-    banner_path = os.path.join(os.path.dirname(__file__), "..", "static", "alerta_chuva.png")
-    if os.path.exists(banner_path):
-        return FileResponse(banner_path, media_type="image/png", headers={"Cache-Control": "max-age=86400"})
-    raise HTTPException(status_code=404, detail="Banner Alerta Chuva nao encontrado")
+@router.get("/static/{file_name}", tags=["Assets"])
+def get_static_file(file_name: str):
+    file_path = os.path.join(os.path.dirname(__file__), "..", "static", file_name)
+    if os.path.exists(file_path):
+        media_type = "image/png"
+        if file_name.endswith(".jpg") or file_name.endswith(".jpeg"):
+            media_type = "image/jpeg"
+        elif file_name.endswith(".ico"):
+            media_type = "image/x-icon"
+        elif file_name.endswith(".svg"):
+            media_type = "image/svg+xml"
+        return FileResponse(file_path, media_type=media_type, headers={"Cache-Control": "public, max-age=86400"})
+    raise HTTPException(status_code=404, detail="Arquivo estatico nao encontrado")
 
 
 @router.get("/favicon.ico", include_in_schema=False)
 def get_favicon():
-    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "favicon.png")
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
     if os.path.exists(logo_path):
         return FileResponse(logo_path, media_type="image/png")
     raise HTTPException(status_code=404, detail="Favicon nao encontrado")

@@ -9,12 +9,11 @@ from src.config.settings import settings
 def create_app() -> FastAPI:
     """Build and configure the FastAPI application instance."""
     app = FastAPI(
-        title=settings.app_name,
+        title="Alerta Chuva - Monitoramento Climatico em Tempo Real",
         version=settings.app_version,
         description=(
-            "AlertaGeo - Plataforma de monitoramento geotecnico em tempo real. "
-            "API para analise de estabilidade de encostas, dados meteorologicos, "
-            "calculo de Fator de Seguranca (FS) e geracao de camadas GeoJSON/Leaflet."
+            "Alerta Chuva - Plataforma de monitoramento climatico e meteorologico em tempo real. "
+            "Previsao do tempo, chuva, ventos e dinamica atmosferica."
         ),
         docs_url="/docs",
         redoc_url="/redoc",

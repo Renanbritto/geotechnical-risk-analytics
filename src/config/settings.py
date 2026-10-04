@@ -13,7 +13,7 @@ class RainfallThresholds(BaseModel):
 
 class AppSettings(BaseModel):
     """Global configuration for the climate monitoring system."""
-    app_name: str = "Alerta Zona da Mata - Monitoramento Climatico"
+    app_name: str = "Alerta Chuva - Monitoramento Climatico em Tempo Real"
     app_version: str = "1.0.0"
     environment: str = "production"
     debug: bool = False
