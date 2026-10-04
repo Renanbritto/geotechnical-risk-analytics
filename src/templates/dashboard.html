@@ -465,6 +465,60 @@
       margin-top: 0.15rem;
     }
 
+    /* Bloco Primário de Temperatura Atual */
+    .ct-temp-now-primary {
+      display: flex;
+      align-items: baseline;
+      gap: 1.25rem;
+      margin-top: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .ct-temp-big {
+      font-size: 3.8rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .ct-temp-big sup {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--accent-primary);
+    }
+
+    .ct-temp-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .ct-condition-now {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .ct-apparent-now {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .ct-minmax-now {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 600px) {
+      .ct-temp-big {
+        font-size: 2.8rem;
+      }
+    }
+
     /* Linha de Resumo Estilo Climatempo (Data, Mín/Máx, Chuva, Frase) */
     .ct-summary-row {
       display: flex;
@@ -1510,6 +1564,20 @@
             <div>
               <div class="hero-city-label" id="heroCityBadge">Polo Regional da Zona da Mata</div>
               <div class="hero-city-name" id="heroCityName">Juiz de Fora - MG</div>
+
+              <!-- TEMPERATURA AGORA (INFORMAÇÃO PRIMÁRIA) -->
+              <div class="ct-temp-now-primary">
+                <div class="ct-temp-big" id="heroTemp">--<sup>&deg;C</sup></div>
+                <div class="ct-temp-meta">
+                  <div class="ct-condition-now" id="heroCondition">Carregando...</div>
+                  <div class="ct-apparent-now" id="heroApparent">Sensa&ccedil;&atilde;o t&eacute;rmica de --&deg;C</div>
+                  <div class="ct-minmax-now">
+                    <span>M&aacute;x: <strong id="heroMax" style="color:#f87171;">--&deg;C</strong></span>
+                    <span>&bull;</span>
+                    <span>M&iacute;n: <strong id="heroMin" style="color:#38bdf8;">--&deg;C</strong></span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="ct-date-badge">
               <span class="ct-date-day" id="ctDateDay">--</span>
@@ -1597,23 +1665,6 @@
 
         <!-- GRADE DE MÉTRICAS DETALHADAS: AGORA & PREVISÃO -->
         <div class="ct-metrics-grid">
-          <!-- CARD: TEMPO PRESENTE (AGORA) -->
-          <div class="ct-metric-card">
-            <div class="ct-metric-header">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
-              Temperatura Agora
-            </div>
-            <div class="ct-metric-val">
-              <span id="heroTemp">--<sup>&deg;C</sup></span>
-            </div>
-            <div class="ct-metric-sub">
-              <span id="heroCondition">--</span> &bull; <span id="heroApparent">Sensa&ccedil;&atilde;o --&deg;C</span>
-            </div>
-            <div class="ct-metric-sub" style="margin-top: 0.15rem;">
-              M&iacute;n: <strong id="heroMin" style="color:#38bdf8;">--&deg;C</strong> &bull; M&aacute;x: <strong id="heroMax" style="color:#f87171;">--&deg;C</strong>
-            </div>
-          </div>
-
           <!-- CARD: PREVISÃO DE CHUVA (FUTURO) -->
           <div class="ct-metric-card">
             <div class="ct-metric-header">
