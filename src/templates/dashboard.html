@@ -421,28 +421,28 @@
     }
 
     /* ================================================================
-       SECTION: HERO — SITUAÇÃO ATUAL
+       SECTION: HERO — CLIMATEMPO STYLE (AGORA & PREVISÃO DO TEMPO)
        ================================================================ */
     .hero-section {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 1100px) {
-      .hero-section {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .hero-weather {
-      padding: 1.8rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
-    .hero-top-row {
+    /* Card Principal de Previsão Diária */
+    .ct-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      position: relative;
+    }
+
+    .ct-header-row {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -465,63 +465,253 @@
       margin-top: 0.15rem;
     }
 
-    .hero-temp-block {
+    /* Linha de Resumo Estilo Climatempo (Data, Mín/Máx, Chuva, Frase) */
+    .ct-summary-row {
       display: flex;
-      align-items: baseline;
-      gap: 1rem;
-      margin-top: 0.25rem;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.2rem;
     }
 
-    .hero-temp-big {
-      font-size: 4rem;
+    .ct-date-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-left: 0.85rem;
+      border-left: 3px solid #0284c7;
+      min-width: 48px;
+    }
+
+    .ct-date-day {
+      font-size: 1.5rem;
       font-weight: 800;
       color: #fff;
       line-height: 1;
-      letter-spacing: -0.04em;
     }
 
-    .hero-temp-big sup {
-      font-size: 1.8rem;
+    .ct-date-weekday {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      color: #94a3b8;
+      letter-spacing: 0.03em;
+    }
+
+    .ct-summary-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ct-summary-temps {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .ct-temp-min {
+      color: #38bdf8;
+    }
+
+    .ct-temp-max {
+      color: #f87171;
+    }
+
+    .ct-summary-rain {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #7dd3fc;
+      background: rgba(14, 165, 233, 0.12);
+      padding: 0.3rem 0.65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .ct-summary-phrase {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      line-height: 1.45;
+      min-width: 260px;
+    }
+
+    /* Linha dos 4 Turnos: Madrugada, Manhã, Tarde, Noite */
+    .ct-periods-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      padding: 0.25rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .ct-periods-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .ct-period-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.35rem;
+      padding: 0.85rem 0.65rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.2s ease;
+    }
+
+    .ct-period-item:hover {
+      background: rgba(255, 255, 255, 0.045);
+      border-color: rgba(255, 255, 255, 0.09);
+      transform: translateY(-2px);
+    }
+
+    .ct-period-icon {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ct-period-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      color: #94a3b8;
+    }
+
+    .ct-period-temp {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .ct-period-rain {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #38bdf8;
+    }
+
+    /* Banner de Alerta Real (Oculto em dias normais, só exibe em tempestade severa) */
+    .ct-alert-banner {
+      display: none;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+
+    .ct-alert-banner.active-warning {
+      display: flex;
+      background: rgba(249, 115, 22, 0.12);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      color: #fdba74;
+    }
+
+    .ct-alert-banner.active-critical {
+      display: flex;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+
+    .ct-alert-icon {
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .ct-alert-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .ct-alert-sub {
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
+
+    /* Grade Detalhada: Agora & Previsão */
+    .ct-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .ct-metric-card {
+      background: rgba(18, 20, 24, 0.65);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      transition: all 0.2s ease;
+    }
+
+    .ct-metric-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-1px);
+    }
+
+    .ct-metric-header {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .ct-metric-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      line-height: 1.2;
+      margin: 0.15rem 0;
+    }
+
+    .ct-metric-val sup {
+      font-size: 0.85rem;
       font-weight: 500;
       color: var(--accent-primary);
     }
 
-    .hero-temp-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-
-    .hero-condition {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .hero-apparent {
-      font-size: 0.78rem;
+    .ct-metric-sub {
+      font-size: 0.75rem;
       color: var(--text-secondary);
+      line-height: 1.35;
     }
 
-    .hero-minmax {
-      display: flex;
-      gap: 0.75rem;
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-    }
-
-    .hero-minmax strong {
-      color: #fff;
+    .ct-prob-pill {
+      font-size: 0.7rem;
       font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
     }
 
-    /* RIGHT COLUMN: RISK + MINI METRICS */
-    .hero-metrics-col {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
+    /* Compatibilidade para mini-metric e risk-card */
     .mini-metric {
       background: rgba(18, 20, 24, 0.65);
       border: 1px solid var(--border-default);
@@ -530,19 +720,12 @@
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
-      transition: all 0.2s;
-    }
-
-    .mini-metric:hover {
-      border-color: var(--border-accent);
-      transform: translateY(-1px);
     }
 
     .mini-metric-label {
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--text-tertiary);
     }
 
@@ -560,17 +743,6 @@
     .risk-card {
       background: var(--bg-card-inner);
       border: 1px solid var(--border-default);
-      border-left: 3px solid var(--status-attention);
-    }
-
-    .risk-card .mini-metric-val {
-      font-size: 1.05rem;
-    }
-
-    .metrics-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
     }
 
     /* ================================================================
@@ -1263,7 +1435,7 @@
       <div class="topbar-right">
         <div class="status-indicator">
           <span class="status-dot"></span>
-          Dados ao vivo
+          Monitorando
         </div>
         <span class="topbar-clock" id="topbarClock">--:--</span>
       </div>
@@ -1329,54 +1501,191 @@
          ============================================================ -->
     <main class="main-content" id="mainContent">
 
-      <!-- ========== HERO: SITUAÇÃO ATUAL ========== -->
+      <!-- ========== HERO: SITUAÇÃO ATUAL & PREVISÃO (ESTILO CLIMATEMPO) ========== -->
       <section class="hero-section section-animated" id="secDashboard">
-        <div class="glass-card hero-weather">
-          <div class="hero-top-row">
+        
+        <!-- CARD PRINCIPAL: PREVISÃO DO DIA & TURNOS (ESTILO CLIMATEMPO) -->
+        <div class="glass-card ct-card">
+          <div class="ct-header-row">
             <div>
               <div class="hero-city-label" id="heroCityBadge">Polo Regional da Zona da Mata</div>
               <div class="hero-city-name" id="heroCityName">Juiz de Fora - MG</div>
             </div>
+            <div class="ct-date-badge">
+              <span class="ct-date-day" id="ctDateDay">--</span>
+              <span class="ct-date-weekday" id="ctDateWeekday">---</span>
+            </div>
           </div>
 
-          <div class="hero-temp-block">
-            <div class="hero-temp-big" id="heroTemp">27<sup>&deg;C</sup></div>
-            <div class="hero-temp-meta">
-              <div class="hero-condition" id="heroCondition">Parcialmente Nublado</div>
-              <div class="hero-apparent" id="heroApparent">Sensa&ccedil;&atilde;o t&eacute;rmica de 29&deg;C</div>
-              <div class="hero-minmax">
-                <span>M&aacute;x: <strong id="heroMax">30&deg;C</strong></span>
-                <span>&bull;</span>
-                <span>M&iacute;n: <strong id="heroMin">18&deg;C</strong></span>
+          <!-- LINHA DE RESUMO DO DIA: ÍCONE, MÍN/MÁX, CHUVA E FRASE DESCRITIVA -->
+          <div class="ct-summary-row">
+            <div class="ct-summary-icon" id="ctSummaryIcon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </div>
+            <div class="ct-summary-temps">
+              <span class="ct-temp-min" id="ctTempMin">--&deg;</span>
+              <span class="ct-temp-max" id="ctTempMax">--&deg;</span>
+            </div>
+            <div class="ct-summary-rain" id="ctSummaryRain">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                <line x1="8" y1="19" x2="8" y2="23"></line>
+                <line x1="16" y1="19" x2="16" y2="23"></line>
+              </svg>
+              <span id="ctRainVol">0.0 mm</span>
+            </div>
+            <div class="ct-summary-phrase" id="ctDaySummary">
+              Carregando previs&atilde;o meteorol&oacute;gica do dia...
+            </div>
+          </div>
+
+          <!-- LINHA DOS 4 TURNOS DO DIA (MADRUGADA, MANHÃ, TARDE, NOITE) -->
+          <div class="ct-periods-container">
+            <div class="ct-period-item" id="periodMadrugada">
+              <div class="ct-period-icon" id="periodIconMadrugada">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
               </div>
+              <div class="ct-period-name">Madrugada</div>
+              <div class="ct-period-temp" id="periodTempMadrugada">--&deg;</div>
+              <div class="ct-period-rain" id="periodRainMadrugada">-</div>
+            </div>
+            <div class="ct-period-item" id="periodManha">
+              <div class="ct-period-icon" id="periodIconManha">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              </div>
+              <div class="ct-period-name">Manh&atilde;</div>
+              <div class="ct-period-temp" id="periodTempManha">--&deg;</div>
+              <div class="ct-period-rain" id="periodRainManha">-</div>
+            </div>
+            <div class="ct-period-item" id="periodTarde">
+              <div class="ct-period-icon" id="periodIconTarde">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" stroke="#94a3b8" fill="rgba(148, 163, 184, 0.2)"></path></svg>
+              </div>
+              <div class="ct-period-name">Tarde</div>
+              <div class="ct-period-temp" id="periodTempTarde">--&deg;</div>
+              <div class="ct-period-rain" id="periodRainTarde">-</div>
+            </div>
+            <div class="ct-period-item" id="periodNoite">
+              <div class="ct-period-icon" id="periodIconNoite">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path><path d="M19 17.5A3.5 3.5 0 0 0 16.5 11h-.6A5.5 5.5 0 0 0 5 15.5"></path></svg>
+              </div>
+              <div class="ct-period-name">Noite</div>
+              <div class="ct-period-temp" id="periodTempNoite">--&deg;</div>
+              <div class="ct-period-rain" id="periodRainNoite">-</div>
+            </div>
+          </div>
+
+          <!-- BANNER DE ALERTA REAL (SÓ EXIBIDO QUANDO HOUVER RISCO CRÍTICO/SEVERO) -->
+          <div class="ct-alert-banner" id="heroSafetyCard" style="display: none;">
+            <span class="ct-alert-icon">&#9888;&#65039;</span>
+            <div>
+              <div class="ct-alert-title" id="heroRiskStatus">Aviso Meteorol&oacute;gico</div>
+              <div class="ct-alert-sub" id="heroRiskSub">Condi&ccedil;&otilde;es severas em acompanhamento.</div>
             </div>
           </div>
         </div>
 
-        <div class="hero-metrics-col">
-          <div class="mini-metric risk-card" id="heroSafetyCard">
-            <span class="mini-metric-label">Risco de Chuva do Dia</span>
-            <span class="mini-metric-val" id="heroRiskStatus" style="color: var(--status-safe);">
-              Sem Alerta (Chuva Leve ou Nula)
-            </span>
-            <span class="mini-metric-sub" id="heroRiskSub">
-              Volume de chuva n&atilde;o apresenta risco hidrol&oacute;gico cr&iacute;tico.
-            </span>
+        <!-- GRADE DE MÉTRICAS DETALHADAS: AGORA & PREVISÃO -->
+        <div class="ct-metrics-grid">
+          <!-- CARD: TEMPO PRESENTE (AGORA) -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+              Temperatura Agora
+            </div>
+            <div class="ct-metric-val">
+              <span id="heroTemp">--<sup>&deg;C</sup></span>
+            </div>
+            <div class="ct-metric-sub">
+              <span id="heroCondition">--</span> &bull; <span id="heroApparent">Sensa&ccedil;&atilde;o --&deg;C</span>
+            </div>
+            <div class="ct-metric-sub" style="margin-top: 0.15rem;">
+              M&iacute;n: <strong id="heroMin" style="color:#38bdf8;">--&deg;C</strong> &bull; M&aacute;x: <strong id="heroMax" style="color:#f87171;">--&deg;C</strong>
+            </div>
           </div>
 
-          <div class="metrics-grid-2">
-            <div class="mini-metric">
-              <span class="mini-metric-label">Chuva no Hor&aacute;rio</span>
-              <span class="mini-metric-val" id="heroRainNow">0.0 mm/h</span>
-              <span class="mini-metric-sub">Acum. 24h: <strong id="heroRain24">0 mm</strong></span>
+          <!-- CARD: PREVISÃO DE CHUVA (FUTURO) -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="23"></line><line x1="16" y1="19" x2="16" y2="23"></line></svg>
+              Chuva Prevista (Hoje)
             </div>
-            <div class="mini-metric">
-              <span class="mini-metric-label">Vento &amp; Rajadas</span>
-              <span class="mini-metric-val" id="heroWind">0 km/h</span>
-              <span class="mini-metric-sub">Rajadas: <strong id="heroGusts">0 km/h</strong></span>
+            <div class="ct-metric-val">
+              <span id="forecastRainVal">0.0 mm</span>
+              <span class="ct-prob-pill" id="forecastRainProb">0% de chance</span>
+            </div>
+            <div class="ct-metric-sub" id="forecastRainTiming">
+              Instabilidade mais prov&aacute;vel
+            </div>
+          </div>
+
+          <!-- CARD: CHUVA NO MOMENTO & ACUMULADO -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Chuva no Hor&aacute;rio
+            </div>
+            <div class="ct-metric-val">
+              <span id="heroRainNow">0.0 mm/h</span>
+            </div>
+            <div class="ct-metric-sub">
+              Acumulado 24h: <strong id="heroRain24" style="color: #fff;">0.0 mm</strong>
+            </div>
+          </div>
+
+          <!-- CARD: VENTO & RAJADAS -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
+              Vento &amp; Rajadas
+            </div>
+            <div class="ct-metric-val">
+              <span id="heroWind">0 km/h</span>
+            </div>
+            <div class="ct-metric-sub">
+              Rajadas: <strong id="heroGusts" style="color: #fff;">0 km/h</strong>
+            </div>
+          </div>
+
+          <!-- CARD: UMIDADE DO AR -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+              Umidade do Ar
+            </div>
+            <div class="ct-metric-val">
+              <span id="heroHumidity">--%</span>
+            </div>
+            <div class="ct-metric-sub">
+              Umidade relativa atmosf&eacute;rica
+            </div>
+          </div>
+
+          <!-- CARD: STATUS GERAL -->
+          <div class="ct-metric-card">
+            <div class="ct-metric-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Condi&ccedil;&atilde;o Geral
+            </div>
+            <div class="ct-metric-val" style="font-size: 1.15rem; color: var(--status-safe);" id="generalStatusVal">
+              Monitoramento Normal
+            </div>
+            <div class="ct-metric-sub" id="generalStatusSub">
+              Sem alertas hidrol&oacute;gicos ou clim&aacute;ticos cr&iacute;ticos
             </div>
           </div>
         </div>
+
       </section>
 
       <!-- ========== MAPA / RADAR ========== -->
@@ -1691,29 +2000,39 @@
 
 
     /* =================================================================
-       RENDER RESULTS
+       RENDER RESULTS & CLIMATEMPO INTELLIGENCE
        ================================================================= */
-    function getWeatherIcon(desc) {
-      const d = desc.toLowerCase();
-      if (d.includes('limpo') || d.includes('sol')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    function getWeatherSvg(desc, isNight = false, size = 26) {
+      const d = (desc || '').toLowerCase();
+      if (d.includes('tempestade') || d.includes('trovoada') || d.includes('temporal')) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"></path><polygon points="13 11 9 17 15 17 11 23" fill="#f59e0b"></polygon></svg>`;
       }
-      if (d.includes('parcialmente')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M12 2v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M20 12h2"></path><path d="M19.07 4.93l-1.41 1.41"></path><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"></path><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"></path></svg>';
-      }
-      if (d.includes('nublado')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>';
+      if (d.includes('chuva') || d.includes('pancada')) {
+        if (isNight) {
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="23"></line><line x1="12" y1="17" x2="12" y2="21"></line><line x1="16" y1="19" x2="16" y2="23"></line></svg>`;
+        }
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="23"></line><line x1="12" y1="17" x2="12" y2="21"></line><line x1="16" y1="19" x2="16" y2="23"></line></svg>`;
       }
       if (d.includes('chuvisco') || d.includes('garoa')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="22"></line><line x1="16" y1="19" x2="16" y2="22"></line></svg>';
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="22"></line><line x1="16" y1="19" x2="16" y2="22"></line></svg>`;
       }
-      if (d.includes('chuva')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="23"></line><line x1="12" y1="17" x2="12" y2="21"></line><line x1="16" y1="19" x2="16" y2="23"></line></svg>';
+      if (d.includes('nublado') || d.includes('encoberto')) {
+        if (d.includes('parcialmente') || d.includes('muitas nuvens')) {
+          if (isNight) {
+            return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path><path d="M19 17.5A3.5 3.5 0 0 0 16.5 11h-.6A5.5 5.5 0 0 0 5 15.5"></path></svg>`;
+          }
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" stroke="#94a3b8" fill="rgba(148, 163, 184, 0.2)"></path></svg>`;
+        }
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>`;
       }
-      if (d.includes('tempestade') || d.includes('trovoada')) {
-        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"></path><polygon points="13 11 9 17 15 17 11 23"></polygon></svg>';
+      if (isNight) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`;
       }
-      return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>';
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    }
+
+    function getWeatherIcon(desc) {
+      return getWeatherSvg(desc, false, 16);
     }
 
     function getWindColor(speed) {
@@ -1740,74 +2059,185 @@
         buildWindyMeteogram(globalHourlyForecast);
       }
 
-      // Inteligência focada no FUTURO (Próximas 24 horas)
-      let maxRainPerHour = 0;
-      let worstRainHour = null;
-      let maxGust = 0;
-      let worstGustHour = null;
-      let peakProb = 0;
-      
+      // 1. Data dinâmica no estilo Climatempo (ex: "04 Dom")
+      const now = new Date();
+      const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'S\u00e1b'];
+      const dayStr = String(now.getDate()).padStart(2, '0');
+      const weekStr = weekDays[now.getDay()];
+      const dateDayEl = document.getElementById('ctDateDay');
+      const dateWeekEl = document.getElementById('ctDateWeekday');
+      if (dateDayEl) dateDayEl.textContent = dayStr;
+      if (dateWeekEl) dateWeekEl.textContent = weekStr;
+
+      // 2. Análise do futuro (próximas 24 horas)
       const next24h = globalHourlyForecast && globalHourlyForecast.length > 0 
         ? globalHourlyForecast.slice(0, 24) 
         : [];
 
+      const periods = {
+        Madrugada: { hours: [0, 1, 2, 3, 4, 5], isNight: true, temps: [], rain: 0, probs: [], descs: [] },
+        Manha: { hours: [6, 7, 8, 9, 10, 11], isNight: false, temps: [], rain: 0, probs: [], descs: [] },
+        Tarde: { hours: [12, 13, 14, 15, 16, 17], isNight: false, temps: [], rain: 0, probs: [], descs: [] },
+        Noite: { hours: [18, 19, 20, 21, 22, 23], isNight: true, temps: [], rain: 0, probs: [], descs: [] }
+      };
+
+      let maxRainPerHour = 0;
+      let peakRainHour = null;
+      let maxGust = 0;
+      let peakProb = 0;
+
       next24h.forEach(h => {
         if (h.precipitation_mm > maxRainPerHour) {
           maxRainPerHour = h.precipitation_mm;
-          worstRainHour = h.time;
+          peakRainHour = h.time;
         }
         if (h.wind_gusts_kmh > maxGust) {
           maxGust = h.wind_gusts_kmh;
-          worstGustHour = h.time;
         }
         if (h.precipitation_probability_pct > peakProb) {
           peakProb = h.precipitation_probability_pct;
         }
+
+        const hr = h.hour_num !== undefined ? h.hour_num : parseInt((h.time || '').split(':')[0], 10);
+        let pKey = 'Madrugada';
+        if (hr >= 6 && hr < 12) pKey = 'Manha';
+        else if (hr >= 12 && hr < 18) pKey = 'Tarde';
+        else if (hr >= 18) pKey = 'Noite';
+
+        if (periods[pKey]) {
+          periods[pKey].temps.push(h.temperature_c);
+          periods[pKey].rain += (h.precipitation_mm || 0);
+          periods[pKey].probs.push(h.precipitation_probability_pct || 0);
+          if (h.weather_description) periods[pKey].descs.push(h.weather_description);
+        }
       });
 
+      // 3. Atualiza os 4 Turnos (Madrugada, Manhã, Tarde, Noite)
+      Object.keys(periods).forEach(k => {
+        const p = periods[k];
+        const avgTemp = p.temps.length > 0 ? Math.round(p.temps.reduce((a, b) => a + b, 0) / p.temps.length) : '--';
+        const dominantDesc = p.descs.length > 0 ? p.descs[Math.floor(p.descs.length / 2)] : 'Tempo Est\u00e1vel';
+        
+        const iconEl = document.getElementById(`periodIcon${k}`);
+        const tempEl = document.getElementById(`periodTemp${k}`);
+        const rainEl = document.getElementById(`periodRain${k}`);
+
+        if (iconEl) iconEl.innerHTML = getWeatherSvg(dominantDesc, p.isNight, 26);
+        if (tempEl) tempEl.innerHTML = `${avgTemp}&deg;`;
+        if (rainEl) {
+          if (p.rain >= 0.1) {
+            rainEl.textContent = `${p.rain.toFixed(1)}mm`;
+          } else {
+            rainEl.textContent = '-';
+          }
+        }
+      });
+
+      // 4. Totais e linha de resumo estilo Climatempo
       const rainForecast = data.live_weather ? data.live_weather.forecast_rain_next_24h_mm : 0;
+      const minTemp = data.live_weather ? Math.round(data.live_weather.temp_min_24h_c) : '--';
+      const maxTemp = data.live_weather ? Math.round(data.live_weather.temp_max_24h_c) : '--';
+      const humidity = data.live_weather ? Math.round(data.live_weather.relative_humidity_pct) : '--';
+
+      const ctTempMin = document.getElementById('ctTempMin');
+      const ctTempMax = document.getElementById('ctTempMax');
+      const ctRainVol = document.getElementById('ctRainVol');
+      const ctSummaryIcon = document.getElementById('ctSummaryIcon');
+      if (ctTempMin) ctTempMin.innerHTML = `${minTemp}&deg;`;
+      if (ctTempMax) ctTempMax.innerHTML = `${maxTemp}&deg;`;
+      if (ctRainVol) ctRainVol.textContent = `${rainForecast.toFixed(1)} mm`;
+      if (ctSummaryIcon) ctSummaryIcon.innerHTML = getWeatherSvg(data.live_weather ? data.live_weather.weather_condition_text : 'Limpo', false, 32);
+
+      // 5. Frase descritiva objetiva (estilo Climatempo - sem tom alarmista)
+      let summaryText = '';
+      const rainyPeriod = periods.Tarde.rain > 0.3 ? 'Tarde' : (periods.Noite.rain > 0.3 ? 'Noite' : (periods.Manha.rain > 0.3 ? 'Manh\u00e3' : null));
+
+      if (rainForecast < 0.2 && peakProb < 20) {
+        summaryText = 'Sol com poucas nuvens ao longo do dia. Tempo firme e est\u00e1vel.';
+      } else if (rainForecast < 3.0) {
+        if (rainyPeriod) {
+          summaryText = `Sol com muitas nuvens e per\u00edodos de c\u00e9u nublado. ${rainyPeriod} com possibilidade de pancadas de chuva fraca.`;
+        } else {
+          summaryText = 'Sol com aumento de nuvens. Per\u00edodos de c\u00e9u nublado com possibilidade de chuva fraca passageira.';
+        }
+      } else if (rainForecast < 15.0) {
+        if (rainyPeriod) {
+          summaryText = `Sol com muitas nuvens e per\u00edodos de c\u00e9u nublado. ${rainyPeriod} com pancadas de chuva.`;
+        } else {
+          summaryText = 'Muitas nuvens com pancadas de chuva isoladas no decorrer do dia.';
+        }
+      } else {
+        summaryText = 'C\u00e9u nublado a encoberto com previs\u00e3o de chuvas frequentes no decorrer do dia.';
+      }
+
+      const ctDaySummary = document.getElementById('ctDaySummary');
+      if (ctDaySummary) ctDaySummary.textContent = summaryText;
+
+      // 6. Grade detalhada: Previsão de Chuva (Sem expressões alarmistas como "pior horário")
+      const fRainVal = document.getElementById('forecastRainVal');
+      const fRainProb = document.getElementById('forecastRainProb');
+      const fRainTiming = document.getElementById('forecastRainTiming');
+      if (fRainVal) fRainVal.textContent = `${rainForecast.toFixed(1)} mm`;
+      if (fRainProb) fRainProb.textContent = `${peakProb}% de chance`;
+      if (fRainTiming) {
+        if (maxRainPerHour < 0.1 && peakProb < 25) {
+          fRainTiming.textContent = 'Sem previs\u00e3o de instabilidade no per\u00edodo.';
+        } else if (maxRainPerHour < 3.0) {
+          fRainTiming.textContent = peakRainHour ? `Maior probabilidade de chuva por volta das ${peakRainHour} (${maxRainPerHour.toFixed(1)}mm/h).` : 'Instabilidade fraca passageira.';
+        } else if (maxRainPerHour < 10.0) {
+          fRainTiming.textContent = peakRainHour ? `Per\u00edodo com chuva mais expressiva por volta das ${peakRainHour} (${maxRainPerHour.toFixed(1)}mm/h).` : 'Pancadas de chuva no per\u00edodo.';
+        } else {
+          fRainTiming.textContent = peakRainHour ? `Pico de chuva mais intenso previsto para por volta das ${peakRainHour} (${maxRainPerHour.toFixed(1)}mm/h).` : 'Chuva volumosa prevista.';
+        }
+      }
+
+      // 7. Umidade
+      const humEl = document.getElementById('heroHumidity');
+      if (humEl) humEl.textContent = `${humidity}%`;
+
+      // 8. Alerta Real da Defesa Civil (Somente ativado em caso de tempestade SEVERA)
+      const safetyCard = document.getElementById('heroSafetyCard');
       const riskEl = document.getElementById('heroRiskStatus');
       const riskSub = document.getElementById('heroRiskSub');
-      const safetyCard = document.getElementById('heroSafetyCard');
+      const generalStatusVal = document.getElementById('generalStatusVal');
+      const generalStatusSub = document.getElementById('generalStatusSub');
 
-      // Se houver pico de chuva pesada (ex: > 10mm em UMA ÚNICA HORA) ou rajadas destrutivas ou muito acumulado
-      if (maxRainPerHour > 10 || maxGust > 65 || rainForecast > 40) {
-        riskEl.textContent = 'Alerta Cr\u00edtico: Tempestade Iminente';
-        riskEl.style.color = 'var(--status-critical)';
-        
-        let subText = `Risco extremo nas pr\u00f3ximas 24h. `;
-        if (maxRainPerHour > 10) subText += `Pico de chuva torrencial \u00e0s ${worstRainHour}. `;
-        if (maxGust > 65) subText += `Rajadas destrutivas de at\u00e9 ${Math.round(maxGust)}km/h.`;
-        
-        riskSub.textContent = subText;
-        safetyCard.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(18, 20, 24, 0.9))';
-        safetyCard.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-        
-      } else if (maxRainPerHour > 3 || maxGust > 40 || rainForecast > 10 || peakProb > 70) {
-        riskEl.textContent = 'Aten\u00e7\u00e3o: Chuva e Ventos Fortes Previstos';
-        riskEl.style.color = '#f97316'; // Laranja
-        
-        let subText = `Probabilidade de ${peakProb}% de chuva. `;
-        if (worstRainHour) subText += `Pior hor\u00e1rio previsto por volta das ${worstRainHour} (${maxRainPerHour.toFixed(1)}mm/h). `;
-        if (maxGust > 40) subText += `Ventos chegando a ${Math.round(maxGust)}km/h.`;
-        
-        riskSub.textContent = subText;
-        safetyCard.style.background = 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(18, 20, 24, 0.9))';
-        safetyCard.style.borderColor = 'rgba(249, 115, 22, 0.4)';
-        
-      } else if (rainForecast > 0.5 || peakProb > 30) {
-        riskEl.textContent = 'Risco Baixo: Tempo Inst\u00e1vel / Garoa';
-        riskEl.style.color = '#fbbf24'; // Amarelo
-        riskSub.textContent = `Pancadas leves previstas (${peakProb}% de chance). Sem risco grave no horizonte de 24h.`;
-        safetyCard.style.background = 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(18, 20, 24, 0.85))';
-        safetyCard.style.borderColor = 'rgba(251, 191, 36, 0.25)';
-        
+      const isSevere = (maxRainPerHour > 12 || maxGust > 60 || rainForecast > 35);
+
+      if (isSevere) {
+        if (safetyCard) {
+          safetyCard.style.display = 'flex';
+          safetyCard.className = 'ct-alert-banner active-warning';
+        }
+        if (riskEl) riskEl.textContent = 'Aviso Meteorol\u00f3gico: Tempestade e Rajadas de Vento';
+        if (riskSub) {
+          let s = 'Previs\u00e3o de instabilidade meteorol\u00f3gica severa nas pr\u00f3ximas horas. ';
+          if (peakRainHour && maxRainPerHour > 10) s += `Pico de chuva previsto \u00e0s ${peakRainHour} (${maxRainPerHour.toFixed(1)}mm/h). `;
+          if (maxGust > 50) s += `Rajadas de vento de at\u00e9 ${Math.round(maxGust)} km/h.`;
+          riskSub.textContent = s;
+        }
+        if (generalStatusVal) {
+          generalStatusVal.textContent = 'Aviso Meteorol\u00f3gico Ativo';
+          generalStatusVal.style.color = '#f97316';
+        }
+        if (generalStatusSub) generalStatusSub.textContent = 'Condi\u00e7\u00f5es severas em acompanhamento cont\u00ednuo';
       } else {
-        riskEl.textContent = 'Tempo Est\u00e1vel e Seguro';
-        riskEl.style.color = 'var(--status-safe)';
-        riskSub.textContent = 'C\u00e9u limpo. Nenhuma instabilidade clim\u00e1tica ou de vento nas pr\u00f3ximas 24 horas.';
-        safetyCard.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(18, 20, 24, 0.85))';
-        safetyCard.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+        if (safetyCard) {
+          safetyCard.style.display = 'none';
+        }
+        if (riskEl) riskEl.textContent = 'Monitoramento Normal';
+        if (riskSub) riskSub.textContent = 'Sem alertas cr\u00edticos emitidos para a regi\u00e3o.';
+        if (generalStatusVal) {
+          generalStatusVal.textContent = 'Monitoramento Normal';
+          generalStatusVal.style.color = 'var(--status-safe)';
+        }
+        if (generalStatusSub) {
+          if (rainForecast > 0.2) {
+            generalStatusSub.textContent = 'Instabilidade leve t\u00edpica, sem risco cr\u00edtico.';
+          } else {
+            generalStatusSub.textContent = 'Tempo est\u00e1vel, sem risco hidrol\u00f3gico ou de ventos.';
+          }
+        }
       }
 
       // KPIs
