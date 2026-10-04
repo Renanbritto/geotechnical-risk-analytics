@@ -281,15 +281,16 @@
       top: calc(100% + 6px);
       left: 0;
       right: 0;
-      min-width: 270px;
-      max-height: 320px;
+      min-width: 290px;
+      max-height: 380px;
       overflow-y: auto;
+      scrollbar-width: thin;
       background: rgba(18, 20, 24, 0.96);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-md);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
       z-index: 1000;
       display: none;
       flex-direction: column;
@@ -337,6 +338,29 @@
       background: rgba(245, 158, 11, 0.12);
       color: var(--accent-primary);
       font-weight: 700;
+    }
+
+    .city-item-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-tertiary);
+      transition: all 0.15s ease;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .city-dropdown-item:hover .city-item-badge {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-primary);
+    }
+
+    .city-dropdown-item.selected .city-item-badge {
+      background: rgba(245, 158, 11, 0.25);
+      color: var(--accent-primary);
     }
 
     .city-dropdown-empty {
@@ -1643,35 +1667,54 @@
           </div>
 
           <div class="city-search-dropdown" id="citySearchDropdown">
-            <div class="city-dropdown-list" id="cityDropdownList">
-              <div class="city-dropdown-item selected" data-city="juiz-de-fora" onclick="onCityDropdownSelect('juiz-de-fora')">
-                <span class="city-item-name">Juiz de Fora</span>
-              </div>
-              <div class="city-dropdown-item" data-city="uba" onclick="onCityDropdownSelect('uba')">
-                <span class="city-item-name">Ub&aacute;</span>
-              </div>
-              <div class="city-dropdown-item" data-city="vicosa" onclick="onCityDropdownSelect('vicosa')">
-                <span class="city-item-name">Vi&ccedil;osa</span>
-              </div>
-              <div class="city-dropdown-item" data-city="muriae" onclick="onCityDropdownSelect('muriae')">
-                <span class="city-item-name">Muria&eacute;</span>
-              </div>
-              <div class="city-dropdown-item" data-city="cataguases" onclick="onCityDropdownSelect('cataguases')">
-                <span class="city-item-name">Cataguases</span>
-              </div>
-              <div class="city-dropdown-item" data-city="santos-dumont" onclick="onCityDropdownSelect('santos-dumont')">
-                <span class="city-item-name">Santos Dumont</span>
-              </div>
-              <div class="city-dropdown-item" data-city="leopoldina" onclick="onCityDropdownSelect('leopoldina')">
-                <span class="city-item-name">Leopoldina</span>
-              </div>
-              <div class="city-dropdown-item" data-city="sao-joao-nepomuceno" onclick="onCityDropdownSelect('sao-joao-nepomuceno')">
-                <span class="city-item-name">S&atilde;o Jo&atilde;o Nepomuceno</span>
-              </div>
-              <div class="city-dropdown-item" data-city="lima-duarte" onclick="onCityDropdownSelect('lima-duarte')">
-                <span class="city-item-name">Lima Duarte</span>
+            <div id="cityLocalGroup">
+              <div class="city-dropdown-group-label" id="cityLocalLabel">Cidades Monitoradas</div>
+              <div class="city-dropdown-list" id="cityDropdownList">
+                <div class="city-dropdown-item selected" data-city="juiz-de-fora" onclick="onCityDropdownSelect('juiz-de-fora')">
+                  <span class="city-item-name">Juiz de Fora</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="uba" onclick="onCityDropdownSelect('uba')">
+                  <span class="city-item-name">Ub&aacute;</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="vicosa" onclick="onCityDropdownSelect('vicosa')">
+                  <span class="city-item-name">Vi&ccedil;osa</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="muriae" onclick="onCityDropdownSelect('muriae')">
+                  <span class="city-item-name">Muria&eacute;</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="cataguases" onclick="onCityDropdownSelect('cataguases')">
+                  <span class="city-item-name">Cataguases</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="santos-dumont" onclick="onCityDropdownSelect('santos-dumont')">
+                  <span class="city-item-name">Santos Dumont</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="leopoldina" onclick="onCityDropdownSelect('leopoldina')">
+                  <span class="city-item-name">Leopoldina</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="sao-joao-nepomuceno" onclick="onCityDropdownSelect('sao-joao-nepomuceno')">
+                  <span class="city-item-name">S&atilde;o Jo&atilde;o Nepomuceno</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
+                <div class="city-dropdown-item" data-city="lima-duarte" onclick="onCityDropdownSelect('lima-duarte')">
+                  <span class="city-item-name">Lima Duarte</span>
+                  <span class="city-item-badge">MG</span>
+                </div>
               </div>
             </div>
+
+            <!-- CIDADES PESQUISADAS NO BRASIL -->
+            <div id="cityBrasilGroup" style="display: none;">
+              <div class="city-dropdown-group-label" style="margin-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.45rem;">Outras Cidades no Brasil</div>
+              <div class="city-dropdown-list" id="cityBrasilList"></div>
+            </div>
+
             <div class="city-dropdown-empty" id="cityDropdownEmpty" style="display: none;">
               Nenhuma cidade encontrada
             </div>
@@ -2173,8 +2216,8 @@
       }
 
       document.getElementById('viewerSubtitle').textContent = currentLayer === 'geo'
-        ? 'Camadas Cartogr\u00e1ficas &mdash; Setores Cr\u00edticos e Fatores de Seguran\u00e7a'
-        : `Zona da Mata Mineira \u2014 Centro: ${city.name}`;
+        ? 'Camadas Cartogr\u00e1ficas \u2014 Setores Cr\u00edticos e Fatores de Seguran\u00e7a'
+        : (city.state && city.state !== 'MG' ? `${city.name} (${city.state}) \u2014 Centro do Radar` : `Zona da Mata Mineira \u2014 Centro: ${city.name}`);
     }
 
     function switchLayer(layer) {
@@ -2187,8 +2230,21 @@
     }
 
     /* =================================================================
-       CITY SEARCH & SELECTION LOGIC
+       CITY SEARCH & SELECTION LOGIC (LOCAL & NATIONWIDE GEOCODING)
        ================================================================= */
+    const BRAZIL_STATES = {
+      'Acre': 'AC', 'Alagoas': 'AL', 'Amapá': 'AP', 'Amazonas': 'AM', 'Bahia': 'BA',
+      'Ceará': 'CE', 'Distrito Federal': 'DF', 'Espírito Santo': 'ES', 'Goiás': 'GO',
+      'Maranhão': 'MA', 'Mato Grosso': 'MT', 'Mato Grosso do Sul': 'MS', 'Minas Gerais': 'MG',
+      'Pará': 'PA', 'Paraíba': 'PB', 'Paraná': 'PR', 'Pernambuco': 'PE', 'Piauí': 'PI',
+      'Rio de Janeiro': 'RJ', 'Rio Grande do Norte': 'RN', 'Rio Grande do Sul': 'RS',
+      'Rondônia': 'RO', 'Roraima': 'RR', 'Santa Catarina': 'SC', 'São Paulo': 'SP',
+      'Sergipe': 'SE', 'Tocantins': 'TO'
+    };
+
+    let geoSearchDebounce = null;
+    let lastGeoResults = [];
+
     function normalizeCityText(str) {
       return (str || '')
         .normalize('NFD')
@@ -2214,9 +2270,17 @@
       }
       const clearBtn = document.getElementById('citySearchClear');
       if (clearBtn) clearBtn.style.display = 'none';
+
       document.querySelectorAll('#cityDropdownList .city-dropdown-item').forEach(el => {
         el.style.display = 'flex';
       });
+
+      const brasilGroup = document.getElementById('cityBrasilGroup');
+      const brasilList = document.getElementById('cityBrasilList');
+      if (brasilGroup) brasilGroup.style.display = 'none';
+      if (brasilList) brasilList.innerHTML = '';
+      lastGeoResults = [];
+
       const emptyEl = document.getElementById('cityDropdownEmpty');
       if (emptyEl) emptyEl.style.display = 'none';
     }
@@ -2245,23 +2309,122 @@
 
       const q = normalizeCityText(val);
       const items = document.querySelectorAll('#cityDropdownList .city-dropdown-item');
-      let visibleCount = 0;
+      let localVisibleCount = 0;
 
       items.forEach(item => {
         const cityName = item.querySelector('.city-item-name')?.textContent || '';
         const normCity = normalizeCityText(cityName);
         if (!q || normCity.includes(q)) {
           item.style.display = 'flex';
-          visibleCount++;
+          localVisibleCount++;
         } else {
           item.style.display = 'none';
         }
       });
 
-      const emptyEl = document.getElementById('cityDropdownEmpty');
-      if (emptyEl) {
-        emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
+      if (geoSearchDebounce) {
+        clearTimeout(geoSearchDebounce);
       }
+
+      const brasilGroup = document.getElementById('cityBrasilGroup');
+      const brasilList = document.getElementById('cityBrasilList');
+      const emptyEl = document.getElementById('cityDropdownEmpty');
+
+      if (!val || val.trim().length < 2) {
+        if (brasilGroup) brasilGroup.style.display = 'none';
+        if (brasilList) brasilList.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = localVisibleCount === 0 && val.trim().length > 0 ? 'block' : 'none';
+        return;
+      }
+
+      geoSearchDebounce = setTimeout(() => {
+        searchBrasilCities(val.trim(), localVisibleCount);
+      }, 220);
+    }
+
+    async function searchBrasilCities(query, localVisibleCount) {
+      const brasilGroup = document.getElementById('cityBrasilGroup');
+      const brasilList = document.getElementById('cityBrasilList');
+      const emptyEl = document.getElementById('cityDropdownEmpty');
+      if (!brasilGroup || !brasilList) return;
+
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=pt&format=json`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        const results = (data.results || []).filter(item => item.country_code === 'BR' || item.country === 'Brasil');
+        lastGeoResults = results;
+
+        const localVisibleNames = new Set(
+          Array.from(document.querySelectorAll('#cityDropdownList .city-dropdown-item'))
+            .filter(el => el.style.display !== 'none')
+            .map(el => normalizeCityText(el.querySelector('.city-item-name')?.textContent || ''))
+        );
+
+        brasilList.innerHTML = '';
+        let brasilCount = 0;
+
+        results.forEach((item, idx) => {
+          const normName = normalizeCityText(item.name);
+          const uf = BRAZIL_STATES[item.admin1] || (item.admin1 ? item.admin1.substring(0, 2).toUpperCase() : '');
+
+          if (localVisibleNames.has(normName) && (uf === 'MG' || !uf)) return;
+
+          brasilCount++;
+          const div = document.createElement('div');
+          div.className = 'city-dropdown-item';
+          div.onclick = () => onSelectBrasilCity(idx);
+          div.innerHTML = `
+            <span class="city-item-name">${item.name}</span>
+            <span class="city-item-badge">${uf || 'BR'}</span>
+          `;
+          brasilList.appendChild(div);
+        });
+
+        if (brasilCount > 0) {
+          brasilGroup.style.display = 'block';
+          if (emptyEl) emptyEl.style.display = 'none';
+        } else {
+          brasilGroup.style.display = 'none';
+          if (localVisibleCount === 0 && emptyEl) {
+            emptyEl.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao buscar cidades no Brasil:', err);
+      }
+    }
+
+    function onSelectBrasilCity(idx) {
+      const item = lastGeoResults[idx];
+      if (!item) return;
+
+      const uf = BRAZIL_STATES[item.admin1] || item.admin1 || '';
+      const key = 'geo-' + item.id;
+
+      ZDM_CITIES[key] = {
+        name: item.name,
+        state: uf,
+        role: uf ? `${item.name} (${uf})` : item.name,
+        lat: item.latitude,
+        lon: item.longitude,
+        slope: 26,
+        soil: 3.0,
+        lithology: 'Residual Soil',
+        landCover: 'Urban Occupation'
+      };
+
+      const sel = document.getElementById('citySelector');
+      if (sel && !sel.querySelector(`option[value="${key}"]`)) {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = item.name + (uf ? ` - ${uf}` : '');
+        sel.appendChild(opt);
+      }
+
+      selectCity(key);
+      closeCityDropdown();
     }
 
     function clearCitySearch(event) {
@@ -2276,15 +2439,7 @@
 
     function onCityDropdownSelect(key) {
       selectCity(key);
-      const box = document.getElementById('citySearchBox');
-      if (box) box.classList.remove('open');
-      const input = document.getElementById('citySearchInput');
-      const city = ZDM_CITIES[key];
-      if (input && city) {
-        input.value = city.name;
-      }
-      const clearBtn = document.getElementById('citySearchClear');
-      if (clearBtn) clearBtn.style.display = 'none';
+      closeCityDropdown();
     }
 
     function handleCitySearchKeydown(event) {
@@ -2293,10 +2448,14 @@
         event.target.blur();
       } else if (event.key === 'Enter') {
         event.preventDefault();
-        const visibleItem = document.querySelector('#cityDropdownList .city-dropdown-item:not([style*="display: none"])');
-        if (visibleItem) {
-          const cityKey = visibleItem.getAttribute('data-city');
-          if (cityKey) onCityDropdownSelect(cityKey);
+        const visibleLocal = document.querySelector('#cityDropdownList .city-dropdown-item:not([style*="display: none"])');
+        if (visibleLocal) {
+          const cityKey = visibleLocal.getAttribute('data-city');
+          if (cityKey) return onCityDropdownSelect(cityKey);
+        }
+        const visibleBrasil = document.querySelector('#cityBrasilList .city-dropdown-item');
+        if (visibleBrasil) {
+          visibleBrasil.click();
         }
       }
     }
@@ -2330,14 +2489,14 @@
       });
 
       document.getElementById('heroCityName').textContent = c.name;
-      document.getElementById('heroCityBadge').textContent = c.role;
+      document.getElementById('heroCityBadge').textContent = c.role || 'Brasil';
 
       document.getElementById('inputLat').value = c.lat;
       document.getElementById('inputLon').value = c.lon;
-      document.getElementById('inputSlope').value = c.slope;
-      document.getElementById('inputSoil').value = c.soil;
-      updateSlopeVal(c.slope);
-      updateSoilVal(c.soil);
+      document.getElementById('inputSlope').value = c.slope || 25;
+      document.getElementById('inputSoil').value = c.soil || 3.0;
+      updateSlopeVal(c.slope || 25);
+      updateSoilVal(c.soil || 3.0);
 
       updateIframe();
       fetchLiveCityData();
