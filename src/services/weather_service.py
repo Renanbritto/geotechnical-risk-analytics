@@ -95,6 +95,8 @@ class LiveWeatherMetrics(BaseModel):
     peak_rain_rate_24h_mmh: float = Field(default=0.0, description="Max hourly rainfall rate forecast for the next 24h (mm/h)")
     max_precipitation_probability_24h_pct: int = Field(default=0, description="Max precipitation probability for the next 24h (%)")
     current_rain_rate_mmh: float = Field(default=0.0, description="Current instantaneous precipitation rate (mm/h)")
+    is_currently_raining: bool = Field(default=False, description="Whether rain or drizzle is currently active")
+    rain_status_description: str = Field(default="Sem chuva no momento", description="Friendly descriptive status of current rain")
     soil_moisture_volumetric_m3_m3: float = Field(default=0.35, description="Volumetric soil moisture (0-28cm) in m3/m3")
     relative_humidity_pct: float = Field(default=80.0, description="Relative humidity percentage")
     wind_speed_10m_kmh: float = Field(default=14.0, description="Current wind speed at 10m height (km/h)")
@@ -127,7 +129,7 @@ class WeatherService:
         params = {
             "latitude": latitude,
             "longitude": longitude,
-            "current": "temperature_2m,apparent_temperature,weather_code,precipitation,rain,relative_humidity_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+            "current": "temperature_2m,apparent_temperature,weather_code,precipitation,rain,showers,relative_humidity_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
             "hourly": "temperature_2m,apparent_temperature,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm",
             "past_days": 3,
             "forecast_days": 5,
@@ -138,11 +140,36 @@ class WeatherService:
             with httpx.Client(timeout=self.timeout) as client:
                 response = client.get(self.OPEN_METEO_URL, params=params)
 
-            if response.status_code == 200:
-                data = response.json()
-                return self._parse_open_meteo_payload(latitude, longitude, data)
-            else:
-                return self._generate_fallback(latitude, longitude, reason=f"Status HTTP {response.status_code}")
+                if response.status_code == 200:
+                    data = response.json()
+                    current_data = data.get("current", {})
+                    curr_rain = max(
+                        float(current_data.get("precipitation") or 0.0),
+                        float(current_data.get("rain") or 0.0),
+                        float(current_data.get("showers") or 0.0)
+                    )
+                    curr_wmo = int(current_data.get("weather_code") or 0)
+
+                    # Check high-resolution DWD ICON-Seamless nowcasting if default ECMWF has a blind spot (0.0mm / code <= 3)
+                    icon_current = None
+                    if curr_rain <= 0.05 or curr_wmo <= 3:
+                        try:
+                            icon_params = {
+                                "latitude": latitude,
+                                "longitude": longitude,
+                                "current": "precipitation,rain,showers,weather_code",
+                                "models": "icon_seamless",
+                                "timezone": "America/Sao_Paulo"
+                            }
+                            icon_resp = client.get(self.OPEN_METEO_URL, params=icon_params, timeout=2.5)
+                            if icon_resp.status_code == 200:
+                                icon_current = icon_resp.json().get("current")
+                        except Exception:
+                            pass
+
+                    return self._parse_open_meteo_payload(latitude, longitude, data, icon_current=icon_current)
+                else:
+                    return self._generate_fallback(latitude, longitude, reason=f"Status HTTP {response.status_code}")
 
         except Exception as exc:
             return self._generate_fallback(latitude, longitude, reason=f"Erro de conexao ({type(exc).__name__})")
@@ -151,7 +178,8 @@ class WeatherService:
         self,
         latitude: float,
         longitude: float,
-        payload: Dict[str, Any]
+        payload: Dict[str, Any],
+        icon_current: Optional[Dict[str, Any]] = None
     ) -> LiveWeatherMetrics:
         current = payload.get("current", {})
         hourly = payload.get("hourly", {})
@@ -244,9 +272,61 @@ class WeatherService:
         if curr_dir is None:
             curr_dir = wind_dirs[current_idx] if (wind_dirs and current_idx < len(wind_dirs) and wind_dirs[current_idx] is not None) else 135.0
 
-        curr_rain_rate = current.get("precipitation")
-        if curr_rain_rate is None:
-            curr_rain_rate = precip[current_idx] if (precip and current_idx < len(precip) and precip[current_idx] is not None) else 0.0
+        # Instantaneous rain rate from current, rain, showers or current hour
+        curr_rain_rate = max(
+            float(current.get("precipitation") or 0.0),
+            float(current.get("rain") or 0.0),
+            float(current.get("showers") or 0.0)
+        )
+        if curr_rain_rate == 0.0 and precip and current_idx < len(precip) and precip[current_idx] is not None:
+            curr_rain_rate = float(precip[current_idx])
+
+        # Integrate high-resolution ICON model if it detects rain/showers missed by coarse models
+        if icon_current:
+            icon_rain = max(
+                float(icon_current.get("precipitation") or 0.0),
+                float(icon_current.get("rain") or 0.0),
+                float(icon_current.get("showers") or 0.0)
+            )
+            icon_code = int(icon_current.get("weather_code") or 0)
+            if icon_rain > curr_rain_rate:
+                curr_rain_rate = icon_rain
+            if icon_code in [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]:
+                if int(curr_weather_code) not in [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]:
+                    curr_weather_code = icon_code
+                    weather_desc = wmo_code_to_description(curr_weather_code)
+
+        # Determine rain status and active rain flag
+        rain_wmo_codes = {51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99}
+        recent_1h_rain = float(precip[current_idx - 1]) if (precip and current_idx > 0 and precip[current_idx - 1] is not None) else 0.0
+        recent_3h_rain = float(sum(p for p in precip[max(0, current_idx - 3):current_idx] if p is not None))
+
+        is_raining = (curr_rain_rate >= 0.1) or (int(curr_weather_code) in rain_wmo_codes)
+        if is_raining and curr_rain_rate < 0.1:
+            curr_rain_rate = 0.2
+
+        if is_raining:
+            if curr_rain_rate >= 10.0:
+                rain_status = "Chuva forte / Temporal no momento"
+            elif curr_rain_rate >= 4.0:
+                rain_status = "Chuva moderada a forte no momento"
+            elif curr_rain_rate >= 1.0:
+                rain_status = "Chuva moderada no momento"
+            elif int(curr_weather_code) in [51, 53, 55, 56, 57]:
+                rain_status = "Garoa / Chuvisco no momento"
+            elif int(curr_weather_code) in [80, 81, 82]:
+                rain_status = "Pancadas de chuva no momento"
+            else:
+                rain_status = "Chuva fraca / Chuvisco no momento"
+        else:
+            if recent_1h_rain >= 0.2:
+                rain_status = f"Trégua momentânea ({recent_1h_rain:.1f}mm na última hora)"
+            elif recent_3h_rain >= 1.0:
+                rain_status = f"Trégua momentânea ({recent_3h_rain:.1f}mm recentes)"
+            elif rain_24h >= 2.0:
+                rain_status = f"Sem chuva agora ({rain_24h:.1f}mm em 24h)"
+            else:
+                rain_status = "Sem chuva no momento"
 
         cardinal_dir = degrees_to_cardinal(float(curr_dir))
 
@@ -310,6 +390,8 @@ class WeatherService:
             peak_rain_rate_24h_mmh=round(float(peak_rain_rate_24h), 1),
             max_precipitation_probability_24h_pct=int(max_prob_24h),
             current_rain_rate_mmh=round(float(curr_rain_rate), 2),
+            is_currently_raining=bool(is_raining),
+            rain_status_description=rain_status,
             soil_moisture_volumetric_m3_m3=round(float(avg_soil_moisture), 3),
             relative_humidity_pct=round(float(curr_rh), 1),
             wind_speed_10m_kmh=round(float(curr_wind), 1),
@@ -358,6 +440,8 @@ class WeatherService:
             accumulated_rain_72h_mm=75.0,
             forecast_rain_next_24h_mm=20.0,
             current_rain_rate_mmh=1.5,
+            is_currently_raining=True,
+            rain_status_description="Chuva moderada em andamento (Modo Fallback)",
             soil_moisture_volumetric_m3_m3=0.34,
             relative_humidity_pct=85.0,
             wind_speed_10m_kmh=16.0,

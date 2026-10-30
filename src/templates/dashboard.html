@@ -2086,15 +2086,16 @@
           </div>
 
           <!-- CARD: CHUVA NO MOMENTO & ACUMULADO -->
-          <div class="ct-metric-card">
+          <div class="ct-metric-card" id="cardChuvaMomento">
             <div class="ct-metric-header">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              Chuva no Hor&aacute;rio
+              <span id="heroRainHeaderTitle">Chuva no Momento</span>
             </div>
             <div class="ct-metric-val">
               <span id="heroRainNow">0.0 mm/h</span>
+              <span id="heroRainBadge" class="ct-prob-pill" style="display: none; font-size: 0.72rem; margin-left: 8px;">Chovendo</span>
             </div>
-            <div class="ct-metric-sub">
+            <div class="ct-metric-sub" id="heroRainSub">
               Acumulado 24h: <strong id="heroRain24" style="color: #fff;">0.0 mm</strong>
             </div>
           </div>
@@ -2279,6 +2280,7 @@
     let currentCityKey = 'juiz-de-fora';
     let isSidebarCollapsed = true;
     let globalHourlyForecast = [];
+    let currentLiveWeather = null;
     let currentSelectedIndex = 0;
     let meteogramDisplayList = [];
 
@@ -2686,12 +2688,14 @@
         const wRes = await fetch(`/api/v1/weather/live?latitude=${lat}&longitude=${lon}`);
         if (wRes.ok) {
           const wData = await wRes.json();
+          currentLiveWeather = wData;
           globalHourlyForecast = wData.hourly_forecast || [];
 
           updateHeroWeather(
             wData.temperature_c, wData.apparent_temperature_c, wData.weather_condition_text,
             wData.current_rain_rate_mmh, wData.accumulated_rain_24h_mm,
-            wData.wind_speed_10m_kmh, wData.wind_gusts_10m_kmh, wData.wind_cardinal_direction
+            wData.wind_speed_10m_kmh, wData.wind_gusts_10m_kmh, wData.wind_cardinal_direction,
+            true
           );
 
           document.getElementById('heroMax').textContent = Math.round(wData.temp_max_24h_c) + '\u00b0C';
@@ -2761,9 +2765,10 @@
 
     function renderResults(data) {
       if (data.live_weather) {
+        currentLiveWeather = data.live_weather;
         const w = data.live_weather;
         globalHourlyForecast = w.hourly_forecast || [];
-        updateHeroWeather(w.temperature_c, w.apparent_temperature_c, w.weather_condition_text, w.current_rain_rate_mmh, w.accumulated_rain_24h_mm, w.wind_speed_10m_kmh, w.wind_gusts_10m_kmh, w.wind_cardinal_direction);
+        updateHeroWeather(w.temperature_c, w.apparent_temperature_c, w.weather_condition_text, w.current_rain_rate_mmh, w.accumulated_rain_24h_mm, w.wind_speed_10m_kmh, w.wind_gusts_10m_kmh, w.wind_cardinal_direction, true);
         document.getElementById('heroMax').textContent = Math.round(w.temp_max_24h_c) + '\u00b0C';
         document.getElementById('heroMin').textContent = Math.round(w.temp_min_24h_c) + '\u00b0C';
         buildWindyMeteogram(globalHourlyForecast);
@@ -2992,14 +2997,94 @@
       }
     }
 
-    function updateHeroWeather(temp, apparent, condition, rainRate, rain24, windSpeed, windGust, windCard) {
-      document.getElementById('heroTemp').innerHTML = `${Math.round(temp)}<sup>\u00b0C</sup>`;
-      document.getElementById('heroCondition').textContent = condition;
-      document.getElementById('heroApparent').textContent = `Sensa\u00e7\u00e3o t\u00e9rmica de ${Math.round(apparent)}\u00b0C`;
-      document.getElementById('heroRainNow').textContent = `${rainRate.toFixed(1)} mm/h`;
-      document.getElementById('heroRain24').textContent = `${rain24.toFixed(1)} mm`;
-      document.getElementById('heroWind').textContent = `${windSpeed.toFixed(1)} km/h`;
-      document.getElementById('heroGusts').textContent = `${windGust.toFixed(1)} km/h (${windCard})`;
+    function updateHeroWeather(temp, apparent, condition, rainRate, rain24, windSpeed, windGust, windCard, isLive = true, prob = 0, selectedTime = '') {
+      const heroTemp = document.getElementById('heroTemp');
+      if (heroTemp) heroTemp.innerHTML = `${Math.round(temp)}<sup>\u00b0C</sup>`;
+
+      const heroCond = document.getElementById('heroCondition');
+      if (heroCond) heroCond.textContent = condition;
+
+      const heroApp = document.getElementById('heroApparent');
+      if (heroApp) heroApp.textContent = `Sensa\u00e7\u00e3o t\u00e9rmica de ${Math.round(apparent)}\u00b0C`;
+
+      const rainTitleEl = document.getElementById('heroRainHeaderTitle');
+      const rainNowEl = document.getElementById('heroRainNow');
+      const rainBadgeEl = document.getElementById('heroRainBadge');
+      const rainSubEl = document.getElementById('heroRainSub');
+
+      if (isLive) {
+        if (rainTitleEl) rainTitleEl.textContent = 'Chuva no Momento';
+
+        const isRaining = (currentLiveWeather && currentLiveWeather.is_currently_raining) || rainRate > 0.05;
+        const statusDesc = currentLiveWeather && currentLiveWeather.rain_status_description ? currentLiveWeather.rain_status_description : '';
+
+        if (rainNowEl) {
+          if (rainRate > 0.05) {
+            rainNowEl.textContent = `${rainRate.toFixed(1)} mm/h`;
+            rainNowEl.style.color = '#38bdf8';
+          } else if (isRaining) {
+            rainNowEl.textContent = 'Garoa / Fraca';
+            rainNowEl.style.color = '#38bdf8';
+          } else {
+            rainNowEl.textContent = '0.0 mm/h';
+            rainNowEl.style.color = '#f3f4f6';
+          }
+        }
+
+        if (rainBadgeEl) {
+          if (isRaining) {
+            rainBadgeEl.style.display = 'inline-block';
+            rainBadgeEl.textContent = 'Chovendo';
+            rainBadgeEl.style.backgroundColor = 'rgba(56, 189, 248, 0.2)';
+            rainBadgeEl.style.color = '#38bdf8';
+            rainBadgeEl.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+          } else if (rain24 > 0.5) {
+            rainBadgeEl.style.display = 'inline-block';
+            rainBadgeEl.textContent = 'Choveu hoje';
+            rainBadgeEl.style.backgroundColor = 'rgba(245, 158, 11, 0.15)';
+            rainBadgeEl.style.color = '#f59e0b';
+            rainBadgeEl.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+          } else {
+            rainBadgeEl.style.display = 'none';
+          }
+        }
+
+        if (rainSubEl) {
+          let subHtml = `Acumulado 24h: <strong id="heroRain24" style="color: #fff;">${rain24.toFixed(1)} mm</strong>`;
+          if (statusDesc && !statusDesc.startsWith('Sem chuva')) {
+            subHtml += `<span style="display:block; color: #9ca3af; font-size: 0.72rem; margin-top: 2px;">${statusDesc}</span>`;
+          }
+          rainSubEl.innerHTML = subHtml;
+        }
+      } else {
+        // Scrubber at future hour
+        if (rainTitleEl) rainTitleEl.textContent = `Chuva no Hor\u00e1rio (${selectedTime})`;
+        if (rainNowEl) {
+          rainNowEl.textContent = `${rainRate.toFixed(1)} mm/h`;
+          rainNowEl.style.color = rainRate > 0 ? '#38bdf8' : '#f3f4f6';
+        }
+        if (rainBadgeEl) {
+          if (prob > 0) {
+            rainBadgeEl.style.display = 'inline-block';
+            rainBadgeEl.textContent = `${prob}% chance`;
+            rainBadgeEl.style.backgroundColor = prob >= 60 ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)';
+            rainBadgeEl.style.color = prob >= 60 ? '#38bdf8' : '#9ca3af';
+            rainBadgeEl.style.borderColor = prob >= 60 ? 'rgba(56, 189, 248, 0.4)' : 'rgba(255, 255, 255, 0.1)';
+          } else {
+            rainBadgeEl.style.display = 'none';
+          }
+        }
+        if (rainSubEl) {
+          const acc24 = currentLiveWeather ? currentLiveWeather.accumulated_rain_24h_mm : rain24;
+          rainSubEl.innerHTML = `Acumulado 24h real: <strong style="color: #fff;">${acc24.toFixed(1)} mm</strong>`;
+        }
+      }
+
+      const windEl = document.getElementById('heroWind');
+      if (windEl) windEl.textContent = `${windSpeed.toFixed(1)} km/h`;
+
+      const gustsEl = document.getElementById('heroGusts');
+      if (gustsEl) gustsEl.textContent = `${windGust.toFixed(1)} km/h (${windCard})`;
     }
 
     /* =================================================================
@@ -3109,7 +3194,33 @@
       const item = meteogramDisplayList[idx];
       document.getElementById('selectedTimeLabel').textContent = idx === 0 ? `Agora (${item.time})` : `${item.day_label} \u00e0s ${item.time}`;
 
-      updateHeroWeather(item.temperature_c, item.apparent_temperature_c, item.weather_description, item.precipitation_mm, item.precipitation_mm * 4, item.wind_speed_kmh, item.wind_gusts_kmh, item.wind_cardinal);
+      if (idx === 0 && currentLiveWeather) {
+        updateHeroWeather(
+          currentLiveWeather.temperature_c,
+          currentLiveWeather.apparent_temperature_c,
+          currentLiveWeather.weather_condition_text,
+          currentLiveWeather.current_rain_rate_mmh,
+          currentLiveWeather.accumulated_rain_24h_mm,
+          currentLiveWeather.wind_speed_10m_kmh,
+          currentLiveWeather.wind_gusts_10m_kmh,
+          currentLiveWeather.wind_cardinal_direction,
+          true
+        );
+      } else {
+        updateHeroWeather(
+          item.temperature_c,
+          item.apparent_temperature_c,
+          item.weather_description,
+          item.precipitation_mm,
+          currentLiveWeather ? currentLiveWeather.accumulated_rain_24h_mm : 0,
+          item.wind_speed_kmh,
+          item.wind_gusts_kmh,
+          item.wind_cardinal,
+          false,
+          item.precipitation_probability_pct,
+          item.time
+        );
+      }
 
       // Highlight column
       document.querySelectorAll('.mg-cell.selected-col').forEach(el => el.classList.remove('selected-col'));
