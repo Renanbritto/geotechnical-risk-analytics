@@ -1,7 +1,7 @@
 """Real-time meteorological and hydrological data ingestion service."""
 
 import httpx
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel, Field
 
@@ -79,6 +79,27 @@ class HourlyForecastItem(BaseModel):
     wind_cardinal: str = Field(default="S", description="Wind cardinal direction")
 
 
+class DailyForecastItem(BaseModel):
+    """Daily summary forecast item for multi-day weather outlook."""
+    date: str = Field(..., description="Date ISO string YYYY-MM-DD")
+    day_label: str = Field(..., description="Friendly label, e.g. Hoje, Amanhã, Sáb 07/11")
+    weekday_short: str = Field(default="", description="Short weekday name, e.g. Sex, Sáb")
+    weekday_long: str = Field(default="", description="Full weekday name, e.g. Sexta-feira")
+    date_formatted: str = Field(default="", description="Formatted day, e.g. 06/11")
+    temp_max_c: float = Field(..., description="Maximum temperature in Celsius")
+    temp_min_c: float = Field(..., description="Minimum temperature in Celsius")
+    apparent_max_c: float = Field(default=0.0, description="Max apparent temperature")
+    apparent_min_c: float = Field(default=0.0, description="Min apparent temperature")
+    precipitation_sum_mm: float = Field(..., description="Forecast rainfall volume in mm")
+    precipitation_probability_pct: int = Field(default=0, description="Max rainfall probability (0-100%)")
+    weather_code: int = Field(default=0, description="WMO weather code")
+    weather_description: str = Field(default="Tempo Estável", description="Friendly weather description")
+    wind_speed_max_kmh: float = Field(default=10.0, description="Max wind speed in km/h")
+    wind_gusts_max_kmh: float = Field(default=20.0, description="Max wind gusts in km/h")
+    uv_index_max: float = Field(default=0.0, description="Max UV index")
+    summary_text: str = Field(default="", description="Objective weather summary phrase for the day")
+
+
 class LiveWeatherMetrics(BaseModel):
     """Normalized live hydrometeorological data for public awareness and geotechnical analysis."""
     latitude: float
@@ -104,6 +125,7 @@ class LiveWeatherMetrics(BaseModel):
     wind_direction_10m_deg: float = Field(default=135.0, description="Wind direction in meteorological degrees")
     wind_cardinal_direction: str = Field(default="SE", description="Wind cardinal compass direction")
     hourly_forecast: List[HourlyForecastItem] = Field(default_factory=list, description="Hour-by-hour forecast array for the multi-day timeline")
+    daily_forecast: List[DailyForecastItem] = Field(default_factory=list, description="Multi-day daily forecast items (7-8 days)")
     data_source: str = Field(default="Open-Meteo API (ECMWF ERA5-Land / GFS)")
     fetched_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     is_live_data: bool = True
@@ -131,8 +153,9 @@ class WeatherService:
             "longitude": longitude,
             "current": "temperature_2m,apparent_temperature,weather_code,precipitation,rain,showers,relative_humidity_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
             "hourly": "temperature_2m,apparent_temperature,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm",
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,uv_index_max",
             "past_days": 3,
-            "forecast_days": 5,
+            "forecast_days": 8,
             "timezone": "America/Sao_Paulo"
         }
 
@@ -332,7 +355,7 @@ class WeatherService:
 
         # 8. Hour-by-hour forecast items for the multi-day meteogram (up to 72 or 120 hours ahead)
         hourly_items = []
-        max_lookahead = min(len(precip), current_idx + 96)  # 4 days ahead of current hour
+        max_lookahead = min(len(precip), current_idx + 168)  # Up to 7 days ahead of current hour
         for i in range(current_idx, max_lookahead):
             t_str = times[i] if (times and i < len(times)) else f"H+{i - current_idx}"
             # Extract time e.g. "2026-09-11T16:00" -> "16:00"
@@ -375,6 +398,93 @@ class WeatherService:
                 wind_cardinal=degrees_to_cardinal(w_d)
             ))
 
+        # 9. Multi-day forecast items for 7-8 day outlook
+        daily = payload.get("daily", {})
+        daily_times = daily.get("time", [])
+        daily_codes = daily.get("weather_code", [])
+        daily_t_max = daily.get("temperature_2m_max", [])
+        daily_t_min = daily.get("temperature_2m_min", [])
+        daily_app_max = daily.get("apparent_temperature_max", [])
+        daily_app_min = daily.get("apparent_temperature_min", [])
+        daily_precip = daily.get("precipitation_sum", [])
+        daily_probs = daily.get("precipitation_probability_max", [])
+        daily_winds = daily.get("wind_speed_10m_max", [])
+        daily_gusts = daily.get("wind_gusts_10m_max", [])
+        daily_uv = daily.get("uv_index_max", [])
+
+        today_date_str = current_time_str.split("T")[0] if "T" in current_time_str else datetime.now().strftime("%Y-%m-%d")
+        WEEKDAY_SHORT_PT = {0: "Seg", 1: "Ter", 2: "Qua", 3: "Qui", 4: "Sex", 5: "Sáb", 6: "Dom"}
+        
+        daily_items: List[DailyForecastItem] = []
+        for i, dt_str in enumerate(daily_times):
+            if dt_str < today_date_str:
+                continue
+
+            try:
+                dt_obj = datetime.fromisoformat(dt_str)
+                w_idx = dt_obj.weekday()
+                w_short = WEEKDAY_SHORT_PT.get(w_idx, "")
+                w_long = DAY_NAMES_PT.get(w_idx, "")
+                d_fmt = f"{dt_obj.day:02d}/{dt_obj.month:02d}"
+            except Exception:
+                w_short = ""
+                w_long = ""
+                d_fmt = dt_str
+
+            days_from_today = len(daily_items)
+            if days_from_today == 0:
+                day_lbl = "Hoje"
+            elif days_from_today == 1:
+                day_lbl = "Amanhã"
+            else:
+                day_lbl = f"{w_short} {d_fmt}"
+
+            w_code = int(daily_codes[i]) if (daily_codes and i < len(daily_codes) and daily_codes[i] is not None) else 1
+            t_max = float(daily_t_max[i]) if (daily_t_max and i < len(daily_t_max) and daily_t_max[i] is not None) else 25.0
+            t_min = float(daily_t_min[i]) if (daily_t_min and i < len(daily_t_min) and daily_t_min[i] is not None) else 18.0
+            app_max = float(daily_app_max[i]) if (daily_app_max and i < len(daily_app_max) and daily_app_max[i] is not None) else t_max
+            app_min = float(daily_app_min[i]) if (daily_app_min and i < len(daily_app_min) and daily_app_min[i] is not None) else t_min
+            p_sum = float(daily_precip[i]) if (daily_precip and i < len(daily_precip) and daily_precip[i] is not None) else 0.0
+            p_prob = int(daily_probs[i]) if (daily_probs and i < len(daily_probs) and daily_probs[i] is not None) else 0
+            w_spd = float(daily_winds[i]) if (daily_winds and i < len(daily_winds) and daily_winds[i] is not None) else 12.0
+            w_gst = float(daily_gusts[i]) if (daily_gusts and i < len(daily_gusts) and daily_gusts[i] is not None) else 25.0
+            uv_val = float(daily_uv[i]) if (daily_uv and i < len(daily_uv) and daily_uv[i] is not None) else 5.0
+
+            d_desc = wmo_code_to_description(w_code)
+            if p_sum >= 15.0 or "Tempestade" in d_desc:
+                summary = f"Chuva volumosa ({p_sum:.1f}mm) com chance de tempestades e ventos fortes."
+            elif p_sum >= 5.0 or "Pancadas" in d_desc:
+                summary = f"Sol com aumento de nuvens e pancadas de chuva ({p_sum:.1f}mm) no período."
+            elif p_sum >= 0.5 or "Chuvisco" in d_desc:
+                summary = f"Períodos de céu nublado com possibilidade de chuva fraca passageira ({p_sum:.1f}mm)."
+            elif "Nublado" in d_desc:
+                summary = "Céu com muitas nuvens e tempo estável sem chuva expressiva."
+            else:
+                summary = "Dia de sol com poucas nuvens e tempo firme."
+
+            daily_items.append(DailyForecastItem(
+                date=dt_str,
+                day_label=day_lbl,
+                weekday_short=w_short,
+                weekday_long=w_long,
+                date_formatted=d_fmt,
+                temp_max_c=round(t_max, 1),
+                temp_min_c=round(t_min, 1),
+                apparent_max_c=round(app_max, 1),
+                apparent_min_c=round(app_min, 1),
+                precipitation_sum_mm=round(p_sum, 1),
+                precipitation_probability_pct=p_prob,
+                weather_code=w_code,
+                weather_description=d_desc,
+                wind_speed_max_kmh=round(w_spd, 1),
+                wind_gusts_max_kmh=round(w_gst, 1),
+                uv_index_max=round(uv_val, 1),
+                summary_text=summary
+            ))
+
+            if len(daily_items) >= 8:
+                break
+
         return LiveWeatherMetrics(
             latitude=latitude,
             longitude=longitude,
@@ -399,6 +509,7 @@ class WeatherService:
             wind_direction_10m_deg=round(float(curr_dir), 1),
             wind_cardinal_direction=cardinal_dir,
             hourly_forecast=hourly_items,
+            daily_forecast=daily_items,
             data_source="Open-Meteo API (ECMWF ERA5-Land)",
             is_live_data=True
         )
@@ -427,6 +538,38 @@ class WeatherService:
                 wind_cardinal="SE"
             ))
 
+        WEEKDAY_SHORT_PT = {0: "Seg", 1: "Ter", 2: "Qua", 3: "Qui", 4: "Sex", 5: "Sáb", 6: "Dom"}
+        fallback_daily = []
+        base_fallback_date = datetime.now()
+        for d in range(8):
+            cur_d = base_fallback_date + timedelta(days=d)
+            w_idx = cur_d.weekday()
+            w_short = WEEKDAY_SHORT_PT.get(w_idx, "")
+            w_long = DAY_NAMES_PT.get(w_idx, "")
+            d_fmt = f"{cur_d.day:02d}/{cur_d.month:02d}"
+            lbl = "Hoje" if d == 0 else ("Amanhã" if d == 1 else f"{w_short} {d_fmt}")
+            has_rain = d in [0, 1, 4]
+            p_val = 14.5 if d == 0 else (6.2 if d == 1 else (8.0 if d == 4 else 0.0))
+            fallback_daily.append(DailyForecastItem(
+                date=cur_d.strftime("%Y-%m-%d"),
+                day_label=lbl,
+                weekday_short=w_short,
+                weekday_long=w_long,
+                date_formatted=d_fmt,
+                temp_max_c=round(27.0 + (1 if d % 2 == 0 else -2), 1),
+                temp_min_c=round(18.0 + (1 if d % 2 == 0 else -1), 1),
+                apparent_max_c=round(29.0, 1),
+                apparent_min_c=round(19.0, 1),
+                precipitation_sum_mm=p_val,
+                precipitation_probability_pct=85 if has_rain else 15,
+                weather_code=80 if has_rain else 1,
+                weather_description="Pancadas de Chuva" if has_rain else "Predomínio de Sol",
+                wind_speed_max_kmh=18.0,
+                wind_gusts_max_kmh=35.0,
+                uv_index_max=8.0,
+                summary_text="Pancadas de chuva à tarde" if has_rain else "Tempo estável e sol"
+            ))
+
         return LiveWeatherMetrics(
             latitude=latitude,
             longitude=longitude,
@@ -449,6 +592,7 @@ class WeatherService:
             wind_direction_10m_deg=140.0,
             wind_cardinal_direction="SE",
             hourly_forecast=fallback_hourly,
+            daily_forecast=fallback_daily,
             data_source=f"Modo Fallback / Offline ({reason})",
             is_live_data=False
         )
